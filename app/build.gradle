@@ -50,6 +50,9 @@ dependencies {
     //rating bar
     implementation 'me.zhanghai.android.materialratingbar:library:1.2.0'
 
+    //sweet alert dialogue
+    implementation 'com.github.f0ris.sweetalert:library:1.5.1'
+
     //architecture components
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:1.1.1"
