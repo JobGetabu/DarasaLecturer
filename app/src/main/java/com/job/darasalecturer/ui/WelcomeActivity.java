@@ -1,5 +1,6 @@
 package com.job.darasalecturer.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,9 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @OnClick(R.id.login_positive)
     public void onLoginPositiveClicked() {
+
+        Intent intent = new Intent(this,LoginActivity.class);
+        startActivity(intent);
 
     }
 

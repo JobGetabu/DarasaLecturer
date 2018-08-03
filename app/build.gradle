@@ -39,7 +39,7 @@ dependencies {
     //firebase
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-auth:16.0.2'
-    implementation 'com.google.firebase:firebase-firestore:17.0.3'
+    implementation 'com.google.firebase:firebase-firestore:17.0.4'
     // ButterKnife (for code brevity)
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
@@ -55,3 +55,5 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:1.1.1"
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
 }
+
+apply plugin: 'com.google.gms.google-services'

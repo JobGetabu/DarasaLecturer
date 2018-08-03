@@ -21,6 +21,7 @@ public class DarasaLec extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         //firebase init
+        //FirebaseApp.initializeApp(DarasaLec.this);
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
 
