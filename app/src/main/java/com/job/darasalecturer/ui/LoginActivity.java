@@ -1,6 +1,7 @@
 package com.job.darasalecturer.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -11,10 +12,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.util.AppStatus;
 import com.job.darasalecturer.util.DoSnack;
@@ -22,6 +27,9 @@ import com.job.darasalecturer.util.DoSnack;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
+import static com.job.darasalecturer.util.Constants.LECUSERCOL;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -82,6 +90,12 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+        final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+        pDialog.setTitleText("Logging in...");
+        pDialog.setCancelable(false);
+        pDialog.show();
+
         String email = loginInputEmail.getEditText().getText().toString();
         String password = loginInputPassword.getEditText().getText().toString();
 
@@ -92,11 +106,38 @@ public class LoginActivity extends AppCompatActivity {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()){
+                        public void onComplete(@NonNull Task<AuthResult> authtask) {
+                            if (authtask.isSuccessful()){
 
                                 //login successful
 
+                                //update device token
+
+                                String devicetoken = FirebaseInstanceId.getInstance().getToken();
+                                String mCurrentUserid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                                // Set the value of 'Users'
+                                DocumentReference usersRef = mFirestore.collection(LECUSERCOL).document(mCurrentUserid);
+
+                                usersRef.update("devicetoken",devicetoken)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                pDialog.dismissWithAnimation();
+                                                sendToMain();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        pDialog.dismiss();
+                                        doSnack.errorPrompt("Oops...", e.getMessage());
+                                    }
+                                });
+
+
+                            }else {
+                                pDialog.dismiss();
+                                doSnack.UserAuthToastExceptions(authtask);
                             }
                         }
                     });
@@ -116,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
         String email = loginInputEmail.getEditText().getText().toString();
         String password = loginInputPassword.getEditText().getText().toString();
 
-        if (email.isEmpty() || isEmailValid(email)) {
+        if (email.isEmpty() || !isEmailValid(email)) {
             loginInputEmail.setError("enter valid email");
             valid = false;
         } else {

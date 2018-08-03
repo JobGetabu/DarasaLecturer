@@ -2,8 +2,17 @@ package com.job.darasalecturer.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.view.View;
+
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 
 /**
@@ -42,5 +51,31 @@ public class DoSnack {
                 mainTextStringId,
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(actionStringId, listener).show();
+    }
+
+    public void UserAuthToastExceptions(@NonNull Task<AuthResult> authtask) {
+        String error = "";
+        try {
+            throw authtask.getException();
+        } catch (FirebaseAuthWeakPasswordException e) {
+            error = "Weak Password!";
+        } catch (FirebaseAuthInvalidCredentialsException e) {
+            error = "Invalid email";
+        } catch (FirebaseAuthUserCollisionException e) {
+            error = "Existing Account";
+        } catch (Exception e) {
+            error = "Unknown Error Occured";
+            e.printStackTrace();
+        }
+        //Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
+        errorPrompt("Oops...", error);
+    }
+
+    public void errorPrompt(String title, String message) {
+
+        new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
+                .setTitleText(title)
+                .setContentText(message)
+                .show();
     }
 }
