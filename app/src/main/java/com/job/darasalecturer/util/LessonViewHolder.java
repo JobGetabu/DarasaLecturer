@@ -4,15 +4,16 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
+import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.datasource.LecTeachTime;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,7 +50,7 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         ButterKnife.bind(this, itemView);
 
-        LayoutInflater.from(mContext).inflate(R.layout.single_lesson, null);
+        //LayoutInflater.from(mContext).inflate(R.layout.single_lesson, null);
 
     }
 
@@ -72,5 +73,24 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
 
     @OnClick(R.id.ls_card)
     public void onLsCardClicked() {
+    }
+
+    public void setUpUi(LecTeachTime lecTeachTime){
+        lsUnitcode.setText(lecTeachTime.getUnitcode());
+        lsUnitname.setText(lecTeachTime.getUnitname());
+    }
+
+    private void addCourses(String course){
+        Chip chip = new Chip(mContext);
+        chip.setChipText(course);
+        //chip.setCloseIconEnabled(true);
+        //chip.setCloseIconResource(R.drawable.your_icon);
+        //chip.setChipIconResource(R.drawable.your_icon);
+        //chip.setChipBackgroundColorResource(R.color.red);
+        chip.setTextAppearanceResource(R.style.ChipTextStyle);
+        chip.setChipStartPadding(4f);
+        chip.setChipEndPadding(4f);
+
+        lsChipgroup.addView(chip);
     }
 }

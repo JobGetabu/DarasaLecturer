@@ -4,35 +4,51 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.datasource.LecTeachTime;
+import com.job.darasalecturer.util.LessonViewHolder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
 
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.main_toolbar)
     Toolbar mainToolbar;
     @BindView(R.id.main_list)
-    RelativeLayout mainList;
+    RecyclerView mainList;
     @BindView(R.id.main_fab)
     FloatingActionButton mainFab;
 
+    private static final String TAG = "main";
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+    private String userId;
     private FirebaseFirestore mFirestore;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirestoreRecyclerAdapter adapter;
@@ -49,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
+        userId = mUser.getUid();
+
+        setUpList();
     }
 
     @Override
@@ -64,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                     sendToLogin();
                 } else {
-                    String userId = mAuth.getCurrentUser().getUid();
+                    userId = mAuth.getCurrentUser().getUid();
                 }
             }
         };
@@ -114,6 +133,62 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
+
+    private void setUpList() {
+
+        initList();
+
+        // Create a reference to the lecTeachTime collection
+        CollectionReference lecTeachTimeRef = mFirestore.collection(LECTEACHTIMECOL);
+        Query mQuery = lecTeachTimeRef
+                .whereEqualTo("lecid", userId)
+                .orderBy("time", Query.Direction.DESCENDING);
+
+        FirestoreRecyclerOptions<LecTeachTime> options = new FirestoreRecyclerOptions.Builder<LecTeachTime>()
+                .setQuery(mQuery, LecTeachTime.class)
+                .build();
+
+        adapter = new FirestoreRecyclerAdapter<LecTeachTime, LessonViewHolder>(options) {
+
+            @NonNull
+            @Override
+            public LessonViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.single_lesson, parent, false);
+
+                return new LessonViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull LessonViewHolder holder, int position, @NonNull LecTeachTime model) {
+
+                holder.init(MainActivity.this,mFirestore);
+                holder.setUpUi(model);
+            }
+
+            @Override
+            public void onError(FirebaseFirestoreException e) {
+                // Show a snackbar on errors
+                Snackbar.make(findViewById(android.R.id.content),
+                        "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
+
+                Log.d(TAG, "onError: ", e);
+            }
+
+        };
+
+        adapter.startListening();
+        adapter.notifyDataSetChanged();
+        mainList.setAdapter(adapter);
+    }
+
+    private void initList() {
+        LinearLayoutManager linearLayoutManager = new
+                LinearLayoutManager(this.getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        mainList.setLayoutManager(linearLayoutManager);
+        mainList.setHasFixedSize(true);
+    }
+
 
     @OnClick(R.id.main_fab)
     public void onFabClicked() {

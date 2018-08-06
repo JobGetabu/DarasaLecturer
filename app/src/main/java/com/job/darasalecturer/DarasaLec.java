@@ -21,9 +21,15 @@ public class DarasaLec extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         //firebase init
-        //FirebaseApp.initializeApp(DarasaLec.this);
+
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
+
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(true)
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
+        mFirestore.setFirestoreSettings(settings);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -33,15 +39,11 @@ public class DarasaLec extends MultiDexApplication {
                     // do stuff
                     // Check if user is signed in (non-null) and update UI accordingly.
 
-                    FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                            .setPersistenceEnabled(true)
-                            .setTimestampsInSnapshotsEnabled(true)
-                            .build();
-                    mFirestore.setFirestoreSettings(settings);
                 }
             }
         };
 
         mAuth.addAuthStateListener(mAuthListener);
+
     }
 }
