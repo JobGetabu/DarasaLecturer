@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="Unit Code :"
+            android:text="Unit Code : "
             app:layout_constraintStart_toEndOf="@+id/ls_qr_img"
             app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView" />
 
@@ -91,6 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/nunito"
             android:singleLine="false"
             android:text="TextView"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="Unit Name :"
+            android:text="Unit Name : "
             app:layout_constraintStart_toEndOf="@+id/ls_qr_img"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -114,6 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/nunito"
             android:singleLine="false"
             android:text="TextView"
             app:layout_constraintEnd_toEndOf="parent"
@@ -142,7 +144,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/nunito_bold"
             android:text="8:30 PM"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
@@ -177,6 +181,31 @@
             app:layout_constraintStart_toEndOf="@+id/textView6"
             app:layout_constraintTop_toBottomOf="@+id/imageView3"
             app:srcCompat="@drawable/ic_location_on" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/dot"
+            app:layout_constraintStart_toEndOf="@+id/ls_loc_img"
+            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/nunito_light"
+            android:text="School of Business Room 8"
+            app:layout_constraintEnd_toStartOf="@+id/ls_btn"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/imageView3"
+            tools:text="School of Business Room 8" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.design.card.MaterialCardView>
