@@ -1,6 +1,7 @@
 package com.job.darasalecturer.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
@@ -19,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.datasource.LecTeachTime;
+import com.job.darasalecturer.ui.ScannerActivity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -81,6 +83,7 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
 
     @OnClick(R.id.ls_btn)
     public void onLsBtnClicked() {
+        sendToQr();
     }
 
     @OnClick(R.id.ls_loc_img)
@@ -141,6 +144,7 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
                             Map<String, Object> mapdata = task.getResult().getData();
 
                             if (mapdata != null) {
+                                lsChipgroup.removeAllViews();
                                 for (Map.Entry<String, Object> entry : mapdata.entrySet()) {
                                     //System.out.println(entry.getKey() + "/" + entry.getValue());
                                     addCourses(entry.getValue().toString());
@@ -152,8 +156,6 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void addCourses(String course) {
-        lsChipgroup.removeAllViews();
-
         Chip chip = new Chip(mContext);
         chip.setChipText(course);
         //chip.setCloseIconEnabled(true);
@@ -183,5 +185,10 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
 
 
         }
+    }
+
+    private void sendToQr() {
+        Intent qrintent = new Intent(mContext,ScannerActivity.class);
+        mContext.startActivity(qrintent);
     }
 }

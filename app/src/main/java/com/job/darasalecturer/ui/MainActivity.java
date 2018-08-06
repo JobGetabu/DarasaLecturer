@@ -164,6 +164,13 @@ public class MainActivity extends AppCompatActivity {
 
                 holder.init(MainActivity.this,mFirestore);
                 holder.setUpUi(model);
+
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sendToQr();
+                    }
+                });
             }
 
             @Override
@@ -180,6 +187,11 @@ public class MainActivity extends AppCompatActivity {
         adapter.startListening();
         adapter.notifyDataSetChanged();
         mainList.setAdapter(adapter);
+    }
+
+    private void sendToQr() {
+        Intent qrintent = new Intent(this,ScannerActivity.class);
+        startActivity(qrintent);
     }
 
     private void initList() {

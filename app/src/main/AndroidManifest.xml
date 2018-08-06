@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.job.darasalecturer">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
 
     <application
         android:name=".DarasaLec"
@@ -15,8 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon"
-        >
+        tools:replace="android:icon">
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,12 +23,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.WelcomeActivity" />
-        <activity android:name=".ui.LoginActivity"
-            android:parentActivityName=".ui.WelcomeActivity"/>
+        <activity
+            android:name=".ui.LoginActivity"
+            android:parentActivityName=".ui.WelcomeActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <activity android:name=".ui.ScannerActivity"></activity>
     </application>
 
 </manifest>
