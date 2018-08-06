@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.datasource.LecTeachTime;
 
 import butterknife.BindView;
@@ -40,6 +41,8 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
     ImageView lsLocImg;
     @BindView(R.id.ls_card)
     ConstraintLayout lsCard;
+    @BindView(R.id.ls_venue)
+    TextView lsVenue;
 
     private Context mContext;
     private FirebaseFirestore mFirestore;
@@ -75,12 +78,42 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
     public void onLsCardClicked() {
     }
 
-    public void setUpUi(LecTeachTime lecTeachTime){
-        lsUnitcode.setText(lecTeachTime.getUnitcode());
-        lsUnitname.setText(lecTeachTime.getUnitname());
+    public void setUpUi(final LecTeachTime lecTeachTime) {
+
+        //smoother experience...
+        DefaultExecutorSupplier.getInstance().forMainThreadTasks()
+                .execute(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        lsUnitcode.setText(lecTeachTime.getUnitcode());
+                        lsUnitname.setText(lecTeachTime.getUnitname());
+                        lsVenue.setText(lecTeachTime.getVenue());
+                        locationViewer(lecTeachTime);
+                    }
+                });
     }
 
-    private void addCourses(String course){
+    private void locationViewer(LecTeachTime lecTeachTime) {
+        if (lecTeachTime.getVenue().isEmpty()) {
+
+            DrawableHelper
+                    .withContext(mContext)
+                    .withColor(R.color.greyish)
+                    .withDrawable(R.drawable.ic_location_on)
+                    .tint()
+                    .applyTo(lsLocImg);
+        } else {
+            DrawableHelper
+                    .withContext(mContext)
+                    .withColor(R.color.darkbluish)
+                    .withDrawable(R.drawable.ic_location_on)
+                    .tint()
+                    .applyTo(lsLocImg);
+        }
+    }
+
+    private void addCourses(String course) {
         Chip chip = new Chip(mContext);
         chip.setChipText(course);
         //chip.setCloseIconEnabled(true);

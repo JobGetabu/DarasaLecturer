@@ -19,11 +19,14 @@ public class LecTeachTime implements Parcelable {
     private String unitcode;
     private String unitname;
     private String venue;
+    private String lecteachtimeid;
 
     public LecTeachTime() {
     }
 
-    public LecTeachTime(String lecid, String lecteachid, String day, Date time, String unitcode, String unitname, String venue) {
+    public LecTeachTime(String lecid, String lecteachid,
+                        String day, Date time, String unitcode,
+                        String unitname, String venue, String lecteachtimeid) {
         this.lecid = lecid;
         this.lecteachid = lecteachid;
         this.day = day;
@@ -31,6 +34,7 @@ public class LecTeachTime implements Parcelable {
         this.unitcode = unitcode;
         this.unitname = unitname;
         this.venue = venue;
+        this.lecteachtimeid = lecteachtimeid;
     }
 
     public String getLecid() {
@@ -99,6 +103,7 @@ public class LecTeachTime implements Parcelable {
                 ", unitcode='" + unitcode + '\'' +
                 ", unitname='" + unitname + '\'' +
                 ", venue='" + venue + '\'' +
+                ", lecteachtimeid='" + lecteachtimeid + '\'' +
                 '}';
     }
 
@@ -117,6 +122,7 @@ public class LecTeachTime implements Parcelable {
         dest.writeString(this.unitcode);
         dest.writeString(this.unitname);
         dest.writeString(this.venue);
+        dest.writeString(this.lecteachtimeid);
     }
 
     protected LecTeachTime(Parcel in) {
@@ -128,6 +134,7 @@ public class LecTeachTime implements Parcelable {
         this.unitcode = in.readString();
         this.unitname = in.readString();
         this.venue = in.readString();
+        this.lecteachtimeid = in.readString();
     }
 
     public static final Creator<LecTeachTime> CREATOR = new Creator<LecTeachTime>() {
