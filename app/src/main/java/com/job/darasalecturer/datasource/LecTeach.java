@@ -2,8 +2,6 @@ package com.job.darasalecturer.datasource;
 
 import android.support.annotation.Keep;
 
-import java.util.Map;
-
 /**
  * Created by Job on Tuesday : 7/24/2018.
  */
@@ -16,7 +14,6 @@ public class LecTeach {
     private String semester;
     private String studyyear;
     private Boolean combiner;
-    private Map<String,String> courses;
     private String school;
     private String department;
 
@@ -25,14 +22,13 @@ public class LecTeach {
 
     public LecTeach(String lecid, String unitcode, String unitname,
                     String semester, String studyyear, Boolean combiner,
-                    Map<String, String> courses, String school, String department) {
+                    String school, String department) {
         this.lecid = lecid;
         this.unitcode = unitcode;
         this.unitname = unitname;
         this.semester = semester;
         this.studyyear = studyyear;
         this.combiner = combiner;
-        this.courses = courses;
         this.school = school;
         this.department = department;
     }
@@ -85,14 +81,6 @@ public class LecTeach {
         this.combiner = combiner;
     }
 
-    public Map<String, String> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(Map<String, String> courses) {
-        this.courses = courses;
-    }
-
     public String getSchool() {
         return school;
     }
@@ -118,7 +106,6 @@ public class LecTeach {
                 ", semester='" + semester + '\'' +
                 ", studyyear='" + studyyear + '\'' +
                 ", combiner=" + combiner +
-                ", courses=" + courses +
                 ", school='" + school + '\'' +
                 ", department='" + department + '\'' +
                 '}';

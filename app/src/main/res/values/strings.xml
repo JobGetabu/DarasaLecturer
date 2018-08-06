@@ -8,4 +8,6 @@
     <string name="login">Login</string>
     <string name="settings">Settings</string>
     <string name="logout">Logout</string>
+
+    <string name="dot">&#8226;</string>
 </resources>
