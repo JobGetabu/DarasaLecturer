@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,15 +10,23 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:background="@drawable/sc_background" />
+        android:background="@drawable/sc_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.design.card.MaterialCardView
+        android:id="@+id/materialCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="40dp"
-        android:layout_marginStart="40dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="120dp"
         app:layout_anchor="@+id/background"
-        app:layout_anchorGravity="bottom|center">
+        app:layout_anchorGravity="bottom|center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/scan_toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,32 +49,68 @@
                 app:srcCompat="@drawable/ic_qrcode" />
 
             <TextView
+                android:id="@+id/scan_unit_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/nunito_bold"
-                android:text="Artificial Intelligence"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                android:text="Introduction to Databases"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="18sp" />
 
             <TextView
+                android:id="@+id/scan_unit_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
                 android:fontFamily="@font/nunito_semibold"
                 android:text="musician, singer, songwriter"
                 android:textAlignment="center"
                 android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="40"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    />
+
+
+                <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                    android:id="@+id/item_col_rating"
+                    style="@style/Widget.MaterialRatingBar.RatingBar.Indicator.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:numStars="5"
+                    android:paddingStart="4dp"
+                    android:rating="3.5" />
+            </LinearLayout>
         </LinearLayout>
     </android.support.design.card.MaterialCardView>
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/scan_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:layout_marginTop="24dp"
         app:theme="@style/TransparentBar">
 
         <TextView
+            android:id="@+id/scan_toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nunito_light"
@@ -75,4 +118,6 @@
             android:text="Scan"
             android:textSize="24sp" />
     </android.support.v7.widget.Toolbar>
-</android.support.design.widget.CoordinatorLayout>
+
+
+</android.support.constraint.ConstraintLayout>
