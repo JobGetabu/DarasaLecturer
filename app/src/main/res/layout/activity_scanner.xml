@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.ScannerActivity">
+
+    <RelativeLayout
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@drawable/sc_background" />
+
+    <android.support.design.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="40dp"
+        android:layout_marginStart="40dp"
+        app:layout_anchor="@+id/background"
+        app:layout_anchorGravity="bottom|center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/ic_qrcode" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_bold"
+                android:text="Artificial Intelligence"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito_semibold"
+                android:text="musician, singer, songwriter"
+                android:textAlignment="center"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </android.support.design.card.MaterialCardView>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:layout_marginTop="24dp"
+        app:theme="@style/TransparentBar">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nunito_light"
+            android:gravity="center_vertical"
+            android:text="Scan"
+            android:textSize="24sp" />
+    </android.support.v7.widget.Toolbar>
+</android.support.design.widget.CoordinatorLayout>
