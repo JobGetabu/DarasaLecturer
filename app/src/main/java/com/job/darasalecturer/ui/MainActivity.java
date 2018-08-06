@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser mUser;
     private FirebaseFirestore mFirestore;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirestoreRecyclerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +64,25 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                     sendToLogin();
                 } else {
-
-
                     String userId = mAuth.getCurrentUser().getUid();
-
                 }
             }
         };
 
         mAuth.addAuthStateListener(mAuthListener);
+
+        if (adapter != null) {
+            adapter.startListening();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (adapter != null) {
+            adapter.stopListening();
+        }
     }
 
     private void sendToLogin() {
