@@ -4,7 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Keep;
 
-import java.util.Date;
+import com.google.firebase.Timestamp;
+
 
 /**
  * Created by Job on Tuesday : 7/24/2018.
@@ -15,7 +16,7 @@ public class LecTeachTime implements Parcelable {
     private String lecid;
     private String lecteachid;
     private String day;
-    private Date time;
+    private com.google.firebase.Timestamp time;
     private String unitcode;
     private String unitname;
     private String venue;
@@ -24,9 +25,8 @@ public class LecTeachTime implements Parcelable {
     public LecTeachTime() {
     }
 
-    public LecTeachTime(String lecid, String lecteachid,
-                        String day, Date time, String unitcode,
-                        String unitname, String venue, String lecteachtimeid) {
+    public LecTeachTime(String lecid, String lecteachid, String day,
+                        Timestamp time, String unitcode, String unitname, String venue, String lecteachtimeid) {
         this.lecid = lecid;
         this.lecteachid = lecteachid;
         this.day = day;
@@ -61,11 +61,11 @@ public class LecTeachTime implements Parcelable {
         this.day = day;
     }
 
-    public Date getTime() {
+    public Timestamp getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(Timestamp time) {
         this.time = time;
     }
 
@@ -118,7 +118,7 @@ public class LecTeachTime implements Parcelable {
         dest.writeString(this.lecid);
         dest.writeString(this.lecteachid);
         dest.writeString(this.day);
-        dest.writeLong(this.time != null ? this.time.getTime() : -1);
+        dest.writeParcelable(this.time, flags);
         dest.writeString(this.unitcode);
         dest.writeString(this.unitname);
         dest.writeString(this.venue);
@@ -129,8 +129,7 @@ public class LecTeachTime implements Parcelable {
         this.lecid = in.readString();
         this.lecteachid = in.readString();
         this.day = in.readString();
-        long tmpTime = in.readLong();
-        this.time = tmpTime == -1 ? null : new Date(tmpTime);
+        this.time = in.readParcelable(Timestamp.class.getClassLoader());
         this.unitcode = in.readString();
         this.unitname = in.readString();
         this.venue = in.readString();

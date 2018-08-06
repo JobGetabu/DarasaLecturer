@@ -9,6 +9,9 @@ import android.os.Parcelable;
 public class Course implements Parcelable {
     private String name;
 
+    public Course() {
+    }
+
     public Course(String name) {
         this.name = name;
     }

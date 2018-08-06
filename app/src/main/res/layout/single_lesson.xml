@@ -50,25 +50,14 @@
                     android:fontFamily="@font/nunito"
                     android:text="course"
                     app:iconEndPadding="4dp"
-                    app:iconStartPadding="4dp" />
+                    app:iconStartPadding="4dp"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    />
 
-                <android.support.design.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/nunito"
-                    android:text="course"
-                    app:iconEndPadding="4dp"
-                    app:iconStartPadding="4dp" />
 
-                <android.support.design.chip.Chip
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/nunito"
-                    android:text="course"
-                    app:iconEndPadding="4dp"
-                    app:iconStartPadding="4dp" />
+
+
 
             </android.support.design.chip.ChipGroup>
 

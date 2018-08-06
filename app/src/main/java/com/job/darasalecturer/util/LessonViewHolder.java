@@ -13,11 +13,18 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.datasource.LecTeachTime;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -95,7 +102,9 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
                         lsUnitcode.setText(lecTeachTime.getUnitcode());
                         lsUnitname.setText(lecTeachTime.getUnitname());
                         lsVenue.setText(lecTeachTime.getVenue());
+                        lessonTime(lecTeachTime.getTime());
                         locationViewer(lecTeachTime);
+                        getCourses(lecTeachTime);
                     }
                 });
     }
@@ -119,22 +128,32 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void getCourses(LecTeachTime lecTeachTime){
+    private void getCourses(LecTeachTime lecTeachTime) {
 
         mFirestore.collection(LECTEACHCOL).document(lecTeachTime.getLecteachid()).collection(LECTEACHCOURSESUBCOL)
+                .document("courses")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> dbtask) {
-                        if (dbtask.isSuccessful()){
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
 
-                           //dbtask.getResult().toObjects()
+                            Map<String, Object> mapdata = task.getResult().getData();
+
+                            if (mapdata != null) {
+                                for (Map.Entry<String, Object> entry : mapdata.entrySet()) {
+                                    //System.out.println(entry.getKey() + "/" + entry.getValue());
+                                    addCourses(entry.getValue().toString());
+                                }
+                            }
                         }
                     }
                 });
     }
 
     private void addCourses(String course) {
+        lsChipgroup.removeAllViews();
+
         Chip chip = new Chip(mContext);
         chip.setChipText(course);
         //chip.setCloseIconEnabled(true);
@@ -146,5 +165,23 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         chip.setChipEndPadding(4f);
 
         lsChipgroup.addView(chip);
+    }
+
+    private void lessonTime(Timestamp timestamp) {
+        //Timestamp timestamp = model.getTimestamp();
+        if (timestamp != null) {
+
+            Date date = timestamp.toDate();
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+
+            DateFormat dateFormat2 = new SimpleDateFormat("hh.mm aa");
+            lsTime.setText(dateFormat2.format(date));
+
+            int day = c.get(Calendar.DAY_OF_WEEK);
+            int daydate = c.get(Calendar.DAY_OF_MONTH);
+
+
+        }
     }
 }
