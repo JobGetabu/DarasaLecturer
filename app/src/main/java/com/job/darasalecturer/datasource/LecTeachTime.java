@@ -18,17 +18,19 @@ public class LecTeachTime implements Parcelable {
     private Date time;
     private String unitcode;
     private String unitname;
+    private String venue;
 
     public LecTeachTime() {
     }
 
-    public LecTeachTime(String lecid, String lecteachid, String day, Date time, String unitcode, String unitname) {
+    public LecTeachTime(String lecid, String lecteachid, String day, Date time, String unitcode, String unitname, String venue) {
         this.lecid = lecid;
         this.lecteachid = lecteachid;
         this.day = day;
         this.time = time;
         this.unitcode = unitcode;
         this.unitname = unitname;
+        this.venue = venue;
     }
 
     public String getLecid() {
@@ -79,6 +81,14 @@ public class LecTeachTime implements Parcelable {
         this.unitname = unitname;
     }
 
+    public String getVenue() {
+        return venue;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
+    }
+
     @Override
     public String toString() {
         return "LecTeachTime{" +
@@ -88,6 +98,7 @@ public class LecTeachTime implements Parcelable {
                 ", time=" + time +
                 ", unitcode='" + unitcode + '\'' +
                 ", unitname='" + unitname + '\'' +
+                ", venue='" + venue + '\'' +
                 '}';
     }
 
@@ -105,6 +116,7 @@ public class LecTeachTime implements Parcelable {
         dest.writeLong(this.time != null ? this.time.getTime() : -1);
         dest.writeString(this.unitcode);
         dest.writeString(this.unitname);
+        dest.writeString(this.venue);
     }
 
     protected LecTeachTime(Parcel in) {
@@ -115,9 +127,10 @@ public class LecTeachTime implements Parcelable {
         this.time = tmpTime == -1 ? null : new Date(tmpTime);
         this.unitcode = in.readString();
         this.unitname = in.readString();
+        this.venue = in.readString();
     }
 
-    public static final Parcelable.Creator<LecTeachTime> CREATOR = new Parcelable.Creator<LecTeachTime>() {
+    public static final Creator<LecTeachTime> CREATOR = new Creator<LecTeachTime>() {
         @Override
         public LecTeachTime createFromParcel(Parcel source) {
             return new LecTeachTime(source);

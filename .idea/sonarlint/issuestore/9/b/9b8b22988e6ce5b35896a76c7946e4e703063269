@@ -1,0 +1,5 @@
+
+Fsquid:S1068"+Remove this unused "context" private field.(Í›Á8÷€∑å–,
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(–∞«∂8÷€∑å–,
+jsquid:S00100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(∞ÛÕl8÷€∑å–,
+Dsquid:S1148"#Use a logger to log this exception.(Ä…‘Ö˝ˇˇˇˇ8÷€∑å–,
