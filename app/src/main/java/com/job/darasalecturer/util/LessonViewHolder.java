@@ -40,8 +40,6 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.ls_card)
     ConstraintLayout lsCard;
 
-
-
     private Context mContext;
     private FirebaseFirestore mFirestore;
 
@@ -53,6 +51,11 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
 
         LayoutInflater.from(mContext).inflate(R.layout.single_lesson, null);
 
+    }
+
+    public void init(Context mContext, FirebaseFirestore mFirestore) {
+        this.mContext = mContext;
+        this.mFirestore = mFirestore;
     }
 
     @OnClick(R.id.ls_qr_img)
