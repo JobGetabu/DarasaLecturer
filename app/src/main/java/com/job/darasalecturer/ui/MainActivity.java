@@ -75,9 +75,25 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-        userId = mUser.getUid();
 
-        setUpList();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    // Sign in logic here.
+                    finish();
+                    sendToLogin();
+                } else {
+
+                    userId = mAuth.getCurrentUser().getUid();
+                    setUpList();
+                }
+            }
+        };
+
+        mAuth.addAuthStateListener(mAuthListener);
+
     }
 
     @Override
@@ -169,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull LessonViewHolder holder, int position, @NonNull LecTeachTime model) {
 
-                holder.init(MainActivity.this,mFirestore);
+                holder.init(MainActivity.this, mFirestore);
                 holder.setUpUi(model);
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -197,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendToQr() {
-        Intent qrintent = new Intent(this,ScannerActivity.class);
+        Intent qrintent = new Intent(this, ScannerActivity.class);
         qrintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         qrintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(qrintent);
@@ -216,8 +232,8 @@ public class MainActivity extends AppCompatActivity {
     public void onFabClicked() {
     }
 
-    private void sendToSettings(){
-        Intent intent  = new Intent(this,SettingsActivity.class);
+    private void sendToSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 }
