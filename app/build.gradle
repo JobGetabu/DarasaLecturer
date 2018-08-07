@@ -56,6 +56,9 @@ dependencies {
     //loading
     implementation 'com.victor:lib:1.0.4'
 
+    //graphs
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+
     //architecture components
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:1.1.1"
