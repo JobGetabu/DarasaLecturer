@@ -31,7 +31,8 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".ui.ScannerActivity"></activity>
+        <activity android:name=".ui.ScannerActivity" />
+        <activity android:name=".ui.SettingsActivity"></activity>
     </application>
 
 </manifest>

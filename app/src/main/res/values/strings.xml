@@ -16,4 +16,9 @@
     <string name="location_icon">location icon</string>
     <string name="record_attendance">Record Attendance</string>
     <string name="pin_screen">Pin Screen</string>
+    <string name="manage_your_password"><b>Manage your password</b> \n Set up pin used to control access</string>
+    <string name="content_desc_icon">password icon</string>
+    <string name="manage_account">Manage Account</string>
+    <string name="manage_your_account">Manage your Account</string>
+    <string name="sign_out">Sign Out</string>
 </resources>

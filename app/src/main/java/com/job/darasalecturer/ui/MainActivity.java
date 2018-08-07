@@ -15,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         mainToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "TODO -> settings :)", Toast.LENGTH_SHORT).show();
+                sendToSettings();
             }
         });
 
@@ -212,5 +211,11 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.main_fab)
     public void onFabClicked() {
+    }
+
+    private void sendToSettings(){
+        Intent intent  = new Intent(this,SettingsActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
