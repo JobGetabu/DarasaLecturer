@@ -28,9 +28,10 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_location_on" />
-                            <entry key="sourceFile" value="C:\Users\getab\Desktop\Projects\ProjectDarasa\Design\icons\ic_qrcode.svg" />
+                            <entry key="outputName" value="ic_password" />
+                            <entry key="sourceFile" value="C:\Users\getab\Desktop\Projects\ProjectDarasa\Design\icons\ic_assword.svg" />
                           </map>
                         </option>
                       </PersistentState>
