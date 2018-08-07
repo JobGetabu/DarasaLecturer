@@ -74,5 +74,3 @@ Q
 !app/src/main/res/values/dimen.xml,0\e\0eb47b9fe42323c2f5c068c3140ad82892755766
 \
 ,app/src/main/res/drawable/ic_location_on.xml,a\3\a3866d734f774071ff5ec738a8f4f1695a0e11a5
-X
-(app/src/main/res/layout/single_class.xml,a\8\a835f2867d4f223600470f61b17f9a4920c8ceb2

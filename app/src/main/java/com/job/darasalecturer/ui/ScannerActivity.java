@@ -1,7 +1,9 @@
 package com.job.darasalecturer.ui;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.os.CountDownTimer;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.viewmodel.ScannerViewModel;
 import com.victor.loading.newton.NewtonCradleLoading;
 
 import butterknife.BindView;
@@ -24,6 +27,8 @@ public class ScannerActivity extends AppCompatActivity {
     @BindView(R.id.scan_timer_text)
     TextView scanTimerText;
 
+    private ScannerViewModel model;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +37,9 @@ public class ScannerActivity extends AppCompatActivity {
 
         setSupportActionBar(scanToolbar);
         getSupportActionBar().setTitle("");
+
+        //init model
+        model = ViewModelProviders.of(this).get(ScannerViewModel.class);
 
         initTimer();
     }
@@ -58,31 +66,22 @@ public class ScannerActivity extends AppCompatActivity {
         return true;
     }
 
-    private void initTimer(){
+    private void initTimer() {
         scanLoading.start();
         scanLoading.setLoadingColor(R.color.colorPrimary);
 
-        // 1min = 60 sec = 60000ms
-        new CountDownTimer(120000, 1000) {
 
-            public void onTick(long millisUntilFinished) {
-                scanTimerText.setText(toMinutes(millisUntilFinished) +" : " + toSec(millisUntilFinished));
+        model.getTimeLiveData().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                if (s != null) {
+                    scanTimerText.setText(s);
+
+                    if (s.equals("done!")) {
+                        scanLoading.stop();
+                    }
+                }
             }
-
-            public void onFinish() {
-                scanTimerText.setText("done!");
-                scanLoading.stop();
-            }
-        }.start();
-    }
-
-    private String toMinutes(long millisUntilFinished){
-       long min =  (millisUntilFinished) / (1000 * 60);
-       return String.valueOf(min);
-    }
-
-    private String toSec(long millisUntilFinished){
-        long remainedSecs = millisUntilFinished / 1000;
-        return String.valueOf((remainedSecs % 60));
+        });
     }
 }
