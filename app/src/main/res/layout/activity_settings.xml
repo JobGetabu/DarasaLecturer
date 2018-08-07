@@ -13,6 +13,8 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         app:title="@string/settings"
+        android:theme="@style/AppTheme"
+
         app:titleTextColor="@android:color/white" />
 
     <ScrollView

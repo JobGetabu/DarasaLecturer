@@ -216,6 +216,5 @@ public class MainActivity extends AppCompatActivity {
     private void sendToSettings(){
         Intent intent  = new Intent(this,SettingsActivity.class);
         startActivity(intent);
-        finish();
     }
 }

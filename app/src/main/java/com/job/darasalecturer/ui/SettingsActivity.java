@@ -31,6 +31,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         setSupportActionBar(settingsToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
         
         loadUserPrefs();
     }
