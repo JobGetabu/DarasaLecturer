@@ -54,6 +54,7 @@ public class ScannerActivity extends AppCompatActivity {
         setSupportActionBar(scanToolbar);
         getSupportActionBar().setTitle("");
 
+
         //init model
         model = ViewModelProviders.of(this).get(ScannerViewModel.class);
 

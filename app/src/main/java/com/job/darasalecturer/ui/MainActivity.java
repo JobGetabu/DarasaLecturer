@@ -60,6 +60,17 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(mainToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_menu));
+
+        mainToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "TODO -> settings :)", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //firebase
         mAuth = FirebaseAuth.getInstance();
@@ -125,9 +136,6 @@ public class MainActivity extends AppCompatActivity {
                 mAuth.signOut();
 
                 sendToLogin();
-                break;
-            case R.id.hmenu_settings:
-                Toast.makeText(this, "TODO -> settings", Toast.LENGTH_SHORT).show();
                 break;
         }
 
