@@ -60,18 +60,22 @@
                         android:textSize="16sp" />
                 </LinearLayout>
 
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/settings_switch"
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/settings_password"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginStart="54dp"
-                    android:defaultValue="false"
-                    android:fontFamily="@font/nunito_semibold"
                     android:text="@string/manage_your_password"
-                    android:textAlignment="viewStart"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/darkgreyish"
+                    />
+
 
                 <!-- divider line -->
                 <ImageView

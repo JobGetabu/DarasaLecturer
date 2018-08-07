@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hanks.passcodeview.PasscodeView;
 import com.job.darasalecturer.R;
@@ -21,14 +20,12 @@ import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 
 public class PasscodeActivity extends AppCompatActivity {
 
-
-    public static final String PASSCODEACTIVITYEXTRA = "PASSCODEACTIVITYEXTRA";
     @BindView(R.id.passcodeView)
     PasscodeView passcodeView;
 
     private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
     private FirebaseFirestore mFirestore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,36 +43,27 @@ public class PasscodeActivity extends AppCompatActivity {
         //firebase
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        passcodeView
+                .setFirstInputTip(getResources().getString(R.string.enter_pin_4_digits))
+                .setPasscodeLength(4)
+                .setPasscodeType(PasscodeView.PasscodeViewType.TYPE_SET_PASSCODE)
+                .setListener(new PasscodeView.PasscodeViewListener() {
+                    @Override
+                    public void onFail() {
 
-        if (getIntent().getStringExtra(PASSCODEACTIVITYEXTRA) == null) {
+                    }
 
-            //TODO: setting up a passcode for first time
-            //check if previous data is available
+                    @Override
+                    public void onSuccess(String number) {
 
+                        String s = passcodeView.getLocalPasscode();
+                        LecAuth lecAuth = new LecAuth(s);
 
-            passcodeView
-                    .setFirstInputTip(getResources().getString(R.string.enter_pin_4_digits))
-                    .setPasscodeLength(4)
-                    .setPasscodeType(PasscodeView.PasscodeViewType.TYPE_SET_PASSCODE)
-                    .setListener(new PasscodeView.PasscodeViewListener() {
-                @Override
-                public void onFail() {
-
-                }
-
-                @Override
-                public void onSuccess(String number) {
-
-                    String s = passcodeView.getLocalPasscode();
-                    LecAuth lecAuth = new LecAuth(s);
-
-                    mFirestore.collection(LECAUTHCOL).document(mAuth.getUid()).set(lecAuth);
-                    Toast.makeText(getApplication(),"Successful",Toast.LENGTH_SHORT).show();
-                    onBackPressed();
-                }
-            });
-        }
+                        mFirestore.collection(LECAUTHCOL).document(mAuth.getUid()).set(lecAuth);
+                        Toast.makeText(getApplication(), "Successful", Toast.LENGTH_SHORT).show();
+                        onBackPressed();
+                    }
+                });
     }
 }
