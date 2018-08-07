@@ -35,7 +35,8 @@
         <activity
             android:name=".ui.SettingsActivity"
             android:parentActivityName=".ui.WelcomeActivity" />
-        <activity android:name=".ui.PasscodeActivity"></activity>
+        <activity android:name=".ui.PasscodeActivity" />
+        <activity android:name=".ui.ShowPasscodeActivity"></activity>
     </application>
 
 </manifest>

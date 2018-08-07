@@ -12,14 +12,17 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hanks.passcodeview.PasscodeView;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.datasource.LecAuth;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
+
 public class PasscodeActivity extends AppCompatActivity {
 
 
-    public static final String PASSCODEEXTRA = "PASSCODEEXTRA";
+    public static final String PASSCODEACTIVITYEXTRA = "PASSCODEACTIVITYEXTRA";
     @BindView(R.id.passcodeView)
     PasscodeView passcodeView;
 
@@ -46,11 +49,17 @@ public class PasscodeActivity extends AppCompatActivity {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
 
-        if (getIntent().getStringExtra(PASSCODEEXTRA).isEmpty()) {
-            //setting up a passcode for first time
+        if (getIntent().getStringExtra(PASSCODEACTIVITYEXTRA) == null) {
+
+            //TODO: setting up a passcode for first time
             //check if previous data is available
 
-            passcodeView.setListener(new PasscodeView.PasscodeViewListener() {
+
+            passcodeView
+                    .setFirstInputTip(getResources().getString(R.string.enter_pin_4_digits))
+                    .setPasscodeLength(4)
+                    .setPasscodeType(PasscodeView.PasscodeViewType.TYPE_SET_PASSCODE)
+                    .setListener(new PasscodeView.PasscodeViewListener() {
                 @Override
                 public void onFail() {
 
@@ -58,29 +67,15 @@ public class PasscodeActivity extends AppCompatActivity {
 
                 @Override
                 public void onSuccess(String number) {
-                    Toast.makeText(getApplication(),"Saved",Toast.LENGTH_SHORT).show();
+
+                    String s = passcodeView.getLocalPasscode();
+                    LecAuth lecAuth = new LecAuth(s);
+
+                    mFirestore.collection(LECAUTHCOL).document(mAuth.getUid()).set(lecAuth);
+                    Toast.makeText(getApplication(),"Successful",Toast.LENGTH_SHORT).show();
                     onBackPressed();
                 }
             });
-
-
-        } else {
-
-            passcodeView
-                    .setPasscodeLength(4)
-                    .setLocalPasscode("5555")
-                    .setListener(new PasscodeView.PasscodeViewListener() {
-                        @Override
-                        public void onFail() {
-
-                        }
-
-                        @Override
-                        public void onSuccess(String number) {
-                            Toast.makeText(getApplication(), "finish", Toast.LENGTH_SHORT).show();
-                            onBackPressed();
-                        }
-                    });
         }
     }
 }

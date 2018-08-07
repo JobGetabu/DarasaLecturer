@@ -198,7 +198,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendToQr() {
         Intent qrintent = new Intent(this,ScannerActivity.class);
+        qrintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        qrintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(qrintent);
+        finish();
     }
 
     private void initList() {

@@ -21,4 +21,6 @@
     <string name="manage_account">Manage Account</string>
     <string name="manage_your_account">Manage your Account</string>
     <string name="sign_out">Sign Out</string>
+    <string name="enter_pin_4_digits">Enter a passcode of 4 digits</string>
+    <string name="enter_your_pin">Enter passcode</string>
 </resources>
