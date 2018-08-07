@@ -53,6 +53,15 @@ public class DoSnack {
                 .setAction(actionStringId, listener).show();
     }
 
+    public void showSnackbarDissaper(final String mainTextStringId, final String actionStringId,
+                             View.OnClickListener listener) {
+        Snackbar.make(
+                activity.findViewById(android.R.id.content),
+                mainTextStringId,
+                Snackbar.LENGTH_LONG)
+                .setAction(actionStringId, listener).show();
+    }
+
     public void UserAuthToastExceptions(@NonNull Task<AuthResult> authtask) {
         String error = "";
         try {
