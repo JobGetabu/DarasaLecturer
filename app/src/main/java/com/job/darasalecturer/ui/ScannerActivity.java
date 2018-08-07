@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,10 @@ public class ScannerActivity extends AppCompatActivity {
     NewtonCradleLoading scanLoading;
     @BindView(R.id.scan_timer_text)
     TextView scanTimerText;
+    @BindView(R.id.scan_percentage_text)
+    TextView scanPercentageText;
+    @BindView(R.id.scan_satisfaction_progressBar)
+    ProgressBar scanSatisfactionProgressBar;
 
     private ScannerViewModel model;
 
@@ -42,6 +47,7 @@ public class ScannerActivity extends AppCompatActivity {
         model = ViewModelProviders.of(this).get(ScannerViewModel.class);
 
         initTimer();
+
     }
 
     @Override
@@ -84,4 +90,6 @@ public class ScannerActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

@@ -31,4 +31,12 @@
         <item name="windowActionBarOverlay">true</item>
     </style>
 
+    <style name="MyProgressBarTwo" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="colorButtonNormal">#DEABFA</item>
+        <item name="colorControlActivated">#DEABFA</item>
+        <item name="colorControlHighlight">#B1AAF8</item>
+        <item name="android:progressDrawable">@drawable/progressbar_background</item>
+        <item name="android:minWidth">50dp</item>
+    </style>
+
 </resources>

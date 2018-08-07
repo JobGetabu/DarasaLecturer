@@ -10,4 +10,8 @@
     <string name="logout">Logout</string>
 
     <string name="dot">&#8226;</string>
+    <string name="venue">Venue</string>
+    <string name="percentage_sample">70%</string>
+    <string name="satisfaction">Satisfaction</string>
+    <string name="location_icon">location icon</string>
 </resources>
