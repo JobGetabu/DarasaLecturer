@@ -136,6 +136,21 @@ public class ScannerActivity extends AppCompatActivity {
                 break;
             case R.id.smenu_record:
                 showPasscode();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (userpasscode != null) {
+                        unpin();
+                        userpasscode = null;
+                    }
+                }
+
+                if (userpasscode != null) {
+                    userpasscode = null;
+
+                    //TODO: end class officially
+                    //notification will be better.
+                    Toast.makeText(getApplication(), "Class attendance recorded", Toast.LENGTH_LONG).show();
+                }
+
                 break;
         }
 

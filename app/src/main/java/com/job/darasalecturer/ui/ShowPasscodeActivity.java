@@ -53,8 +53,7 @@ public class ShowPasscodeActivity extends AppCompatActivity {
 
                         @Override
                         public void onSuccess(String number) {
-                            //notification will be better.
-                            Toast.makeText(getApplication(), "Class attendance recorded", Toast.LENGTH_LONG).show();
+
                             sendToMain(number);
                         }
                     });
