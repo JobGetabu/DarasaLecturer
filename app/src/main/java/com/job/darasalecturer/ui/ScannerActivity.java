@@ -3,8 +3,10 @@ package com.job.darasalecturer.ui;
 import android.app.ActivityManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +18,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.viewmodel.ScannerViewModel;
@@ -25,6 +32,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.widget.Toast.LENGTH_LONG;
+import static com.job.darasalecturer.ui.ShowPasscodeActivity.SHOWPASSCODEACTIVITYEXTRA;
+import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 
 public class ScannerActivity extends AppCompatActivity {
 
@@ -45,6 +54,9 @@ public class ScannerActivity extends AppCompatActivity {
     private boolean pinned = true;
     private DoSnack doSnack;
 
+    private FirebaseFirestore mFirestore;
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +66,9 @@ public class ScannerActivity extends AppCompatActivity {
         setSupportActionBar(scanToolbar);
         getSupportActionBar().setTitle("");
 
+        //firebase
+        mAuth = FirebaseAuth.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
 
         //init model
         model = ViewModelProviders.of(this).get(ScannerViewModel.class);
@@ -80,7 +95,6 @@ public class ScannerActivity extends AppCompatActivity {
         } else {
             pinMenu.setIcon(R.drawable.ic_unpin);
         }
-
     }
 
     private void initPinning() {
@@ -99,6 +113,7 @@ public class ScannerActivity extends AppCompatActivity {
             case R.id.smenu_pin:
 
                 if (pinned) {
+                    showPasscode();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         unpin();
                         pinned = false;
@@ -115,7 +130,7 @@ public class ScannerActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.smenu_record:
-                Toast.makeText(this, "TODO -> password view", Toast.LENGTH_SHORT).show();
+                showPasscode();
                 break;
         }
 
@@ -165,6 +180,8 @@ public class ScannerActivity extends AppCompatActivity {
             doSnack.showSnackbarDissaper("Screen is pinned", "Unlock", new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    showPasscode();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         unpin();
                     }
@@ -173,5 +190,32 @@ public class ScannerActivity extends AppCompatActivity {
         }else {
             super.onBackPressed();
         }
+    }
+
+    private void showPasscode(){
+        mFirestore.collection(LECAUTHCOL).document(mAuth.getUid()).get()
+                .addOnSuccessListener(this, new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                        String passcode = documentSnapshot.getString("localpasscode");
+
+                        Intent intent = new Intent(ScannerActivity.this, ShowPasscodeActivity.class);
+                        intent.putExtra(SHOWPASSCODEACTIVITYEXTRA,passcode);
+                        startActivity(intent);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                doSnack.showSnackbarDissaper("Set Password to continue", "Set Passcode", new android.view.View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                       Intent intent = new Intent(ScannerActivity.this,PasscodeActivity.class);
+                       startActivity(intent);
+                    }
+                });
+            }
+        });
     }
 }

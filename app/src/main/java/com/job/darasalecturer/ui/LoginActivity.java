@@ -57,7 +57,10 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(loginToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
 
         //firebase
         mAuth = FirebaseAuth.getInstance();
