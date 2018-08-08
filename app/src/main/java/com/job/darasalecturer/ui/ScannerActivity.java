@@ -208,7 +208,7 @@ public class ScannerActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
 
-                doSnack.showSnackbarDissaper("Set Password to continue", "Set Passcode", new android.view.View.OnClickListener() {
+                doSnack.showSnackbarDissaper("Set Password to continue", "Set", new android.view.View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                        Intent intent = new Intent(ScannerActivity.this,PasscodeActivity.class);

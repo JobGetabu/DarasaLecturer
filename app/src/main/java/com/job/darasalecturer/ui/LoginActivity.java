@@ -66,14 +66,14 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
 
-        doSnack = new DoSnack(this,LoginActivity.this);
+        doSnack = new DoSnack(this, LoginActivity.this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null){
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             sendToMain();
         }
     }
@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick(R.id.login_btn)
     public void onViewClicked() {
 
-        if (! AppStatus.getInstance(getApplicationContext()).isOnline()) {
+        if (!AppStatus.getInstance(getApplicationContext()).isOnline()) {
 
             doSnack.showSnackbar("You're offline", "Retry", new View.OnClickListener() {
                 @Override
@@ -93,24 +93,25 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
-        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
-        pDialog.setTitleText("Logging in...");
-        pDialog.setCancelable(false);
-        pDialog.show();
 
         String email = loginInputEmail.getEditText().getText().toString();
         String password = loginInputPassword.getEditText().getText().toString();
 
         Log.d(TAG, "loginWithEmailPasswordClick: Email & password:" + email + "   " + password);
 
-        if (validate()){
+        if (validate()) {
+
+            final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+            pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+            pDialog.setTitleText("Logging in...");
+            pDialog.setCancelable(false);
+            pDialog.show();
 
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> authtask) {
-                            if (authtask.isSuccessful()){
+                            if (authtask.isSuccessful()) {
 
                                 //login successful
 
@@ -122,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                                 // Set the value of 'Users'
                                 DocumentReference usersRef = mFirestore.collection(LECUSERCOL).document(mCurrentUserid);
 
-                                usersRef.update("devicetoken",devicetoken)
+                                usersRef.update("devicetoken", devicetoken)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
@@ -138,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
                                 });
 
 
-                            }else {
+                            } else {
                                 pDialog.dismiss();
                                 doSnack.UserAuthToastExceptions(authtask);
                             }
