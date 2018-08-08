@@ -1,5 +1,6 @@
 package com.job.darasalecturer.ui;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -33,6 +34,7 @@ import butterknife.ButterKnife;
 
 import static android.widget.Toast.LENGTH_LONG;
 import static com.job.darasalecturer.ui.ShowPasscodeActivity.SHOWPASSCODEACTIVITYEXTRA;
+import static com.job.darasalecturer.ui.ShowPasscodeActivity.SHOWPASSCODEACTIVITYEXTRA2;
 import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 
 public class ScannerActivity extends AppCompatActivity {
@@ -48,11 +50,14 @@ public class ScannerActivity extends AppCompatActivity {
     @BindView(R.id.scan_satisfaction_progressBar)
     ProgressBar scanSatisfactionProgressBar;
 
+    private static final int PIN_NUMBER_REQUEST_CODE = 200;
+
     private ScannerViewModel model;
     private ActivityManager am;
     private MenuItem pinMenu;
     private boolean pinned = true;
     private DoSnack doSnack;
+    private String userpasscode = null;
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
@@ -75,7 +80,7 @@ public class ScannerActivity extends AppCompatActivity {
 
         am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         initPinning();
-        doSnack = new DoSnack(this,ScannerActivity.this);
+        doSnack = new DoSnack(this, ScannerActivity.this);
 
         initTimer();
 
@@ -176,23 +181,26 @@ public class ScannerActivity extends AppCompatActivity {
     public void onBackPressed() {
 
 
-        if (pinned){
+        if (pinned) {
             doSnack.showSnackbarDissaper("Screen is pinned", "Unlock", new android.view.View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
                     showPasscode();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        unpin();
+                        if (userpasscode != null) {
+                            unpin();
+                            userpasscode = null;
+                        }
                     }
                 }
             });
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
 
-    private void showPasscode(){
+    private void showPasscode() {
         mFirestore.collection(LECAUTHCOL).document(mAuth.getUid()).get()
                 .addOnSuccessListener(this, new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -201,8 +209,9 @@ public class ScannerActivity extends AppCompatActivity {
                         String passcode = documentSnapshot.getString("localpasscode");
 
                         Intent intent = new Intent(ScannerActivity.this, ShowPasscodeActivity.class);
-                        intent.putExtra(SHOWPASSCODEACTIVITYEXTRA,passcode);
-                        startActivity(intent);
+                        intent.putExtra(SHOWPASSCODEACTIVITYEXTRA, passcode);
+
+                        startActivityForResult(intent, PIN_NUMBER_REQUEST_CODE);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -211,11 +220,25 @@ public class ScannerActivity extends AppCompatActivity {
                 doSnack.showSnackbarDissaper("Set Password to continue", "Set", new android.view.View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                       Intent intent = new Intent(ScannerActivity.this,PasscodeActivity.class);
-                       startActivity(intent);
+                        Intent intent = new Intent(ScannerActivity.this, PasscodeActivity.class);
+                        startActivity(intent);
                     }
                 });
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case (PIN_NUMBER_REQUEST_CODE):
+                if (resultCode == Activity.RESULT_OK) {
+                    userpasscode = data.getStringExtra(SHOWPASSCODEACTIVITYEXTRA2);
+
+                }
+                break;
+        }
     }
 }

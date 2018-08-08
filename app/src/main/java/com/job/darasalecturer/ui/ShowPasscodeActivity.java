@@ -1,5 +1,6 @@
 package com.job.darasalecturer.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -17,6 +18,7 @@ import butterknife.ButterKnife;
 public class ShowPasscodeActivity extends AppCompatActivity {
 
     public static final String SHOWPASSCODEACTIVITYEXTRA = "SHOWPASSCODEACTIVITYEXTRA";
+    public static final String SHOWPASSCODEACTIVITYEXTRA2 = "SHOWPASSCODEACTIVITYEXTRA2";
     @BindView(R.id.passcodeView)
     PasscodeView passcodeView;
 
@@ -46,24 +48,24 @@ public class ShowPasscodeActivity extends AppCompatActivity {
                         @Override
                         public void onFail() {
 
+                            onBackPressed();
                         }
 
                         @Override
                         public void onSuccess(String number) {
                             //notification will be better.
                             Toast.makeText(getApplication(), "Class attendance recorded", Toast.LENGTH_LONG).show();
-                            sendToMain();
+                            sendToMain(number);
                         }
                     });
         }
     }
 
-    private void sendToMain() {
+    private void sendToMain(String pin) {
 
-        Intent mainIntent = new Intent(this, MainActivity.class);
-        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(mainIntent);
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(SHOWPASSCODEACTIVITYEXTRA2, pin);
+        setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
 }
