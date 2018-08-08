@@ -62,7 +62,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:singleLine="true"
-                android:textColor="@color/colorAccent" />
+                />
 
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
