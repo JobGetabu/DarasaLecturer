@@ -6,6 +6,7 @@ import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.job.darasalecturer.R;
 
 import butterknife.BindView;
@@ -24,6 +25,8 @@ public class SettingsActivity extends AppCompatActivity {
     @BindView(R.id.settings_password)
     MaterialButton settingsPassword;
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +39,9 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
 
+        //firebase
+        mAuth = FirebaseAuth.getInstance();
+
     }
 
     @OnClick(R.id.settings_manage_account)
@@ -44,11 +50,20 @@ public class SettingsActivity extends AppCompatActivity {
 
     @OnClick(R.id.settings_logout)
     public void onSettingsLogoutClicked() {
+        mAuth.signOut();
+
+        sendToLogin();
     }
 
     @OnClick(R.id.settings_password)
     public void onPasswordClicked() {
         Intent intent = new Intent(SettingsActivity.this, PasscodeActivity.class);
         startActivity(intent);
+    }
+
+    private void sendToLogin() {
+        Intent loginIntent = new Intent(this, WelcomeActivity.class);
+        startActivity(loginIntent);
+        finish();
     }
 }

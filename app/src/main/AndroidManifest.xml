@@ -32,11 +32,16 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name=".ui.ScannerActivity" />
+
         <activity
             android:name=".ui.SettingsActivity"
-            android:parentActivityName=".ui.WelcomeActivity" />
-        <activity android:name=".ui.PasscodeActivity" />
-        <activity android:name=".ui.ShowPasscodeActivity"></activity>
+            android:parentActivityName=".ui.MainActivity" />
+
+        <activity android:name=".ui.PasscodeActivity"
+            android:parentActivityName=".ui.SettingsActivity"
+            />
+        <activity android:name=".ui.ShowPasscodeActivity"/>
+
     </application>
 
 </manifest>
