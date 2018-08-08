@@ -119,11 +119,14 @@ public class ScannerActivity extends AppCompatActivity {
 
                 if (pinned) {
                     showPasscode();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        unpin();
-                        pinned = false;
-                        Toast.makeText(this, "Screen Unpinned", Toast.LENGTH_SHORT).show();
-                        updatePinningStatus();
+                    if (userpasscode != null) {
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            unpin();
+                            pinned = false;
+                        }
+                            Toast.makeText(this, "Screen Unpinned", Toast.LENGTH_SHORT).show();
+                            updatePinningStatus();
                     }
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -138,8 +141,9 @@ public class ScannerActivity extends AppCompatActivity {
                 showPasscode();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     if (userpasscode != null) {
-                        unpin();
-                        userpasscode = null;
+                        if (pinned) {
+                            unpin();
+                        }
                     }
                 }
 
