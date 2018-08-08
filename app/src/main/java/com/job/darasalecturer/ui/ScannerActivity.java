@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,8 +82,10 @@ public class ScannerActivity extends AppCompatActivity {
         am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         initPinning();
         doSnack = new DoSnack(this, ScannerActivity.this);
-
         initTimer();
+
+        // Keep the screen always on
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
     }
 
