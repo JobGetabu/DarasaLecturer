@@ -38,9 +38,12 @@
             android:parentActivityName=".ui.MainActivity" />
 
         <activity android:name=".ui.PasscodeActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".ui.SettingsActivity"
             />
-        <activity android:name=".ui.ShowPasscodeActivity"/>
+        <activity android:name=".ui.ShowPasscodeActivity"
+            android:screenOrientation="portrait"
+            />
 
     </application>
 

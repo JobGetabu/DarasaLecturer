@@ -193,6 +193,7 @@ public class ScannerActivity extends AppCompatActivity {
                             userpasscode = null;
                         }
                     }
+                    ScannerActivity.super.onBackPressed();
                 }
             });
         } else {
