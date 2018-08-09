@@ -12,4 +12,8 @@
     <color name="darkgreyish">#1e1e1e</color>
     <color name="bluish">#1212fa</color>
     <color name="darkbluish">#4b4bfd</color>
+
+    <color name="translucent">#c8ffffff</color>
+    <color name="accenttranslucent">#50000000</color>
+    <color name="primarytranslucent">#50673BB7</color>
 </resources>

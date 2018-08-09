@@ -14,6 +14,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -28,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,12 +43,14 @@ import com.job.darasalecturer.R;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.viewmodel.ScannerViewModel;
 import com.victor.loading.newton.NewtonCradleLoading;
+import com.victor.loading.rotate.RotateLoading;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.OnReverseGeocodingListener;
 import io.nlopez.smartlocation.SmartLocation;
@@ -59,6 +63,10 @@ import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 
 public class ScannerActivity extends AppCompatActivity implements OnLocationUpdatedListener {
 
+    private static final int PIN_NUMBER_REQUEST_CODE = 200;
+    private static final String TAG = "Scanner";
+    private static final int LOCATION_PERMISSION_ID = 1001;
+
     @BindView(R.id.scan_toolbar)
     Toolbar scanToolbar;
     @BindView(R.id.scan_loading)
@@ -69,11 +77,10 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     TextView scanPercentageText;
     @BindView(R.id.scan_satisfaction_progressBar)
     ProgressBar scanSatisfactionProgressBar;
-
-    private static final int PIN_NUMBER_REQUEST_CODE = 200;
-    private static final String TAG = "Scanner";
-
-    private static final int LOCATION_PERMISSION_ID = 1001;
+    @BindView(R.id.rotateloading)
+    RotateLoading rotateloading;
+    @BindView(R.id.scan_loading_view)
+    FrameLayout scanLoadingView;
 
     private ScannerViewModel model;
     private ActivityManager am;
@@ -124,6 +131,8 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
             return;
         }
         startLocation();
+
+        rotateloading.start();
     }
 
     @Override
@@ -239,7 +248,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
 
         if (pinned) {
-            doSnack.showSnackbarDissaper("Screen is pinned", "Unlock", new android.view.View.OnClickListener() {
+            doSnack.showSnackbarDissaper("Screen is pinned", "Unlock", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -276,7 +285,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
             @Override
             public void onFailure(@NonNull Exception e) {
 
-                doSnack.showSnackbarDissaper("Set Password to continue", "Set", new android.view.View.OnClickListener() {
+                doSnack.showSnackbarDissaper("Set Password to continue", "Set", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(ScannerActivity.this, PasscodeActivity.class);
@@ -301,14 +310,14 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
         final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        if( !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ) {
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(false);
             builder.setTitle(R.string.location);  // GPS not found
             builder.setMessage(R.string.permission_rationale_location); // Want to enable?
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    ScannerActivity.this.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    ScannerActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                 }
             });
             builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -320,10 +329,6 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
             builder.create().show();
             return;
         }
-
-    /*    if(!SmartLocation.with(this).location().state().isNetworkAvailable()){
-            doSnack.showShortSnackbar("You're offline");
-        }*/
 
     }
 
@@ -410,5 +415,11 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     protected void onDestroy() {
         stopLocation();
         super.onDestroy();
+    }
+
+    @OnClick(R.id.scan_loading_view)
+    public void onScanViewClicked() {
+        if (rotateloading.isStart())
+            Toast.makeText(this, "please wait loading...", Toast.LENGTH_SHORT).show();
     }
 }

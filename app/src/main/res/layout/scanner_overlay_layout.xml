@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ScannerActivity">
-
-    <RelativeLayout
-        android:id="@+id/background"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:background="@drawable/sc_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.card.MaterialCardView
         android:id="@+id/materialCardView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="120dp"
@@ -52,7 +40,6 @@
                 app:srcCompat="@drawable/ic_qrcode" />
 
             <FrameLayout
-                android:id="@+id/scan_loading_view"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center_vertical|center_horizontal"
@@ -64,7 +51,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@color/primarytranslucent"
+                android:background="@color/translucent"
                 >
 
                 <com.victor.loading.rotate.RotateLoading
@@ -74,6 +61,7 @@
                     android:layout_gravity="center"
                     app:loading_color="#ffffff"
                     app:loading_width="5dp" />
+
 
             </FrameLayout>
 
@@ -143,63 +131,4 @@
 
         </android.support.constraint.ConstraintLayout>
     </android.support.design.card.MaterialCardView>
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/scan_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        android:layout_marginTop="24dp"
-        app:theme="@style/TransparentBar">
-
-        <TextView
-            android:id="@+id/scan_toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/nunito_light"
-            android:gravity="center_vertical"
-            android:text="Scan"
-            android:textSize="24sp" />
-    </android.support.v7.widget.Toolbar>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:background="@android:color/transparent"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardView">
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <include
-                    android:id="@+id/scan_timer_card"
-                    layout="@layout/timer_layout" />
-
-                <include
-                    android:id="@+id/scan_chart_card"
-                    layout="@layout/stats_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginTop="16dp" />
-
-            </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
-
-
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>
