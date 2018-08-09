@@ -23,4 +23,15 @@
     <string name="sign_out">Sign Out</string>
     <string name="enter_pin_4_digits">Enter a passcode of 4 digits</string>
     <string name="enter_your_pin">Enter passcode to end class</string>
+    <string name="loc_title">Location</string>
+
+    <string name="service_not_available">Service not available</string>
+    <string name="invalid_lat_long_used">Invalid latitude or longitude used</string>
+    <string name="no_address_found">No address found</string>
+    <string name="address_found">Address found</string>
+    <string name="permission_rationale_location">Darasa would like to know your location</string>
+    <string name="permission_location_denied_explanation">You have not granted location permission to Darasa</string>
+    <string name="location">Location</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

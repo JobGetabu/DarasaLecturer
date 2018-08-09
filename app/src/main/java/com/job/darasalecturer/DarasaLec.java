@@ -1,6 +1,8 @@
 package com.job.darasalecturer;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,5 +47,11 @@ public class DarasaLec extends MultiDexApplication {
 
         mAuth.addAuthStateListener(mAuthListener);
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(context);
+        MultiDex.install(this);
     }
 }

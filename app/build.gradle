@@ -59,8 +59,11 @@ dependencies {
     //password
     implementation 'com.hanks:passcodeview:0.1.2'
 
-    //EasyWay location
-    implementation 'com.github.prabhat1707:EasyWayLocation:1.0'
+    //location access
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+
+    //smart location
+    implementation 'io.nlopez.smartlocation:library:3.3.3'
 
     //architecture components
     // ViewModel and LiveData

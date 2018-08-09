@@ -26,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.datasource.LecTeachTime;
+import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.LessonViewHolder;
 
 import butterknife.BindView;
@@ -34,7 +35,7 @@ import butterknife.OnClick;
 
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
 
     @BindView(R.id.main_toolbar)
     Toolbar mainToolbar;
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore mFirestore;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirestoreRecyclerAdapter adapter;
+
+    private DoSnack doSnack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth.addAuthStateListener(mAuthListener);
 
+        doSnack = new DoSnack(this, MainActivity.this);
     }
 
     @Override

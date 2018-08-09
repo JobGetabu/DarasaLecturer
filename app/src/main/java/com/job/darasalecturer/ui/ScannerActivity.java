@@ -5,8 +5,13 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,8 +19,11 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,15 +42,22 @@ import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.viewmodel.ScannerViewModel;
 import com.victor.loading.newton.NewtonCradleLoading;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.nlopez.smartlocation.OnLocationUpdatedListener;
+import io.nlopez.smartlocation.OnReverseGeocodingListener;
+import io.nlopez.smartlocation.SmartLocation;
+import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
 
 import static android.widget.Toast.LENGTH_LONG;
 import static com.job.darasalecturer.ui.ShowPasscodeActivity.SHOWPASSCODEACTIVITYEXTRA;
 import static com.job.darasalecturer.ui.ShowPasscodeActivity.SHOWPASSCODEACTIVITYEXTRA2;
 import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 
-public class ScannerActivity extends AppCompatActivity {
+public class ScannerActivity extends AppCompatActivity implements OnLocationUpdatedListener {
 
     @BindView(R.id.scan_toolbar)
     Toolbar scanToolbar;
@@ -63,12 +78,14 @@ public class ScannerActivity extends AppCompatActivity {
     private ScannerViewModel model;
     private ActivityManager am;
     private MenuItem pinMenu;
-    private boolean pinned = true;
+    private boolean pinned;
     private DoSnack doSnack;
     private String userpasscode = null;
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
+
+    private LocationGooglePlayServicesProvider provider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,18 +106,24 @@ public class ScannerActivity extends AppCompatActivity {
         am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         //temporary
         //initPinning();
+
         doSnack = new DoSnack(this, ScannerActivity.this);
+
         initTimer();
 
         // Keep the screen always on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+
+        // Check if the location services are enabled
+        checkLocationOn();
+        SmartLocation.with(this).location().state().locationServicesEnabled();
         // Location permission not granted
         if (ContextCompat.checkSelfPermission(ScannerActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(ScannerActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_ID);
             return;
         }
-
+        startLocation();
     }
 
     @Override
@@ -123,6 +146,7 @@ public class ScannerActivity extends AppCompatActivity {
         Toast.makeText(this, "Screen pinned", Toast.LENGTH_SHORT).show();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             pin();
+            pinned = true;
         }
     }
 
@@ -263,19 +287,128 @@ public class ScannerActivity extends AppCompatActivity {
         });
     }
 
+    private void startLocation() {
+
+        provider = new LocationGooglePlayServicesProvider();
+        provider.setCheckLocationSettings(true);
+
+        SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
+
+        smartLocation.location(provider).start(this);
+    }
+
+    private void checkLocationOn() {
+
+        final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if( !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(false);
+            builder.setTitle(R.string.location);  // GPS not found
+            builder.setMessage(R.string.permission_rationale_location); // Want to enable?
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    ScannerActivity.this.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                }
+            });
+            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                }
+            });
+            builder.create().show();
+            return;
+        }
+
+    /*    if(!SmartLocation.with(this).location().state().isNetworkAvailable()){
+            doSnack.showShortSnackbar("You're offline");
+        }*/
+
+    }
+
+    @Override
+    public void onLocationUpdated(Location location) {
+        showLocation(location);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_PERMISSION_ID && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            startLocation();
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (provider != null) {
+            provider.onActivityResult(requestCode, resultCode, data);
+        }
 
         switch (requestCode) {
             case (PIN_NUMBER_REQUEST_CODE):
                 if (resultCode == Activity.RESULT_OK) {
                     userpasscode = data.getStringExtra(SHOWPASSCODEACTIVITYEXTRA2);
-
                 }
                 break;
 
-
         }
+    }
+
+    private void showLocation(Location location) {
+        if (location != null) {
+            final String text = String.format("Latitude %.6f, Longitude %.6f",
+                    location.getLatitude(),
+                    location.getLongitude());
+
+            // We are going to get the address for the current position
+            SmartLocation.with(this).geocoding().reverse(location, new OnReverseGeocodingListener() {
+                @Override
+                public void onAddressResolved(Location original, List<Address> results) {
+                    if (results.size() > 0) {
+                        Address result = results.get(0);
+                        StringBuilder builder = new StringBuilder(text);
+                        builder.append("\n[Reverse Geocoding] ");
+                        List<String> addressElements = new ArrayList<>();
+                        for (int i = 0; i <= result.getMaxAddressLineIndex(); i++) {
+                            addressElements.add(result.getAddressLine(i));
+                        }
+                        builder.append(TextUtils.join(", ", addressElements));
+
+                        doSnack.showShortSnackbar(TextUtils.join(", ", addressElements));
+                    }
+                }
+            });
+        } else {
+
+            Log.d(TAG, "showLocation: Null location");
+        }
+    }
+
+    private void stopLocation() {
+        SmartLocation.with(this).location().stop();
+        SmartLocation.with(this).geocoding().stop();
+
+    }
+
+    @Override
+    protected void onResume() {
+
+        startLocation();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        stopLocation();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopLocation();
+        super.onDestroy();
     }
 }

@@ -74,7 +74,7 @@ public class DoSnack {
         Snackbar.make(
                 activity.findViewById(android.R.id.content),
                 mainTextStringId,
-                Snackbar.LENGTH_SHORT)
+                Snackbar.LENGTH_LONG)
                 .show();
     }
 
