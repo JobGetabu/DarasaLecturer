@@ -59,8 +59,8 @@ dependencies {
     //password
     implementation 'com.hanks:passcodeview:0.1.2'
 
-    //smart location
-    implementation 'io.nlopez.smartlocation:library:3.3.3'
+    //EasyWay location
+    implementation 'com.github.prabhat1707:EasyWayLocation:1.0'
 
     //architecture components
     // ViewModel and LiveData

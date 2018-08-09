@@ -53,6 +53,14 @@ public class DoSnack {
                 .setAction(actionStringId, listener).show();
     }
 
+    public void showSnackbar(final String mainTextStringId) {
+        Snackbar.make(
+                activity.findViewById(android.R.id.content),
+                mainTextStringId,
+                Snackbar.LENGTH_INDEFINITE)
+                .show();
+    }
+
     public void showSnackbarDissaper(final String mainTextStringId, final String actionStringId,
                              View.OnClickListener listener) {
         Snackbar.make(

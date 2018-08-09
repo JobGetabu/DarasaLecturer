@@ -7,8 +7,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,8 +16,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,22 +34,15 @@ import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.viewmodel.ScannerViewModel;
 import com.victor.loading.newton.NewtonCradleLoading;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.nlopez.smartlocation.OnLocationUpdatedListener;
-import io.nlopez.smartlocation.OnReverseGeocodingListener;
-import io.nlopez.smartlocation.SmartLocation;
-import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
 
 import static android.widget.Toast.LENGTH_LONG;
 import static com.job.darasalecturer.ui.ShowPasscodeActivity.SHOWPASSCODEACTIVITYEXTRA;
 import static com.job.darasalecturer.ui.ShowPasscodeActivity.SHOWPASSCODEACTIVITYEXTRA2;
 import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 
-public class ScannerActivity extends AppCompatActivity implements OnLocationUpdatedListener {
+public class ScannerActivity extends AppCompatActivity {
 
     @BindView(R.id.scan_toolbar)
     Toolbar scanToolbar;
@@ -68,7 +57,6 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
     private static final int PIN_NUMBER_REQUEST_CODE = 200;
     private static final String TAG = "Scanner";
-    private LocationGooglePlayServicesProvider provider;
 
     private static final int LOCATION_PERMISSION_ID = 1001;
 
@@ -99,7 +87,8 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
         model = ViewModelProviders.of(this).get(ScannerViewModel.class);
 
         am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        initPinning();
+        //temporary
+        //initPinning();
         doSnack = new DoSnack(this, ScannerActivity.this);
         initTimer();
 
@@ -111,7 +100,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
             ActivityCompat.requestPermissions(ScannerActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_ID);
             return;
         }
-        startLocation();
+
     }
 
     @Override
@@ -274,60 +263,6 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
         });
     }
 
-    private void startLocation() {
-
-        provider = new LocationGooglePlayServicesProvider();
-        provider.setCheckLocationSettings(true);
-
-        SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
-
-
-        smartLocation.location(provider).start(this);
-
-    }
-
-    private void stopLocation() {
-        SmartLocation.with(this).location().stop();
-
-        SmartLocation.with(this).activity().stop();
-
-    }
-
-    private void showLocation(Location location) {
-        if (location != null) {
-            final String text = String.format("Latitude %.6f, Longitude %.6f",
-                    location.getLatitude(),
-                    location.getLongitude());
-
-            Log.d(TAG, "showLocation: "+text);
-
-            // We are going to get the address for the current position
-            SmartLocation.with(this).geocoding().reverse(location, new OnReverseGeocodingListener() {
-                @Override
-                public void onAddressResolved(Location original, List<Address> results) {
-                    if (results.size() > 0) {
-                        Address result = results.get(0);
-                        StringBuilder builder = new StringBuilder(text);
-                        builder.append("\n[Reverse Geocoding] ");
-                        List<String> addressElements = new ArrayList<>();
-                        for (int i = 0; i <= result.getMaxAddressLineIndex(); i++) {
-                            addressElements.add(result.getAddressLine(i));
-                        }
-                        builder.append(TextUtils.join(", ", addressElements));
-                        doSnack.showShortSnackbar("At "+builder.toString());
-                    }
-                }
-            });
-        } else {
-            Log.d(TAG, "showLocation: "+"Null location");
-        }
-    }
-
-    @Override
-    public void onLocationUpdated(Location location) {
-        showLocation(location);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -340,17 +275,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
                 }
                 break;
 
-            case (LOCATION_PERMISSION_ID):
-                if (provider != null) {
-                    provider.onActivityResult(requestCode, resultCode, data);
-                }
-                break;
-        }
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        stopLocation();
+        }
     }
 }
