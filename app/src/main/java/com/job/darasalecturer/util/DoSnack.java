@@ -62,6 +62,14 @@ public class DoSnack {
                 .setAction(actionStringId, listener).show();
     }
 
+    public void showShortSnackbar(final String mainTextStringId) {
+        Snackbar.make(
+                activity.findViewById(android.R.id.content),
+                mainTextStringId,
+                Snackbar.LENGTH_SHORT)
+                .show();
+    }
+
     public void UserAuthToastExceptions(@NonNull Task<AuthResult> authtask) {
         String error = "";
         try {

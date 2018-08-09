@@ -59,6 +59,9 @@ dependencies {
     //password
     implementation 'com.hanks:passcodeview:0.1.2'
 
+    //smart location
+    implementation 'io.nlopez.smartlocation:library:3.3.3'
+
     //architecture components
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:1.1.1"
