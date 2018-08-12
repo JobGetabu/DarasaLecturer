@@ -1,7 +1,6 @@
 package com.job.darasalecturer.ui;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -70,7 +69,6 @@ import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProv
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 import static android.widget.Toast.LENGTH_LONG;
-import static com.job.darasalecturer.ui.ShowPasscodeActivity.SHOWPASSCODEACTIVITYEXTRA2;
 import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOURSESUBCOL;
@@ -219,49 +217,77 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
             case R.id.smenu_pin:
 
                 if (pinned) {
-                    //showPasscode(OnPinAction);
-                    if (userpasscode != null) {
-                        userpasscode = null;
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            unpin();
+                    showPasscodeFragment.show(getSupportFragmentManager(), ShowPasscodeFragment.TAG);
+                    showPasscodeFragment.setOnSuccessFail(new ShowPasscodeFragment.OnSuccessFail() {
+                        @Override
+                        public void onSuccess() {
+                            if (pinned) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    unpin();
+                                }
+                                Toast.makeText(ScannerActivity.this, "Screen Unpinned", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        Toast.makeText(this, "Screen Unpinned", Toast.LENGTH_SHORT).show();
-                    }
+
+                        @Override
+                        public void onFail() {
+
+                        }
+                    });
+
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         pin();
                         Toast.makeText(this, "Screen pinned", Toast.LENGTH_SHORT).show();
                     }
                 }
+
                 updatePinningStatus();
                 break;
             case R.id.smenu_record:
-                //showPasscode(OnRecordAction);
-                if (userpasscode != null) {
-                    userpasscode = null;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        if (pinned) {
-                            unpin();
+                showPasscodeFragment.show(getSupportFragmentManager(), ShowPasscodeFragment.TAG);
+                showPasscodeFragment.setOnSuccessFail(new ShowPasscodeFragment.OnSuccessFail() {
+                    @Override
+                    public void onSuccess() {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            if (pinned) {
+                                unpin();
+                            }
                         }
+                        //TODO: end class officially
+                        //notification will be better.
+                        Toast.makeText(ScannerActivity.this, "Class attendance recorded", Toast.LENGTH_LONG).show();
                     }
-                    //TODO: end class officially
-                    //notification will be better.
-                    Toast.makeText(this, "Class attendance recorded", Toast.LENGTH_LONG).show();
-                }
 
+                    @Override
+                    public void onFail() {
+
+                    }
+                });
 
                 break;
 
             case R.id.smenu_confirm:
 
-                //showPasscode(OnAddAction);
-                if (userpasscode != null) {
-                    userpasscode = null;
-                    //TODO: end class officially
-                    //notification will be better.
-                    Toast.makeText(getApplication(), "5 Student attendance recorded", Toast.LENGTH_LONG).show();
-                }
+                showPasscodeFragment.show(getSupportFragmentManager(), ShowPasscodeFragment.TAG);
+                showPasscodeFragment.setOnSuccessFail(new ShowPasscodeFragment.OnSuccessFail() {
+                    @Override
+                    public void onSuccess() {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            if (pinned) {
+                                unpin();
+                            }
+                        }
+                        //TODO: end class officially
+                        //notification will be better.
+                        Toast.makeText(ScannerActivity.this, "5 Student attendance recorded", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onFail() {
+
+                    }
+                });
                 break;
         }
 
@@ -287,12 +313,20 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
                             @Override
                             public void onClick(View view) {
 
-                                //showPasscode(OnRestartTimeAction);
-                                if (userpasscode != null) {
-                                    userpasscode = null;
-                                    model.reStartTimer();
-                                    showLoader(false);
-                                }
+                                showPasscodeFragment.show(getSupportFragmentManager(), ShowPasscodeFragment.TAG);
+                                showPasscodeFragment.setOnSuccessFail(new ShowPasscodeFragment.OnSuccessFail() {
+                                    @Override
+                                    public void onSuccess() {
+                                        model.reStartTimer();
+                                        showLoader(false);
+                                    }
+
+                                    @Override
+                                    public void onFail() {
+                                        model.endTimer();
+                                        showLoader(true);
+                                    }
+                                });
 
                             }
                         });
@@ -322,7 +356,6 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     @Override
     public void onBackPressed() {
 
-
         if (pinned) {
             doSnack.showSnackbarDissaper("Screen is pinned", "Unlock", new View.OnClickListener() {
                 @Override
@@ -340,6 +373,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
                             ScannerActivity.super.onBackPressed();
 
                         }
+
                         @Override
                         public void onFail() {
 
@@ -477,15 +511,6 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
         if (provider != null) {
             provider.onActivityResult(requestCode, resultCode, data);
         }
-
-        switch (requestCode) {
-            case (PIN_NUMBER_REQUEST_CODE):
-                if (resultCode == Activity.RESULT_OK) {
-                    userpasscode = data.getStringExtra(SHOWPASSCODEACTIVITYEXTRA2);
-                }
-                break;
-
-        }
     }
 
     private void showLocation(Location location) {
@@ -602,10 +627,6 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
             scanLoadingImage.setVisibility(View.GONE);
             scanQrImageView.setVisibility(View.VISIBLE);
         }
-
-    }
-
-    private void backPressObserver() {
 
     }
 }

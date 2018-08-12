@@ -28,6 +28,11 @@ public class ScannerViewModel extends ViewModel {
     public void reStartTimer(){
         timer();
     }
+
+    public void endTimer(){
+        timeLiveData.setValue("done!");
+    }
+
     private void timer(){
         new CountDownTimer(45000, 1000) {
 
