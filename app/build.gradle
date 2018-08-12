@@ -65,6 +65,10 @@ dependencies {
     //smart location
     implementation 'io.nlopez.smartlocation:library:3.3.3'
 
+    //QR gen
+    implementation 'com.google.zxing:core:3.3.0'
+    implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
+
     //architecture components
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:1.1.1"

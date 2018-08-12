@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="image_width">100dp</dimen>
+    <dimen name="image_height">75dp</dimen>
 </resources>

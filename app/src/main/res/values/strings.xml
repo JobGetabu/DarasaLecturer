@@ -34,4 +34,5 @@
     <string name="location">Location</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="add_attendee">Add Attendee(s)</string>
 </resources>

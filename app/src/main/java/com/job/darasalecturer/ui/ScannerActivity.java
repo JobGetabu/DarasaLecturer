@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Location;
 import android.location.LocationManager;
@@ -30,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,9 +41,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.viewmodel.ScannerViewModel;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.victor.loading.newton.NewtonCradleLoading;
 import com.victor.loading.rotate.RotateLoading;
 
@@ -81,6 +88,8 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     RotateLoading rotateloading;
     @BindView(R.id.scan_loading_view)
     FrameLayout scanLoadingView;
+    @BindView(R.id.scan_qr_imageView)
+    ImageView scanQrImageView;
 
     private ScannerViewModel model;
     private ActivityManager am;
@@ -201,6 +210,18 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
                     Toast.makeText(getApplication(), "Class attendance recorded", Toast.LENGTH_LONG).show();
                 }
 
+                break;
+
+            case R.id.smenu_confirm:
+
+                showPasscode();
+                if (userpasscode != null) {
+                    userpasscode = null;
+
+                    //TODO: end class officially
+                    //notification will be better.
+                    Toast.makeText(getApplication(), "5 Student attendance recorded", Toast.LENGTH_LONG).show();
+                }
                 break;
         }
 
@@ -335,8 +356,37 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     @Override
     public void onLocationUpdated(Location location) {
         showLocation(location);
+
+        generateQR(location);
     }
 
+    private void generateQR(Location location) {
+
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("geo: " +String.valueOf(location.getLatitude()+","+String.valueOf(location.getLongitude())));
+
+
+        String text=stringBuilder.toString();
+
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        try {
+            BitMatrix bitMatrix = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,dptoInt(200),dptoInt(200));
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+            scanQrImageView.setImageBitmap(bitmap);
+            scanLoadingView.setVisibility(View.GONE);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private int dptoInt(int dimen){
+        float density = getResources()
+                .getDisplayMetrics()
+                .density;
+        return Math.round((float) dimen * density);
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_PERMISSION_ID && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
