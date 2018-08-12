@@ -11,6 +11,8 @@ public class ScannerViewModel extends ViewModel {
 
     private MediatorLiveData<String> timeLiveData = new MediatorLiveData<>();
 
+    private MediatorLiveData<String> passcodeLiveData = new MediatorLiveData<>();
+
     public ScannerViewModel() {
         timer();
     }
@@ -23,8 +25,11 @@ public class ScannerViewModel extends ViewModel {
         this.timeLiveData.setValue(timeLiveData);
     }
 
+    public void reStartTimer(){
+        timer();
+    }
     private void timer(){
-        new CountDownTimer(120000, 1000) {
+        new CountDownTimer(45000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 String timer = (toMinutes(millisUntilFinished) +" : " + toSec(millisUntilFinished));
@@ -37,6 +42,15 @@ public class ScannerViewModel extends ViewModel {
                 //scanLoading.stop();
             }
         }.start();
+    }
+
+
+    public MediatorLiveData<String> getPasscodeLiveData() {
+        return passcodeLiveData;
+    }
+
+    public void setPasscodeLiveData(String passcodeLiveData) {
+        this.passcodeLiveData.setValue(passcodeLiveData);
     }
 
     private String toMinutes(long millisUntilFinished){

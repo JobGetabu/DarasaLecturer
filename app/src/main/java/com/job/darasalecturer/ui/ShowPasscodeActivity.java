@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
 
 import com.hanks.passcodeview.PasscodeView;
 import com.job.darasalecturer.R;
@@ -19,6 +18,10 @@ public class ShowPasscodeActivity extends AppCompatActivity {
 
     public static final String SHOWPASSCODEACTIVITYEXTRA = "SHOWPASSCODEACTIVITYEXTRA";
     public static final String SHOWPASSCODEACTIVITYEXTRA2 = "SHOWPASSCODEACTIVITYEXTRA2";
+    public static final String SHOWACTIONEXTRA = "SHOWACTIONEXTRA";
+
+    public static final String OnBackPressAction = "OnBackPressAction";
+
     @BindView(R.id.passcodeView)
     PasscodeView passcodeView;
 
@@ -37,27 +40,35 @@ public class ShowPasscodeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_passcode);
         ButterKnife.bind(this);
 
-        if (getIntent().getStringExtra(SHOWPASSCODEACTIVITYEXTRA) != null){
+    }
 
-            passcodeView
-                    .setPasscodeLength(4)
-                    .setLocalPasscode(getIntent().getStringExtra(SHOWPASSCODEACTIVITYEXTRA) )
-                    .setFirstInputTip(getResources().getString(R.string.enter_your_pin))
-                    .setPasscodeType(PasscodeView.PasscodeViewType.TYPE_CHECK_PASSCODE)
-                    .setListener(new PasscodeView.PasscodeViewListener() {
-                        @Override
-                        public void onFail() {
+    private void showpassword(String vs){
+       switch (vs){
+           case OnBackPressAction:
+               passcodeView
+                       .setPasscodeLength(4)
+                       .setLocalPasscode(getIntent().getStringExtra(SHOWPASSCODEACTIVITYEXTRA) )
+                       .setFirstInputTip(getResources().getString(R.string.enter_your_pin))
+                       .setPasscodeType(PasscodeView.PasscodeViewType.TYPE_CHECK_PASSCODE)
+                       .setListener(new PasscodeView.PasscodeViewListener() {
+                           @Override
+                           public void onFail() {
 
-                            onBackPressed();
-                        }
+                               onBackPressed();
+                               ScannerActivity.userpasscode = null;
+                           }
 
-                        @Override
-                        public void onSuccess(String number) {
+                           @Override
+                           public void onSuccess(String number) {
 
-                            sendToMain(number);
-                        }
-                    });
-        }
+                               startActivity(new Intent(ShowPasscodeActivity.this,MainActivity.class));
+                               finish();
+
+                           }
+                       });
+               break;
+       }
+
     }
 
     private void sendToMain(String pin) {

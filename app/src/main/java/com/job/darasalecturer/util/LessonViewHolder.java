@@ -34,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.job.darasalecturer.ui.ScannerActivity.LECTEACHIDEXTRA;
 import static com.job.darasalecturer.ui.ScannerActivity.QRPARSEREXTRA;
 import static com.job.darasalecturer.ui.ScannerActivity.VENUEEXTRA;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
@@ -206,6 +207,7 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         Intent qrintent = new Intent(mContext,ScannerActivity.class);
         qrintent.putExtra(QRPARSEREXTRA,qrParser);
         qrintent.putExtra(VENUEEXTRA, lecTeachTime.getVenue());
+        qrintent.putExtra(LECTEACHIDEXTRA, lecTeachTime.getLecteachid());
         mContext.startActivity(qrintent);
     }
 }

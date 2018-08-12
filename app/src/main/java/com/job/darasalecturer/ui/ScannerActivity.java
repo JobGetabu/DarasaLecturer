@@ -70,7 +70,6 @@ import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProv
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 import static android.widget.Toast.LENGTH_LONG;
-import static com.job.darasalecturer.ui.ShowPasscodeActivity.SHOWPASSCODEACTIVITYEXTRA;
 import static com.job.darasalecturer.ui.ShowPasscodeActivity.SHOWPASSCODEACTIVITYEXTRA2;
 import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
@@ -82,6 +81,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     private static final String TAG = "Scanner";
     public static final String QRPARSEREXTRA = "QRPARSEREXTRA";
     public static final String VENUEEXTRA = "VENUEEXTRA";
+    public static final String LECTEACHIDEXTRA = "LECTEACHIDEXTRA";
 
     private static final int LOCATION_PERMISSION_ID = 1001;
 
@@ -113,13 +113,16 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     ImageView scanLocImg;
     @BindView(R.id.scan_venue)
     TextView scanVenue;
+    @BindView(R.id.scan_loading_image)
+    ImageView scanLoadingImage;
+
 
     private ScannerViewModel model;
     private ActivityManager am;
     private MenuItem pinMenu;
     private boolean pinned;
     private DoSnack doSnack;
-    private String userpasscode = null;
+    public static String userpasscode = null;
     private QRParser qrParser;
     private Gson gson;
 
@@ -127,6 +130,9 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     private FirebaseAuth mAuth;
 
     private LocationGooglePlayServicesProvider provider;
+    private Location location;
+    private int locationcount = 1;
+    private ShowPasscodeFragment showPasscodeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,7 +177,14 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
         }
         startLocation();
 
+        showLoader(true);
         rotateloading.start();
+
+        //init our fragment
+        showPasscodeFragment = new ShowPasscodeFragment();
+
+        //set up password
+        showPasscode();
     }
 
     @Override
@@ -206,8 +219,9 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
             case R.id.smenu_pin:
 
                 if (pinned) {
-                    showPasscode();
+                    //showPasscode(OnPinAction);
                     if (userpasscode != null) {
+                        userpasscode = null;
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             unpin();
@@ -223,31 +237,27 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
                 updatePinningStatus();
                 break;
             case R.id.smenu_record:
-                showPasscode();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    if (userpasscode != null) {
+                //showPasscode(OnRecordAction);
+                if (userpasscode != null) {
+                    userpasscode = null;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         if (pinned) {
                             unpin();
                         }
                     }
-                }
-
-                if (userpasscode != null) {
-                    userpasscode = null;
-
                     //TODO: end class officially
                     //notification will be better.
-                    Toast.makeText(getApplication(), "Class attendance recorded", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Class attendance recorded", Toast.LENGTH_LONG).show();
                 }
+
 
                 break;
 
             case R.id.smenu_confirm:
 
-                showPasscode();
+                //showPasscode(OnAddAction);
                 if (userpasscode != null) {
                     userpasscode = null;
-
                     //TODO: end class officially
                     //notification will be better.
                     Toast.makeText(getApplication(), "5 Student attendance recorded", Toast.LENGTH_LONG).show();
@@ -271,6 +281,21 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
                     if (s.equals("done!")) {
                         scanLoading.stop();
+                        showLoader(true);
+
+                        doSnack.showSnackbar("Time is up", "Restart", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                                //showPasscode(OnRestartTimeAction);
+                                if (userpasscode != null) {
+                                    userpasscode = null;
+                                    model.reStartTimer();
+                                    showLoader(false);
+                                }
+
+                            }
+                        });
                     }
                 }
             }
@@ -303,15 +328,24 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
                 @Override
                 public void onClick(View view) {
 
-                    showPasscode();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        if (userpasscode != null) {
-                            unpin();
-                            userpasscode = null;
+                    showPasscodeFragment.show(getSupportFragmentManager(), ShowPasscodeFragment.TAG);
+                    showPasscodeFragment.setOnSuccessFail(new ShowPasscodeFragment.OnSuccessFail() {
+                        @Override
+                        public void onSuccess() {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                unpin();
+                            }
+
+                            updatePinningStatus();
+                            ScannerActivity.super.onBackPressed();
+
                         }
-                    }
-                    updatePinningStatus();
-                    ScannerActivity.super.onBackPressed();
+                        @Override
+                        public void onFail() {
+
+                        }
+                    });
+
                 }
             });
         } else {
@@ -327,10 +361,10 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
                         String passcode = documentSnapshot.getString("localpasscode");
 
-                        Intent intent = new Intent(ScannerActivity.this, ShowPasscodeActivity.class);
-                        intent.putExtra(SHOWPASSCODEACTIVITYEXTRA, passcode);
 
-                        startActivityForResult(intent, PIN_NUMBER_REQUEST_CODE);
+                        //showPasscodeFragment.show(getSupportFragmentManager(), ShowPasscodeFragment.TAG);
+                        model.setPasscodeLiveData(passcode);
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -387,7 +421,20 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     public void onLocationUpdated(Location location) {
         showLocation(location);
 
-        generateQR(location);
+        //true first time
+        if (locationcount == 1) {
+            generateQR(location);
+            locationcount++;
+        }
+
+        //true second or more when location changes
+        if (locationcount > 1 && this.location != location) {
+
+            generateQR(location);
+            locationcount++;
+        }
+
+        this.location = location;
     }
 
     private void generateQR(Location location) {
@@ -403,7 +450,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
             scanQrImageView.setImageBitmap(bitmap);
-            scanLoadingView.setVisibility(View.GONE);
+            showLoader(false);
         } catch (WriterException e) {
             e.printStackTrace();
         }
@@ -507,17 +554,17 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
         scanUnitName.setText(qrParser.getUnitname());
         scanVenue.setText(getIntent().getStringExtra(VENUEEXTRA));
 
-        
-        fillUpScanDetails(qrParser, qrParser.getLecteachtimeid());
+
+        fillUpScanDetails(qrParser);
     }
 
-    private void fillUpScanDetails(QRParser qrParser ,String lecteachtimeid) {
+    private void fillUpScanDetails(QRParser qrParser) {
 
         final StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(qrParser.getUnitcode() + ", ");
+        stringBuilder.append(qrParser.getUnitcode());
 
-        mFirestore.collection(LECTEACHCOL).document(lecteachtimeid).collection(LECTEACHCOURSESUBCOL)
+        mFirestore.collection(LECTEACHCOL).document(getIntent().getStringExtra(LECTEACHIDEXTRA)).collection(LECTEACHCOURSESUBCOL)
                 .document("courses")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -530,15 +577,35 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
                             if (mapdata != null) {
 
                                 for (Map.Entry<String, Object> entry : mapdata.entrySet()) {
-                                    //System.out.println(entry.getKey() + "/" + entry.getValue());
 
-                                    stringBuilder.append(entry.getValue().toString()+ ", ");
+                                    stringBuilder.append(", " + entry.getValue().toString());
                                 }
                             }
+
+                            scanUnitDetails.setText(stringBuilder.toString());
                         }
                     }
                 });
 
-        scanUnitDetails.setText(stringBuilder.toString());
+    }
+
+    private void showLoader(Boolean show) {
+
+        if (show) {
+            scanLoadingView.setVisibility(View.VISIBLE);
+            scanLoadingImage.setVisibility(View.VISIBLE);
+            scanQrImageView.setVisibility(View.INVISIBLE);
+
+        } else {
+
+            scanLoadingView.setVisibility(View.GONE);
+            scanLoadingImage.setVisibility(View.GONE);
+            scanQrImageView.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    private void backPressObserver() {
+
     }
 }
