@@ -187,17 +187,10 @@ public class MainActivity extends AppCompatActivity  {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull LessonViewHolder holder, int position, @NonNull LecTeachTime model) {
+            protected void onBindViewHolder(@NonNull final LessonViewHolder holder, int position, @NonNull LecTeachTime model) {
 
-                holder.init(MainActivity.this, mFirestore);
+                holder.init(MainActivity.this, mFirestore,mAuth,model);
                 holder.setUpUi(model);
-
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        sendToQr();
-                    }
-                });
             }
 
             @Override

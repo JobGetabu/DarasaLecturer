@@ -36,16 +36,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.datasource.QRParser;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.viewmodel.ScannerViewModel;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
@@ -54,6 +58,7 @@ import com.victor.loading.rotate.RotateLoading;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,16 +67,22 @@ import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.OnReverseGeocodingListener;
 import io.nlopez.smartlocation.SmartLocation;
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
+import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 import static android.widget.Toast.LENGTH_LONG;
 import static com.job.darasalecturer.ui.ShowPasscodeActivity.SHOWPASSCODEACTIVITYEXTRA;
 import static com.job.darasalecturer.ui.ShowPasscodeActivity.SHOWPASSCODEACTIVITYEXTRA2;
 import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
+import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
+import static com.job.darasalecturer.util.Constants.LECTEACHCOURSESUBCOL;
 
 public class ScannerActivity extends AppCompatActivity implements OnLocationUpdatedListener {
 
     private static final int PIN_NUMBER_REQUEST_CODE = 200;
     private static final String TAG = "Scanner";
+    public static final String QRPARSEREXTRA = "QRPARSEREXTRA";
+    public static final String VENUEEXTRA = "VENUEEXTRA";
+
     private static final int LOCATION_PERMISSION_ID = 1001;
 
     @BindView(R.id.scan_toolbar)
@@ -90,6 +101,18 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     FrameLayout scanLoadingView;
     @BindView(R.id.scan_qr_imageView)
     ImageView scanQrImageView;
+    @BindView(R.id.scan_unit_name)
+    TextView scanUnitName;
+    @BindView(R.id.scan_unit_details)
+    TextView scanUnitDetails;
+    @BindView(R.id.item_col_rating)
+    MaterialRatingBar itemColRating;
+    @BindView(R.id.scan_location_bool)
+    TextView scanLocationBool;
+    @BindView(R.id.scan_loc_img)
+    ImageView scanLocImg;
+    @BindView(R.id.scan_venue)
+    TextView scanVenue;
 
     private ScannerViewModel model;
     private ActivityManager am;
@@ -97,6 +120,8 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     private boolean pinned;
     private DoSnack doSnack;
     private String userpasscode = null;
+    private QRParser qrParser;
+    private Gson gson;
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
@@ -118,6 +143,11 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
         //init model
         model = ViewModelProviders.of(this).get(ScannerViewModel.class);
+
+        //get qrparser
+        qrParser = getIntent().getParcelableExtra(QRPARSEREXTRA);
+        gson = new Gson();
+        setUpUi(qrParser);
 
         am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         //temporary
@@ -362,16 +392,14 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
     private void generateQR(Location location) {
 
+        qrParser.setLatitude(String.valueOf(location.getLatitude()));
+        qrParser.setLongitude(String.valueOf(location.getLongitude()));
 
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("geo: " +String.valueOf(location.getLatitude()+","+String.valueOf(location.getLongitude())));
-
-
-        String text=stringBuilder.toString();
+        String qrtext = qrParser.classToGson(gson, qrParser);
 
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,dptoInt(200),dptoInt(200));
+            BitMatrix bitMatrix = multiFormatWriter.encode(qrtext, BarcodeFormat.QR_CODE, dptoInt(200), dptoInt(200));
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
             scanQrImageView.setImageBitmap(bitmap);
@@ -381,12 +409,13 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
         }
     }
 
-    private int dptoInt(int dimen){
+    private int dptoInt(int dimen) {
         float density = getResources()
                 .getDisplayMetrics()
                 .density;
         return Math.round((float) dimen * density);
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_PERMISSION_ID && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -471,5 +500,45 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     public void onScanViewClicked() {
         if (rotateloading.isStart())
             Toast.makeText(this, "please wait loading...", Toast.LENGTH_SHORT).show();
+    }
+
+    private void setUpUi(QRParser qrParser) {
+
+        scanUnitName.setText(qrParser.getUnitname());
+        scanVenue.setText(getIntent().getStringExtra(VENUEEXTRA));
+
+        
+        fillUpScanDetails(qrParser, qrParser.getLecteachtimeid());
+    }
+
+    private void fillUpScanDetails(QRParser qrParser ,String lecteachtimeid) {
+
+        final StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(qrParser.getUnitcode() + ", ");
+
+        mFirestore.collection(LECTEACHCOL).document(lecteachtimeid).collection(LECTEACHCOURSESUBCOL)
+                .document("courses")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            Map<String, Object> mapdata = task.getResult().getData();
+
+                            if (mapdata != null) {
+
+                                for (Map.Entry<String, Object> entry : mapdata.entrySet()) {
+                                    //System.out.println(entry.getKey() + "/" + entry.getValue());
+
+                                    stringBuilder.append(entry.getValue().toString()+ ", ");
+                                }
+                            }
+                        }
+                    }
+                });
+
+        scanUnitDetails.setText(stringBuilder.toString());
     }
 }

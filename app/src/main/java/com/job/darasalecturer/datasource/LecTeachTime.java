@@ -93,6 +93,14 @@ public class LecTeachTime implements Parcelable {
         this.venue = venue;
     }
 
+    public String getLecteachtimeid() {
+        return lecteachtimeid;
+    }
+
+    public void setLecteachtimeid(String lecteachtimeid) {
+        this.lecteachtimeid = lecteachtimeid;
+    }
+
     @Override
     public String toString() {
         return "LecTeachTime{" +

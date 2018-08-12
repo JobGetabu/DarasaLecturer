@@ -107,6 +107,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/textView6"
             app:layout_constraintTop_toTopOf="parent"
+            android:tint="@color/darkbluish"
             app:srcCompat="@drawable/ic_location_on" />
 
         <TextView

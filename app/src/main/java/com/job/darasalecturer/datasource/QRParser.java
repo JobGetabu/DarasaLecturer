@@ -3,6 +3,8 @@ package com.job.darasalecturer.datasource;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.Gson;
+
 /**
  * Created by Job on Sunday : 8/12/2018.
  */
@@ -14,6 +16,7 @@ public class QRParser implements Parcelable {
     private String unitname;
     private String unitcode;
 
+
     public QRParser() {
     }
 
@@ -21,6 +24,13 @@ public class QRParser implements Parcelable {
                     String lecteachtimeid, String unitname, String unitcode) {
         this.latitude = latitude;
         this.longitude = longitude;
+        this.lecid = lecid;
+        this.lecteachtimeid = lecteachtimeid;
+        this.unitname = unitname;
+        this.unitcode = unitcode;
+    }
+
+    public QRParser(String lecid, String lecteachtimeid, String unitname, String unitcode) {
         this.lecid = lecid;
         this.lecteachtimeid = lecteachtimeid;
         this.unitname = unitname;
@@ -75,6 +85,18 @@ public class QRParser implements Parcelable {
         this.unitcode = unitcode;
     }
 
+    public String classToGson(Gson gson, QRParser qrParser){
+
+        return gson.toJson(qrParser);
+
+    }
+
+    public QRParser gsonToQRParser(Gson gson, String decodedString){
+
+        return gson.fromJson(decodedString , QRParser.class);
+
+    }
+
     @Override
     public String toString() {
         return "QRParser{" +
@@ -112,7 +134,7 @@ public class QRParser implements Parcelable {
         this.unitcode = in.readString();
     }
 
-    public static final Parcelable.Creator<QRParser> CREATOR = new Parcelable.Creator<QRParser>() {
+    public static final Creator<QRParser> CREATOR = new Creator<QRParser>() {
         @Override
         public QRParser createFromParcel(Parcel source) {
             return new QRParser(source);

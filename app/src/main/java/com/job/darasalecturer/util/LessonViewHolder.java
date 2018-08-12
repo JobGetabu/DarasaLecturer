@@ -15,11 +15,13 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.datasource.LecTeachTime;
+import com.job.darasalecturer.datasource.QRParser;
 import com.job.darasalecturer.ui.ScannerActivity;
 
 import java.text.DateFormat;
@@ -32,6 +34,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.job.darasalecturer.ui.ScannerActivity.QRPARSEREXTRA;
+import static com.job.darasalecturer.ui.ScannerActivity.VENUEEXTRA;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOURSESUBCOL;
 
@@ -61,6 +65,8 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
 
     private Context mContext;
     private FirebaseFirestore mFirestore;
+    private FirebaseAuth mAuth;
+    private LecTeachTime lecTeachTime;
 
     private static final String TAG = "LessonVH";
 
@@ -72,9 +78,11 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void init(Context mContext, FirebaseFirestore mFirestore) {
+    public void init(Context mContext, FirebaseFirestore mFirestore,FirebaseAuth mAuth,LecTeachTime lecTeachTime) {
         this.mContext = mContext;
         this.mFirestore = mFirestore;
+        this.mAuth = mAuth;
+        this.lecTeachTime = lecTeachTime;
     }
 
     @OnClick(R.id.ls_qr_img)
@@ -83,7 +91,14 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
 
     @OnClick(R.id.ls_btn)
     public void onLsBtnClicked() {
-        sendToQr();
+
+        QRParser qrParser = new QRParser();
+        qrParser.setLecid(mAuth.getUid());
+        qrParser.setLecteachtimeid(lecTeachTime.getLecteachtimeid());
+        qrParser.setUnitcode(lecTeachTime.getUnitcode());
+        qrParser.setUnitname(lecTeachTime.getUnitname());
+
+        sendToQr(qrParser);
     }
 
     @OnClick(R.id.ls_loc_img)
@@ -187,8 +202,10 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void sendToQr() {
+    private void sendToQr(QRParser qrParser) {
         Intent qrintent = new Intent(mContext,ScannerActivity.class);
+        qrintent.putExtra(QRPARSEREXTRA,qrParser);
+        qrintent.putExtra(VENUEEXTRA, lecTeachTime.getVenue());
         mContext.startActivity(qrintent);
     }
 }
