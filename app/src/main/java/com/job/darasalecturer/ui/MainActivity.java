@@ -227,6 +227,7 @@ public class MainActivity extends AppCompatActivity  {
 
     @OnClick(R.id.main_fab)
     public void onFabClicked() {
+
     }
 
     private void sendToSettings() {

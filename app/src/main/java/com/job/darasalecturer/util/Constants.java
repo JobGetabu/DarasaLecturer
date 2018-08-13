@@ -9,6 +9,7 @@ public class Constants {
     public static final String LECTEACHTIMECOL = "LecTeachTime";
     public static final String LECTEACHCOURSESUBCOL = "Courses";
     public static final String LECAUTHCOL = "LecAuth";
+    public static final String STUDENTDETAILSCOL = "StudentDetails";
 
     //for future  when we will access even finer location details
     public static final int SUCCESS_RESULT = 0;

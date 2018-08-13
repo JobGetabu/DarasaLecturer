@@ -8,7 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.util.DoSnack;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,8 +26,13 @@ public class AddAttendanceActivity extends AppCompatActivity {
     @BindView(R.id.stud_list)
     RecyclerView studList;
 
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore mFirestore;
+    private FirestoreRecyclerAdapter adapter;
+
     private MenuItem saveMenu;
     private boolean anySelected;
+    private DoSnack doSnack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +46,11 @@ public class AddAttendanceActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
 
+        //firebase
+        mAuth = FirebaseAuth.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
+
+        doSnack = new DoSnack(this, AddAttendanceActivity.this);
     }
 
     public void updateSaveStatus() {
@@ -65,5 +79,23 @@ public class AddAttendanceActivity extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (adapter != null) {
+            adapter.startListening();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (adapter != null) {
+            adapter.stopListening();
+        }
     }
 }
