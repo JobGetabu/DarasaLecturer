@@ -1,23 +1,31 @@
 package com.job.darasalecturer.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.chip.ChipGroup;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.datasource.StudentDetails;
 import com.job.darasalecturer.util.DoSnack;
+import com.job.darasalecturer.util.StudentViewHolder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +33,8 @@ import butterknife.ButterKnife;
 import static com.job.darasalecturer.util.Constants.STUDENTDETAILSCOL;
 
 public class AddAttendanceActivity extends AppCompatActivity {
+
+    private static final String TAG = "AddStudent";
 
     @BindView(R.id.stud_toolbar)
     Toolbar studToolbar;
@@ -58,6 +68,8 @@ public class AddAttendanceActivity extends AppCompatActivity {
         mFirestore = FirebaseFirestore.getInstance();
 
         doSnack = new DoSnack(this, AddAttendanceActivity.this);
+
+        setUpList();
     }
 
     public void updateSaveStatus() {
@@ -114,6 +126,8 @@ public class AddAttendanceActivity extends AppCompatActivity {
     }
     private void setUpList(){
 
+        initList();
+
         // Create a reference to the lecTeachTime collection
         CollectionReference studentDetailsRef = mFirestore.collection(STUDENTDETAILSCOL);
         Query mQuery = studentDetailsRef
@@ -123,5 +137,40 @@ public class AddAttendanceActivity extends AppCompatActivity {
         FirestoreRecyclerOptions<StudentDetails> options = new FirestoreRecyclerOptions.Builder<StudentDetails>()
                 .setQuery(mQuery, StudentDetails.class)
                 .build();
+
+        adapter = new FirestoreRecyclerAdapter<StudentDetails, StudentViewHolder>(options) {
+
+            @NonNull
+            @Override
+            public StudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.single_attendance, parent, false);
+
+                return new StudentViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull final StudentViewHolder holder, int position, @NonNull StudentDetails model) {
+
+                holder.init(AddAttendanceActivity.this, mFirestore,model);
+                holder.setUpUi(model);
+
+            }
+
+
+            @Override
+            public void onError(FirebaseFirestoreException e) {
+                // Show a snackbar on errors
+                Snackbar.make(findViewById(android.R.id.content),
+                        "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
+
+                Log.d(TAG, "onError: ", e);
+            }
+
+        };
+
+        adapter.startListening();
+        adapter.notifyDataSetChanged();
+        studList.setAdapter(adapter);
     }
 }

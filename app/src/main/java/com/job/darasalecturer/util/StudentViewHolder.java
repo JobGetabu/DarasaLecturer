@@ -10,10 +10,13 @@ import android.widget.TextView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.GThumb;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.datasource.StudentDetails;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import cn.refactor.library.SmoothCheckBox;
 
 /**
@@ -35,16 +38,40 @@ public class StudentViewHolder extends RecyclerView.ViewHolder {
 
     private Context mContext;
     private FirebaseFirestore mFirestore;
+    private StudentDetails model;
+    private List<StudentDetails> studentDetailsList = new ArrayList<>();
 
     public StudentViewHolder(@NonNull View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
 
         //LayoutInflater.from(mContext).inflate(R.layout.single_attendance, null);
+
+        attnCheckBox.setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
+
+                if (checkBox.isChecked()){
+
+                }else {
+
+                }
+            }
+        });
     }
 
-    @OnClick({R.id.attn_gthumb, R.id.attn_reg_no, R.id.attn_stud_name, R.id.attn_check_box, R.id.attn_main})
-    public void onViewClicked(View view) {
+   public void init(Context mContext,FirebaseFirestore mFirestore,StudentDetails model){
+        this.mContext = mContext;
+        this.mFirestore = mFirestore;
+        this.model = model;
+   }
 
-    }
+   public void setUpUi(StudentDetails model){
+
+        attnStudName.setText(model.getFirstname() + " "+ model.getLastname());
+        attnRegNo.setText(model.getRegnumber());
+
+        attnGthumb.loadThumbForName("",model.getFirstname() + model.getLastname());
+   }
+
 }

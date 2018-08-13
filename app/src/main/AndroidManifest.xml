@@ -52,7 +52,9 @@
         <activity
             android:name=".ui.ShowPasscodeActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.AddAttendanceActivity"></activity>
+        <activity android:name=".ui.AddAttendanceActivity"
+            android:parentActivityName=".ui.ScannerActivity"
+            />
     </application>
 
 </manifest>

@@ -76,7 +76,7 @@ dependencies {
     implementation 'com.hbb20:gthumb:1.3'
 
     //smooth checkbox
-    implementation 'com.github.andyxialm:SmoothCheckBox:47f69d4ce8'
+    implementation 'com.github.elton2048:SmoothCheckBox:1.0.1'
 
     //architecture components
     // ViewModel and LiveData
