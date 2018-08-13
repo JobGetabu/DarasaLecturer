@@ -6,4 +6,58 @@
     android:layout_height="match_parent"
     tools:context=".ui.AddAttendanceActivity">
 
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/stud_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:subtitle="For Students unable to scan Qr"
+        app:subtitleTextColor="fff"
+        app:title="Confirm Attendance"
+        app:titleTextColor="@android:color/white" />
+
+    <HorizontalScrollView
+        android:id="@+id/stud_horizontalScrollView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stud_toolbar">
+
+        <android.support.design.chip.ChipGroup
+            android:id="@+id/stud_chipgroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:singleLine="true">
+
+            <!-- Chips can be declared here, or added dynamically. -->
+
+            <android.support.design.chip.Chip
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nunito"
+                android:text="course"
+                android:visibility="gone"
+                app:iconEndPadding="4dp"
+                app:iconStartPadding="4dp"
+                tools:visibility="visible" />
+
+
+        </android.support.design.chip.ChipGroup>
+    </HorizontalScrollView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/stud_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stud_horizontalScrollView"
+        tools:listitem="@layout/single_attendance" />
 </android.support.constraint.ConstraintLayout>
