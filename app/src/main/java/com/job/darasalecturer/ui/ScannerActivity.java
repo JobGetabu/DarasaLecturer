@@ -278,9 +278,8 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
                                 unpin();
                             }
                         }
-                        //TODO: end class officially
-                        //notification will be better.
-                        Toast.makeText(ScannerActivity.this, "5 Student attendance recorded", Toast.LENGTH_LONG).show();
+
+                        startActivity(new Intent(ScannerActivity.this,AddAttendanceActivity.class));
                     }
 
                     @Override
