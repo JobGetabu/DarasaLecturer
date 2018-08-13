@@ -72,6 +72,8 @@ dependencies {
     //gson
     implementation 'com.google.code.gson:gson:2.8.5'
 
+    //gthumb
+    implementation 'com.hbb20:gthumb:1.3'
     //architecture components
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:1.1.1"
