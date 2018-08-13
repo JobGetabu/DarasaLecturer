@@ -1,7 +1,10 @@
 
-squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(úö¸Ä8á¹Ô¶Ñ,
-psquid:S1450"TRemove the "mUser" field and declare it as a local variable in the relevant methods.(çÎùÜ8á¹Ô¶Ñ,
-lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(Ò“ÿšùÿÿÿÿ8á¹Ô¶Ñ,
-Esquid:S1068")Remove this unused "mUser" private field.(çÎùÜ8á¹Ô¶Ñ,
-jsquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(²Ú±8á¹Ô¶Ñ,
-Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(Ò“ÿšùÿÿÿÿ8á¹Ô¶Ñ,
+Wsquid:UnusedPrivateMethod"-Remove this unused private "sendToQr" method.(öµÁî8œ“ñğÒ,
+Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(Ò“ÿšùÿÿÿÿ8œ“ñğÒ,
+Esquid:S1068")Remove this unused "mUser" private field.(çÎùÜ8œ“ñğÒ,
+Lsquid:S1068"+Remove this unused "doSnack" private field.(¯¨ÓÍûÿÿÿÿ8œ“ñğÒ,
+psquid:S1450"TRemove the "mUser" field and declare it as a local variable in the relevant methods.(çÎùÜ8œ“ñğÒ,
+wsquid:S1450"VRemove the "doSnack" field and declare it as a local variable in the relevant methods.(¯¨ÓÍûÿÿÿÿ8œ“ñğÒ,
+lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(Ò“ÿšùÿÿÿÿ8œ“ñğÒ,
+squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(úö¸Ä8œ“ñğÒ,
+jsquid:MaximumInheritanceDepth"<This class has 7 parents which is greater than 5 authorized.(²Ú±8œ“ñğÒ,

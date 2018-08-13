@@ -429,8 +429,9 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
         final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(false);
             builder.setTitle(R.string.location);  // GPS not found
             builder.setMessage(R.string.permission_rationale_location); // Want to enable?

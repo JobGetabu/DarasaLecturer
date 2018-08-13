@@ -124,3 +124,11 @@ u
 Eapp/src/main/java/com/job/darasalecturer/ui/ShowPasscodeActivity.java,8\d\8d79b6467e1b868af0e3779b2313c8ebf7a1e38f
 p
 @app/src/main/java/com/job/darasalecturer/ui/ScannerActivity.java,2\6\26646026df4d621439f1da4d2fbc98e826e8bc55
+b
+2app/src/main/res/layout/scanner_overlay_layout.xml,f\0\f02f2409d8aefdacb523b03c2d95c9067bd803d9
+q
+Aapp/src/main/java/com/job/darasalecturer/datasource/QRParser.java,7\0\70dde852782d970604bda9ab5b9bac2d19139530
+s
+Capp/src/main/java/com/job/darasalecturer/util/LessonViewHolder.java,e\4\e4ca552ee308e5a253d00fe04269f6d8e258b8c4
+u
+Eapp/src/main/java/com/job/darasalecturer/ui/ShowPasscodeFragment.java,6\d\6d7b3135ba7d9fc6b251c2d3e27d4fcca0afeea6
