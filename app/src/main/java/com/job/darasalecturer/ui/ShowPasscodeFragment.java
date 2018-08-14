@@ -3,6 +3,7 @@ package com.job.darasalecturer.ui;
 
 import android.app.Fragment;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.hanks.passcodeview.PasscodeView;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.viewmodel.ScannerViewModel;
 
 import butterknife.BindView;
@@ -25,6 +27,7 @@ public class ShowPasscodeFragment extends DialogFragment {
     public static final String TAG = "ShowPasscodeFragment";
 
     private OnSuccessFail onSuccessFail;
+    private DoSnack doSnack;;
 
     @BindView(R.id.passcodeView)
     PasscodeView passcodeView;
@@ -61,28 +64,40 @@ public class ShowPasscodeFragment extends DialogFragment {
         //init model
         model = ViewModelProviders.of(getActivity()).get(ScannerViewModel.class);
 
-        passcodeView
-                .setPasscodeLength(4)
-                .setLocalPasscode(model.getPasscodeLiveData().getValue())
-                .setFirstInputTip(getResources().getString(R.string.enter_your_pin))
-                .setPasscodeType(PasscodeView.PasscodeViewType.TYPE_CHECK_PASSCODE)
-                .setListener(new PasscodeView.PasscodeViewListener() {
-                    @Override
-                    public void onFail() {
+        doSnack = new DoSnack(getContext(), getActivity());
+
+        if (model.getPasscodeLiveData().getValue() != null){
+
+            passcodeView
+                    .setPasscodeLength(4)
+                    .setLocalPasscode(model.getPasscodeLiveData().getValue())
+                    .setFirstInputTip(getResources().getString(R.string.enter_your_pin))
+                    .setPasscodeType(PasscodeView.PasscodeViewType.TYPE_CHECK_PASSCODE)
+                    .setListener(new PasscodeView.PasscodeViewListener() {
+                        @Override
+                        public void onFail() {
 
 
-                        onSuccessFail.onFail();
-                        dismiss();
-                    }
+                            onSuccessFail.onFail();
+                            dismiss();
+                        }
 
-                    @Override
-                    public void onSuccess(String number) {
+                        @Override
+                        public void onSuccess(String number) {
 
-                        onSuccessFail.onSuccess();
-                        dismiss();
-                    }
-                });
-
+                            onSuccessFail.onSuccess();
+                            dismiss();
+                        }
+                    });
+        }else {
+            doSnack.showSnackbarDissaper("Set Password to continue", "Set", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getContext(), PasscodeActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     //Declare an Interface

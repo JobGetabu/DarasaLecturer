@@ -1,7 +1,10 @@
 package com.job.darasalecturer.ui;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.Snackbar;
@@ -27,6 +30,7 @@ import com.job.darasalecturer.R;
 import com.job.darasalecturer.datasource.StudentDetails;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.StudentViewHolder;
+import com.job.darasalecturer.viewmodel.AddStudentViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +59,8 @@ public class AddAttendanceActivity extends AppCompatActivity {
     private boolean anySelected;
     private DoSnack doSnack;
 
-    private List<String> studentids = new ArrayList<>();
+    private AddStudentViewModel addStudentViewModel;
+    private List<StudentDetails> studentDetailsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +78,15 @@ public class AddAttendanceActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
 
+        //init model
+        addStudentViewModel = ViewModelProviders.of(this).get(AddStudentViewModel.class);
+
         doSnack = new DoSnack(this, AddAttendanceActivity.this);
 
         setUpList();
+
+        //init observers
+        studentListObserver();
     }
 
     public void updateSaveStatus() {
@@ -84,6 +95,7 @@ public class AddAttendanceActivity extends AppCompatActivity {
         } else {
             saveMenu.setVisible(false);
         }
+
     }
 
     @Override
@@ -158,15 +170,10 @@ public class AddAttendanceActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull final StudentViewHolder holder, int position, @NonNull StudentDetails model) {
 
-                holder.init(AddAttendanceActivity.this, mFirestore,model);
+                holder.init(AddAttendanceActivity.this, mFirestore,model,addStudentViewModel);
                 holder.setUpUi(model);
-
-                //studChipgroup.removeAllViews();
-
-                for(StudentDetails studentDetails : holder.studentDetailsList){
-                    addChipStudent(studentDetails.getFirstname());
-                }
             }
+
 
 
             @Override
@@ -185,17 +192,57 @@ public class AddAttendanceActivity extends AppCompatActivity {
         studList.setAdapter(adapter);
     }
 
-    private void addChipStudent(String firstname) {
+    private void studentListObserver(){
+        addStudentViewModel.getStudListMediatorLiveData().observe(this, new Observer<List<StudentDetails>>() {
+            @Override
+            public void onChanged(@Nullable List<StudentDetails> studentDetails) {
+                if (studentDetails != null){
+
+                    studentDetailsList = studentDetails;
+
+                    studChipgroup.removeAllViews();
+
+                    for(StudentDetails stud : studentDetails){
+                        addChipStudent(stud);
+
+
+                    }
+
+                    if (studentDetails.isEmpty()){
+
+                        anySelected = false;
+                        updateSaveStatus();
+                    }else {
+
+                        anySelected = true;
+                        updateSaveStatus();
+                    }
+
+                }
+            }
+        });
+    }
+
+    private void addChipStudent(final StudentDetails model) {
         Chip chip = new Chip(this);
-        chip.setChipText(firstname);
-        //chip.setCloseIconEnabled(true);
-        //chip.setCloseIconResource(R.drawable.your_icon);
-        //chip.setChipIconResource(R.drawable.your_icon);
-        //chip.setChipBackgroundColorResource(R.color.red);
-        chip.setTextAppearanceResource(R.style.ChipTextStyle);
+        chip.setChipText(model.getFirstname());
+        chip.setCloseIconEnabled(true);
+        chip.setCloseIconResource(R.drawable.ic_clear);
+
+        chip.setChipBackgroundColorResource(R.color.lightGrey);
+        chip.setTextAppearanceResource(R.style.ChipTextStyle2);
         chip.setChipStartPadding(4f);
         chip.setChipEndPadding(4f);
 
         studChipgroup.addView(chip);
+
+        chip.setOnCloseIconClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                addStudentViewModel.getStudentDetailsList().remove(model);
+                addStudentViewModel.setStudListMediatorLiveData(addStudentViewModel.getStudentDetailsList());
+            }
+        });
     }
 }

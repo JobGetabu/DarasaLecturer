@@ -11,9 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.GThumb;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.datasource.StudentDetails;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.job.darasalecturer.viewmodel.AddStudentViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,9 +37,7 @@ public class StudentViewHolder extends RecyclerView.ViewHolder {
     private Context mContext;
     private FirebaseFirestore mFirestore;
     private StudentDetails model;
-
-
-    public List<StudentDetails> studentDetailsList = new ArrayList<>();
+    private AddStudentViewModel addStudentViewModel;
 
     public StudentViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -53,27 +49,32 @@ public class StudentViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
 
-                if (checkBox.isChecked()){
+                if (isChecked) {
 
-                    studentDetailsList.add(model);
-                }else {
-                    studentDetailsList.remove(model);
+                    addStudentViewModel.getStudentDetailsList().add(model);
+                    addStudentViewModel.setStudListMediatorLiveData(addStudentViewModel.getStudentDetailsList());
+                } else {
+
+                    addStudentViewModel.getStudentDetailsList().remove(model);
+                    addStudentViewModel.setStudListMediatorLiveData(addStudentViewModel.getStudentDetailsList());
                 }
             }
         });
     }
 
-   public void init(Context mContext,FirebaseFirestore mFirestore,StudentDetails model){
+    public void init(Context mContext, FirebaseFirestore mFirestore, StudentDetails model, AddStudentViewModel addStudentViewModel) {
         this.mContext = mContext;
         this.mFirestore = mFirestore;
         this.model = model;
-   }
+        this.addStudentViewModel = addStudentViewModel;
+    }
 
-   public void setUpUi(StudentDetails model){
+    public void setUpUi(StudentDetails model) {
 
-        attnStudName.setText(model.getFirstname() + " "+ model.getLastname());
+        attnStudName.setText(model.getFirstname() + " " + model.getLastname());
         attnRegNo.setText(model.getRegnumber());
-        attnGthumb.loadThumbForName(model.getPhotourl(),model.getFirstname(), model.getLastname());
-   }
+        attnGthumb.loadThumbForName(model.getPhotourl(), model.getFirstname(), model.getLastname());
+
+    }
 
 }

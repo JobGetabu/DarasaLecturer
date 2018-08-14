@@ -30,6 +30,7 @@
             android:id="@+id/stud_chipgroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="4dp"
             app:singleLine="true">
 
             <!-- Chips can be declared here, or added dynamically. -->
@@ -40,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/nunito"
                 android:text="course"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:iconEndPadding="4dp"
                 app:iconStartPadding="4dp"
                 tools:visibility="visible" />
