@@ -1,6 +1,6 @@
 package com.job.darasalecturer.util;
 
-import android.content.Context;
+import android.arch.lifecycle.LifecycleOwner;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -34,7 +34,7 @@ public class StudentViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.attn_main)
     ConstraintLayout attnMain;
 
-    private Context mContext;
+    private LifecycleOwner mActivity;
     private FirebaseFirestore mFirestore;
     private StudentDetails model;
     private AddStudentViewModel addStudentViewModel;
@@ -60,10 +60,12 @@ public class StudentViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
+
+
     }
 
-    public void init(Context mContext, FirebaseFirestore mFirestore, StudentDetails model, AddStudentViewModel addStudentViewModel) {
-        this.mContext = mContext;
+    public void init(LifecycleOwner mActivity, FirebaseFirestore mFirestore, StudentDetails model, AddStudentViewModel addStudentViewModel) {
+        this.mActivity = mActivity;
         this.mFirestore = mFirestore;
         this.model = model;
         this.addStudentViewModel = addStudentViewModel;
@@ -76,5 +78,4 @@ public class StudentViewHolder extends RecyclerView.ViewHolder {
         attnGthumb.loadThumbForName(model.getPhotourl(), model.getFirstname(), model.getLastname());
 
     }
-
 }

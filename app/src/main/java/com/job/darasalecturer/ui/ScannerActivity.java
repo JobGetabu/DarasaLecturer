@@ -42,6 +42,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Source;
 import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -387,7 +388,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     }
 
     private void showPasscode() {
-        mFirestore.collection(LECAUTHCOL).document(mAuth.getUid()).get()
+        mFirestore.collection(LECAUTHCOL).document(mAuth.getUid()).get(Source.CACHE)
                 .addOnSuccessListener(this, new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {

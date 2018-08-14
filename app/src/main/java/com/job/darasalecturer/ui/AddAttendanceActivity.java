@@ -172,6 +172,7 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
                 holder.init(AddAttendanceActivity.this, mFirestore,model,addStudentViewModel);
                 holder.setUpUi(model);
+
             }
 
 
@@ -226,8 +227,8 @@ public class AddAttendanceActivity extends AppCompatActivity {
     private void addChipStudent(final StudentDetails model) {
         Chip chip = new Chip(this);
         chip.setChipText(model.getFirstname());
-        chip.setCloseIconEnabled(true);
-        chip.setCloseIconResource(R.drawable.ic_clear);
+        //chip.setCloseIconEnabled(true);
+        //chip.setCloseIconResource(R.drawable.ic_clear);
 
         chip.setChipBackgroundColorResource(R.color.lightGrey);
         chip.setTextAppearanceResource(R.style.ChipTextStyle2);
@@ -236,13 +237,5 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
         studChipgroup.addView(chip);
 
-        chip.setOnCloseIconClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                addStudentViewModel.getStudentDetailsList().remove(model);
-                addStudentViewModel.setStudListMediatorLiveData(addStudentViewModel.getStudentDetailsList());
-            }
-        });
     }
 }
