@@ -10,16 +10,18 @@ public class StudentDetails {
     private String lastname;
     private String course;
     private String regnumber;
+    private String photourl;
 
     public StudentDetails() {
     }
 
-    public StudentDetails(String studentid, String firstname, String lastname, String course, String regnumber) {
+    public StudentDetails(String studentid, String firstname, String lastname, String course, String regnumber, String photourl) {
         this.studentid = studentid;
         this.firstname = firstname;
         this.lastname = lastname;
         this.course = course;
         this.regnumber = regnumber;
+        this.photourl = photourl;
     }
 
     @Override
@@ -71,5 +73,13 @@ public class StudentDetails {
 
     public void setRegnumber(String regnumber) {
         this.regnumber = regnumber;
+    }
+
+    public String getPhotourl() {
+        return photourl;
+    }
+
+    public void setPhotourl(String photourl) {
+        this.photourl = photourl;
     }
 }

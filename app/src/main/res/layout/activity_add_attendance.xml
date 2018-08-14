@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/nunito"
                 android:text="course"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:iconEndPadding="4dp"
                 app:iconStartPadding="4dp"
                 tools:visibility="visible" />

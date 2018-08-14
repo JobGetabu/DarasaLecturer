@@ -39,7 +39,9 @@ public class StudentViewHolder extends RecyclerView.ViewHolder {
     private Context mContext;
     private FirebaseFirestore mFirestore;
     private StudentDetails model;
-    private List<StudentDetails> studentDetailsList = new ArrayList<>();
+
+
+    public List<StudentDetails> studentDetailsList = new ArrayList<>();
 
     public StudentViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -53,8 +55,9 @@ public class StudentViewHolder extends RecyclerView.ViewHolder {
 
                 if (checkBox.isChecked()){
 
+                    studentDetailsList.add(model);
                 }else {
-
+                    studentDetailsList.remove(model);
                 }
             }
         });
@@ -70,8 +73,7 @@ public class StudentViewHolder extends RecyclerView.ViewHolder {
 
         attnStudName.setText(model.getFirstname() + " "+ model.getLastname());
         attnRegNo.setText(model.getRegnumber());
-
-        attnGthumb.loadThumbForName("",model.getFirstname() + model.getLastname());
+        attnGthumb.loadThumbForName(model.getPhotourl(),model.getFirstname(), model.getLastname());
    }
 
 }

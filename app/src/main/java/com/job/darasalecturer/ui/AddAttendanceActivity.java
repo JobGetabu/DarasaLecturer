@@ -2,6 +2,7 @@ package com.job.darasalecturer.ui;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,9 @@ import com.job.darasalecturer.datasource.StudentDetails;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.StudentViewHolder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -50,6 +54,8 @@ public class AddAttendanceActivity extends AppCompatActivity {
     private MenuItem saveMenu;
     private boolean anySelected;
     private DoSnack doSnack;
+
+    private List<String> studentids = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +138,7 @@ public class AddAttendanceActivity extends AppCompatActivity {
         CollectionReference studentDetailsRef = mFirestore.collection(STUDENTDETAILSCOL);
         Query mQuery = studentDetailsRef
                 //.whereEqualTo("lecid", userId)
-                .orderBy("regnumber", Query.Direction.DESCENDING);
+                .orderBy("regnumber", Query.Direction.ASCENDING);
 
         FirestoreRecyclerOptions<StudentDetails> options = new FirestoreRecyclerOptions.Builder<StudentDetails>()
                 .setQuery(mQuery, StudentDetails.class)
@@ -155,6 +161,11 @@ public class AddAttendanceActivity extends AppCompatActivity {
                 holder.init(AddAttendanceActivity.this, mFirestore,model);
                 holder.setUpUi(model);
 
+                //studChipgroup.removeAllViews();
+
+                for(StudentDetails studentDetails : holder.studentDetailsList){
+                    addChipStudent(studentDetails.getFirstname());
+                }
             }
 
 
@@ -172,5 +183,19 @@ public class AddAttendanceActivity extends AppCompatActivity {
         adapter.startListening();
         adapter.notifyDataSetChanged();
         studList.setAdapter(adapter);
+    }
+
+    private void addChipStudent(String firstname) {
+        Chip chip = new Chip(this);
+        chip.setChipText(firstname);
+        //chip.setCloseIconEnabled(true);
+        //chip.setCloseIconResource(R.drawable.your_icon);
+        //chip.setChipIconResource(R.drawable.your_icon);
+        //chip.setChipBackgroundColorResource(R.color.red);
+        chip.setTextAppearanceResource(R.style.ChipTextStyle);
+        chip.setChipStartPadding(4f);
+        chip.setChipEndPadding(4f);
+
+        studChipgroup.addView(chip);
     }
 }
