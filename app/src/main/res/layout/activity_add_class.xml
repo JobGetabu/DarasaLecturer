@@ -32,7 +32,9 @@
         app:sv_animationType="All"
         app:sv_stepPadding="12dp"
         app:sv_stepsNumber="5"
-        app:sv_typeface="@font/basic" />
+        app:sv_typeface="@font/basic"
+        app:steps="@array/addclass_steps"
+        />
 
     <FrameLayout
         android:layout_width="0dp"
@@ -44,7 +46,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_class_step_view">
 
-        <com.job.hacelaapp.adapter.NoSwipePager
+        <com.job.darasalecturer.adapter.NoSwipePager
             android:id="@+id/add_class_noswipepager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
