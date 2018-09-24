@@ -48,6 +48,11 @@
     <string name="unit_name">Unit name</string>
     <string name="unit_code">Unit code</string>
     <string name="lecture_time">Lecture time</string>
+    <string name="department">Department</string>
+    <string name="next">next</string>
+    <string name="back">back</string>
+    <string name="academy_year">Academy year i.e 2018/19</string>
+    <string name="time_of_lecture">Time of lecture</string>
 
     <array name="addclass_steps">
         <item>Intro</item>
