@@ -155,8 +155,9 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
         setUpUi(qrParser);
 
         am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+
         //temporary
-        //initPinning();
+        initPinning();
 
         doSnack = new DoSnack(this, ScannerActivity.this);
 

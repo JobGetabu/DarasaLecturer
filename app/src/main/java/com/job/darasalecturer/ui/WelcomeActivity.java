@@ -1,6 +1,7 @@
 package com.job.darasalecturer.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
@@ -36,5 +37,8 @@ public class WelcomeActivity extends AppCompatActivity {
     @OnClick(R.id.login_negative)
     public void onLoginNegativeClicked() {
         //TODO 1 : Take to browser to do lecturer account set up.
+
+        Intent intent= new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/kamwanasamwel/Darasa-Web"));
+        startActivity(intent);
     }
 }

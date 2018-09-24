@@ -132,3 +132,19 @@ s
 Capp/src/main/java/com/job/darasalecturer/util/LessonViewHolder.java,e\4\e4ca552ee308e5a253d00fe04269f6d8e258b8c4
 u
 Eapp/src/main/java/com/job/darasalecturer/ui/ShowPasscodeFragment.java,6\d\6d7b3135ba7d9fc6b251c2d3e27d4fcca0afeea6
+Z
+*app/src/main/res/drawable/ic_checkmark.xml,d\5\d57ff4d8b0b59698cfb269d89962bed5411c3fa0
+O
+app/src/main/res/menu/amenu.xml,2\6\2649d8e6c6fe7953161eebd13f7d938e86886258
+w
+Gapp/src/main/java/com/job/darasalecturer/datasource/StudentDetails.java,4\c\4c9e4604bebc588846ed892c2d03a5142bd6fac5
+]
+-app/src/main/res/layout/single_attendance.xml,b\d\bd2263b71f1c5ee88f2dfde06f633e493b6298c2
+{
+Kapp/src/main/java/com/job/darasalecturer/viewmodel/AddStudentViewModel.java,4\6\46ecba64cc170ede7b2d81fbe7cb4b11eac8ca1e
+c
+3app/src/main/res/layout/activity_add_attendance.xml,3\4\34c4340f69128a4daf90375f2261488599ad285b
+t
+Dapp/src/main/java/com/job/darasalecturer/util/StudentViewHolder.java,1\1\116fba32ffa18fe63a29b6cf13eda6b42e2bb1ac
+v
+Fapp/src/main/java/com/job/darasalecturer/ui/AddAttendanceActivity.java,1\f\1ff933d0e5e3e7d53c5c874018a2422f9cf14a1f
