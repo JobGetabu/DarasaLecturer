@@ -61,7 +61,9 @@
         <activity
             android:name=".ui.AccountSetupActivity"
             android:parentActivityName=".ui.WelcomeActivity" />
-        <activity android:name=".ui.AddClassActivity"></activity>
+        <activity android:name=".ui.AddClassActivity"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

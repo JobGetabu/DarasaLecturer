@@ -24,6 +24,8 @@ public class SettingsActivity extends AppCompatActivity {
     MaterialButton settingsLogout;
     @BindView(R.id.settings_password)
     MaterialButton settingsPassword;
+    @BindView(R.id.settings_manage_classes)
+    MaterialButton settingsManageClasses;
 
     private FirebaseAuth mAuth;
 
@@ -64,6 +66,13 @@ public class SettingsActivity extends AppCompatActivity {
     private void sendToLogin() {
         Intent loginIntent = new Intent(this, WelcomeActivity.class);
         startActivity(loginIntent);
+        finish();
+    }
+
+    @OnClick(R.id.settings_manage_classes)
+    public void onViewAddClassClicked() {
+        Intent addclassIntent = new Intent(this, AddClassActivity.class);
+        startActivity(addclassIntent);
         finish();
     }
 }

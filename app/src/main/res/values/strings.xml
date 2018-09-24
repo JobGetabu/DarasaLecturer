@@ -44,6 +44,7 @@
     <string name="last_name">Last name</string>
     <string name="first_name">first name</string>
     <string name="add_class_text">It\'s now easy to add or edit  \n your lectures.</string>
+    <string name="manage_your_classes">Manage your classes</string>
 
     <array name="addclass_steps">
         <item>Intro</item>

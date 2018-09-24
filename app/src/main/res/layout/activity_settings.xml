@@ -115,6 +115,67 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="19dp"
                         android:fontFamily="@font/nunito_semibold"
+                        android:text="@string/manage_your_classes"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/darkbluish"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/settings_manage_classes"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="52dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:text="Add a class"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/darkgreyish"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+                <!-- divider line -->
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginStart="54dp"
+                    android:layout_marginTop="8dp"
+                    android:contentDescription="@string/content_desc_icon"
+                    android:src="@color/contentDividerLine" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:contentDescription="@string/content_desc_icon"
+                        android:tint="@color/darkbluish"
+                        app:srcCompat="@drawable/ic_user" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="19dp"
+                        android:fontFamily="@font/nunito_semibold"
                         android:text="@string/manage_your_account"
                         android:textAlignment="viewStart"
                         android:textColor="@color/darkbluish"
@@ -146,6 +207,67 @@
                     android:layout_marginStart="54dp"
                     android:layout_marginTop="8dp"
                     android:contentDescription="@string/content_desc_icon"
+                    android:src="@color/contentDividerLine" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:contentDescription="@string/content_desc_icon"
+                        android:tint="@color/darkbluish"
+                        app:srcCompat="@drawable/ic_info" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="19dp"
+                        android:fontFamily="@font/nunito_semibold"
+                        android:text="Support"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/darkbluish"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/settings_help"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="52dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:text="@string/logout"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/darkgreyish"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+                <!-- divider line -->
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:contentDescription="@string/content_desc_icon"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginStart="54dp"
+                    android:layout_marginTop="8dp"
                     android:src="@color/contentDividerLine" />
             </LinearLayout>
 
