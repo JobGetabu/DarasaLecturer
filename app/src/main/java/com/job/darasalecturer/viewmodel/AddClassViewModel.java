@@ -11,7 +11,7 @@ public class AddClassViewModel extends ViewModel {
     private MediatorLiveData<Integer> currentStep;
 
     public AddClassViewModel() {
-
+        currentStep = new MediatorLiveData<>();
     }
 
     public MediatorLiveData<Integer> getCurrentStep() {

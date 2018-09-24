@@ -1,11 +1,15 @@
 package com.job.darasalecturer.ui;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.adapter.AddClassPagerAdapter;
 import com.job.darasalecturer.adapter.NoSwipePager;
+import com.job.darasalecturer.viewmodel.AddClassViewModel;
 import com.shuhart.stepview.StepView;
 
 import java.util.Arrays;
@@ -22,6 +26,7 @@ public class AddClassActivity extends AppCompatActivity {
     NoSwipePager addClassNoswipepager;
 
     private AddClassPagerAdapter pagerAdapter;
+    private AddClassViewModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,19 @@ public class AddClassActivity extends AppCompatActivity {
         addClassStepView.getState()
                 .steps(Arrays.asList(getResources().getStringArray(R.array.addclass_steps)))
                 .commit();
+
+        model = ViewModelProviders.of(this).get(AddClassViewModel.class);
+
+        model.getCurrentStep().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer integer) {
+                if (integer != null){
+                    addClassNoswipepager.setCurrentItem(integer);
+                    addClassStepView.go(integer, true);
+                    addClassStepView.done(true);
+                }
+            }
+        });
     }
 
     @OnClick(R.id.add_class_step_view)
