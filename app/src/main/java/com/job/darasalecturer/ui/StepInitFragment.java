@@ -1,7 +1,9 @@
 package com.job.darasalecturer.ui;
 
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.viewmodel.AddClassViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +28,8 @@ public class StepInitFragment extends Fragment {
     TextView frgInitBtn;
     Unbinder unbinder;
 
+    private AddClassViewModel model;
+
     public StepInitFragment() {
         // Required empty public constructor
     }
@@ -40,6 +45,13 @@ public class StepInitFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        model = ViewModelProviders.of(getActivity()).get(AddClassViewModel.class);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -47,5 +59,6 @@ public class StepInitFragment extends Fragment {
 
     @OnClick(R.id.frg_init_btn)
     public void onViewClicked() {
+        model.setCurrentStep(1);
     }
 }

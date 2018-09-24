@@ -57,7 +57,7 @@ public class AddClassActivity extends AppCompatActivity {
                 if (integer != null){
                     addClassNoswipepager.setCurrentItem(integer);
                     addClassStepView.go(integer, true);
-                    addClassStepView.done(true);
+                    //addClassStepView.done(true);
                 }
             }
         });

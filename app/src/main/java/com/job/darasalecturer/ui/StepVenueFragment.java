@@ -1,7 +1,9 @@
 package com.job.darasalecturer.ui;
 
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.TextInputLayout;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.viewmodel.AddClassViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +41,8 @@ public class StepVenueFragment extends Fragment {
     TextView stepVenueNext;
     Unbinder unbinder;
 
+    private AddClassViewModel model;
+
     public StepVenueFragment() {
         // Required empty public constructor
     }
@@ -53,6 +58,13 @@ public class StepVenueFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        model = ViewModelProviders.of(getActivity()).get(AddClassViewModel.class);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
@@ -64,9 +76,11 @@ public class StepVenueFragment extends Fragment {
 
     @OnClick(R.id.step_venue_back)
     public void onStepVenueBackClicked() {
+        model.setCurrentStep(1);
     }
 
     @OnClick(R.id.step_venue_next)
     public void onStepVenueNextClicked() {
+        model.setCurrentStep(3);
     }
 }

@@ -75,11 +75,11 @@ public class StepUnitFragment extends Fragment {
 
     @OnClick(R.id.step_unit_back)
     public void onStepUnitBackClicked() {
-        model.setCurrentStep(1);
+        model.setCurrentStep(0);
     }
 
     @OnClick(R.id.step_unit_next)
     public void onStepUnitNextClicked() {
-        model.setCurrentStep(0);
+        model.setCurrentStep(2);
     }
 }

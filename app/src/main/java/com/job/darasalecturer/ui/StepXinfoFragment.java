@@ -1,7 +1,9 @@
 package com.job.darasalecturer.ui;
 
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.viewmodel.AddClassViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +39,8 @@ public class StepXinfoFragment extends Fragment {
     TextView stepXFinish;
     Unbinder unbinder;
 
+    private AddClassViewModel model;
+
     public StepXinfoFragment() {
         // Required empty public constructor
     }
@@ -56,11 +61,20 @@ public class StepXinfoFragment extends Fragment {
         unbinder.unbind();
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        model = ViewModelProviders.of(getActivity()).get(AddClassViewModel.class);
+    }
+
     @OnClick(R.id.step_x_back)
     public void onStepXBackClicked() {
+        model.setCurrentStep(2);
     }
 
     @OnClick(R.id.step_x_finish)
     public void onStepXFinishClicked() {
+        //finish
     }
 }
