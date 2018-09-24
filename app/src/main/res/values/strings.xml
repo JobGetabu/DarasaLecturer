@@ -56,6 +56,8 @@
     <string name="finish">Finish</string>
 
     <string name="no_class_text">You\'ve no classes today. Take \na second to recharge</string>
+    <string name="email_us">Email us</string>
+    <string name="huh_no_classes">Huh! No Classes</string>
 
     <array name="addclass_steps">
         <item>Intro</item>
