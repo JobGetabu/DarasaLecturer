@@ -78,6 +78,9 @@ dependencies {
     //smooth checkbox
     implementation 'com.github.elton2048:SmoothCheckBox:1.0.1'
 
+    //steps view
+    implementation 'com.shuhart.stepview:stepview:1.4.0'
+
     //architecture components
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:1.1.1"
