@@ -69,7 +69,10 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/lecture_time"
                     android:inputType="text"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:editable="false"
+                    android:enabled="false"
+                    />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.button.MaterialButton

@@ -70,11 +70,53 @@ public class StepXinfoFragment extends Fragment {
 
     @OnClick(R.id.step_x_back)
     public void onStepXBackClicked() {
-        model.setCurrentStep(2);
+
+        if (validate()) {
+            model.setCurrentStep(2);
+        }
     }
 
     @OnClick(R.id.step_x_finish)
     public void onStepXFinishClicked() {
         //finish
+    }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        String sem = stepXSemester.getEditText().getText().toString();
+        String yr = stepXYear.getEditText().getText().toString();
+        String academ = stepXAcadyear.getEditText().getText().toString();
+        String school = stepXSchool.getEditText().getText().toString();
+
+        if (sem.isEmpty()) {
+            stepXSemester.setError("enter semester");
+            valid = false;
+        } else {
+            stepXSemester.setError(null);
+        }
+
+        if (yr.isEmpty()) {
+            stepXYear.setError("enter year");
+            valid = false;
+        } else {
+            stepXYear.setError(null);
+        }
+
+        if (academ.isEmpty()) {
+            stepXAcadyear.setError("enter academic year");
+            valid = false;
+        } else {
+            stepXAcadyear.setError(null);
+        }
+
+        if (school.isEmpty()) {
+            stepXSchool.setError("enter school");
+            valid = false;
+        } else {
+            stepXSchool.setError(null);
+        }
+
+        return valid;
     }
 }

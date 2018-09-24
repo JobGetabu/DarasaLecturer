@@ -81,6 +81,33 @@ public class StepVenueFragment extends Fragment {
 
     @OnClick(R.id.step_venue_next)
     public void onStepVenueNextClicked() {
-        model.setCurrentStep(3);
+        if (validate()) {
+
+            model.setCurrentStep(3);
+        }
+    }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        String venue = stepVenueName.getEditText().getText().toString();
+        String dept = stepVenueDepartment.getEditText().getText().toString();
+
+        if (venue.isEmpty()) {
+            stepVenueName.setError("enter venue");
+            valid = false;
+        } else {
+            stepVenueName.setError(null);
+        }
+
+        if (dept.isEmpty()) {
+            stepVenueDepartment.setError("enter department");
+            valid = false;
+        } else {
+            stepVenueDepartment.setError(null);
+        }
+
+
+        return valid;
     }
 }

@@ -80,6 +80,41 @@ public class StepUnitFragment extends Fragment {
 
     @OnClick(R.id.step_unit_next)
     public void onStepUnitNextClicked() {
-        model.setCurrentStep(2);
+        if (validate()) {
+
+            model.setCurrentStep(2);
+        }
+    }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        String unitname = stepUnitUnitname.getEditText().getText().toString();
+        String unitcode = stepUnitUnitcode.getEditText().getText().toString();
+        String time = stepUnitTime.getEditText().getText().toString();
+
+        if (unitname.isEmpty()) {
+            stepUnitUnitname.setError("enter unit");
+            valid = false;
+        } else {
+            stepUnitUnitname.setError(null);
+        }
+
+        if (unitcode.isEmpty()) {
+            stepUnitUnitcode.setError("enter unit code");
+            valid = false;
+        } else {
+            stepUnitUnitcode.setError(null);
+        }
+
+        if (time.isEmpty()) {
+            stepUnitTime.setError("Select time");
+            valid = false;
+        } else {
+            stepUnitTime.setError(null);
+        }
+
+
+        return valid;
     }
 }
