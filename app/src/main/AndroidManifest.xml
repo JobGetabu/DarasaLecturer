@@ -55,7 +55,10 @@
         <activity
             android:name=".ui.AddAttendanceActivity"
             android:parentActivityName=".ui.ScannerActivity" />
-        <activity android:name=".ui.SignupActivity"
+        <activity
+            android:name=".ui.SignupActivity"
+            android:parentActivityName=".ui.WelcomeActivity" />
+        <activity android:name=".ui.AccountSetupActivity"
             android:parentActivityName=".ui.WelcomeActivity"
             />
     </application>
