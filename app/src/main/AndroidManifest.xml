@@ -58,9 +58,10 @@
         <activity
             android:name=".ui.SignupActivity"
             android:parentActivityName=".ui.WelcomeActivity" />
-        <activity android:name=".ui.AccountSetupActivity"
-            android:parentActivityName=".ui.WelcomeActivity"
-            />
+        <activity
+            android:name=".ui.AccountSetupActivity"
+            android:parentActivityName=".ui.WelcomeActivity" />
+        <activity android:name=".ui.AddClassActivity"></activity>
     </application>
 
 </manifest>
