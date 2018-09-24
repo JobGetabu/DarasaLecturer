@@ -43,4 +43,12 @@
     <string name="school">School</string>
     <string name="last_name">Last name</string>
     <string name="first_name">first name</string>
+    <string name="add_class_text">It\'s now easy to add or edit  \n your lectures.</string>
+
+    <array name="addclass_steps">
+        <item>Intro</item>
+        <item>Unit</item>
+        <item>Venue</item>
+        <item>Course(s)</item>
+    </array>
 </resources>
