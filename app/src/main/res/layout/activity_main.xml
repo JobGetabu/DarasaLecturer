@@ -27,16 +27,22 @@
             app:titleTextColor="@android:color/white" />
     </android.support.design.widget.AppBarLayout>
 
+    <include
+        android:id="@+id/main_no_class"
+        layout="@layout/noclass_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/single_lesson"
-
-        >
-
-    </android.support.v7.widget.RecyclerView>
+        android:visibility="invisible"
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/main_fab"
