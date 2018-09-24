@@ -53,6 +53,7 @@
     <string name="back">back</string>
     <string name="academy_year">Academy year i.e 2018/19</string>
     <string name="time_of_lecture">Time of lecture</string>
+    <string name="finish">Finish</string>
 
     <array name="addclass_steps">
         <item>Intro</item>

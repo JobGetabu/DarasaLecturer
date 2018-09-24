@@ -126,7 +126,7 @@
             />
 
         <TextView
-            android:id="@+id/step_unit_next"
+            android:id="@+id/step_x_finish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -135,7 +135,7 @@
             android:gravity="bottom"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
-            android:text="Finish"
+            android:text="@string/finish"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="20sp"
