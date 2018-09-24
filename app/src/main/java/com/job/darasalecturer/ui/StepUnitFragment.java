@@ -1,6 +1,7 @@
 package com.job.darasalecturer.ui;
 
 
+import android.app.TimePickerDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,9 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
+
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,6 +65,7 @@ public class StepUnitFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         model = ViewModelProviders.of(getActivity()).get(AddClassViewModel.class);
+        stepUnitTime.setVisibility(View.GONE);
     }
 
     @Override
@@ -69,8 +74,25 @@ public class StepUnitFragment extends Fragment {
         unbinder.unbind();
     }
 
+
     @OnClick(R.id.step_unit_time_btn)
     public void onStepUnitTimeBtnClicked() {
+
+        stepUnitTime.setVisibility(View.GONE);
+
+        Calendar mcurrentTime = Calendar.getInstance();
+        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = mcurrentTime.get(Calendar.MINUTE);
+        TimePickerDialog mTimePicker;
+        mTimePicker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                stepUnitTime.setVisibility(View.VISIBLE);
+                stepUnitTime.getEditText().setText( selectedHour + ":" + selectedMinute);
+            }
+        }, hour, minute, false);//Yes 24 hour time
+        mTimePicker.setTitle("Select Lesson Time");
+        mTimePicker.show();
     }
 
     @OnClick(R.id.step_unit_back)
@@ -108,10 +130,12 @@ public class StepUnitFragment extends Fragment {
         }
 
         if (time.isEmpty()) {
+            stepUnitTime.setVisibility(View.VISIBLE);
             stepUnitTime.setError("Select time");
             valid = false;
         } else {
             stepUnitTime.setError(null);
+            stepUnitTime.setVisibility(View.GONE);
         }
 
 

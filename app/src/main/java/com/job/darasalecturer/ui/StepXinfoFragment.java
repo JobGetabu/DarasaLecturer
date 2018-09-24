@@ -79,6 +79,9 @@ public class StepXinfoFragment extends Fragment {
     @OnClick(R.id.step_x_finish)
     public void onStepXFinishClicked() {
         //finish
+        if (validate()){
+
+        }
     }
 
     public boolean validate() {
