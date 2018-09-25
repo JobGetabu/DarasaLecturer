@@ -138,7 +138,7 @@ public class StepUnitFragment extends Fragment {
         }
     }
 
-    public boolean validate() {
+    private boolean validate() {
         boolean valid = true;
 
         String unitname = stepUnitUnitname.getEditText().getText().toString();

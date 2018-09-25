@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -97,8 +96,6 @@ public class LoginActivity extends AppCompatActivity {
         String email = loginInputEmail.getEditText().getText().toString();
         String password = loginInputPassword.getEditText().getText().toString();
 
-        Log.d(TAG, "loginWithEmailPasswordClick: Email & password:" + email + "   " + password);
-
         if (validate()) {
 
             final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
@@ -157,7 +154,7 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    public boolean validate() {
+    private boolean validate() {
         boolean valid = true;
 
         String email = loginInputEmail.getEditText().getText().toString();
