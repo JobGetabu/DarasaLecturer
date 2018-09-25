@@ -10,7 +10,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/login_toolbar">
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,16 +51,18 @@
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="24dp">
+                android:layout_height="wrap_content">
+
+            </HorizontalScrollView>
 
                 <android.support.design.chip.ChipGroup
                     android:id="@+id/step_venue_chipgroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:singleLine="true">
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="24dp"
+                    app:singleLine="false">
 
                     <!-- Chips can be declared here, or added dynamically. -->
 
@@ -70,12 +72,11 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/nunito"
                         android:text="Bs.BIT"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         app:iconEndPadding="4dp"
                         app:iconStartPadding="4dp"
                         tools:visibility="visible" />
                 </android.support.design.chip.ChipGroup>
-            </HorizontalScrollView>
 
             <android.support.design.button.MaterialButton
                 android:id="@+id/step_venue_course_btn"
@@ -85,8 +86,9 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginBottom="42dp"
                 android:fontFamily="@font/nunito_bold"
-                android:text="Select course(s)"
+                android:text="@string/select_course"
                 android:textAlignment="textStart"
                 android:textAllCaps="false"
                 android:textColor="@color/darkgreyish"

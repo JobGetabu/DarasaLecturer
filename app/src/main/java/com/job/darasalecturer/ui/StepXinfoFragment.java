@@ -71,15 +71,14 @@ public class StepXinfoFragment extends Fragment {
     @OnClick(R.id.step_x_back)
     public void onStepXBackClicked() {
 
-        if (validate()) {
-            model.setCurrentStep(2);
-        }
+        model.setCurrentStep(2);
+
     }
 
     @OnClick(R.id.step_x_finish)
     public void onStepXFinishClicked() {
         //finish
-        if (validate()){
+        if (validate()) {
 
         }
     }

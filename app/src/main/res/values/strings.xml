@@ -60,6 +60,7 @@
     <string name="huh_no_classes">Huh! No Classes</string>
     <string name="set_current_semester">Set current semester</string>
     <string name="select">Select</string>
+    <string name="select_course">Select course(s)</string>
 
     <array name="addclass_steps">
         <item>Intro</item>

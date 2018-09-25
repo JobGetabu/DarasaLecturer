@@ -5,16 +5,22 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
+import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.abdeveloper.library.MultiSelectDialog;
+import com.abdeveloper.library.MultiSelectModel;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +48,7 @@ public class StepVenueFragment extends Fragment {
     Unbinder unbinder;
 
     private AddClassViewModel model;
+    private static final String TAG = "stepvenue";
 
     public StepVenueFragment() {
         // Required empty public constructor
@@ -75,6 +82,52 @@ public class StepVenueFragment extends Fragment {
     @OnClick(R.id.step_venue_course_btn)
     public void onStepVenueCourseBtnClicked() {
 
+        //List of Countries with Name and Id
+        ArrayList<MultiSelectModel> listOfCourses= new ArrayList<>();
+        listOfCourses.add(new MultiSelectModel(1,"Bs of Commerce"));
+        listOfCourses.add(new MultiSelectModel(2,"Bs of Purchasing Supplies and Management"));
+        listOfCourses.add(new MultiSelectModel(3,"Bs of Business Administration and Management"));
+        listOfCourses.add(new MultiSelectModel(4,"Bs of Business Administration and Management"));
+        listOfCourses.add(new MultiSelectModel(5,"Bs. Food Science"));
+        listOfCourses.add(new MultiSelectModel(6,"Bs of Science in Computer Science"));
+        listOfCourses.add(new MultiSelectModel(7,"Bs of Business Administration and Management"));
+        listOfCourses.add(new MultiSelectModel(8,"Bs of Science in Criminology and Security Management"));
+        listOfCourses.add(new MultiSelectModel(9,"Bs of Science Electrical and Electronics Engineering"));
+        listOfCourses.add(new MultiSelectModel(10,"Bs of Science Mechatronic Engineering"));
+
+        //MultiSelectModel
+        MultiSelectDialog multiSelectDialog = new MultiSelectDialog()
+                .title(getResources().getString(R.string.select_course)) //setting title for dialog
+                .titleSize(20)
+                .positiveText("Done")
+                .negativeText("Cancel")
+                .setMinSelectionLimit(1) //you can set minimum checkbox selection limit (Optional)
+                //.preSelectIDsList() //List of ids that you need to be selected
+                .multiSelectList(listOfCourses) // the multi select model list with ids and name
+                .onSubmit(new MultiSelectDialog.SubmitCallbackListener() {
+                    @Override
+                    public void onSelected(ArrayList<Integer> selectedIds, ArrayList<String> selectedNames, String dataString) {
+
+                        stepVenueChipgroup.removeAllViews();
+                        //will return list of selected IDS
+                        for (int i = 0; i < selectedIds.size(); i++) {
+                            //Toast.makeText(getContext(), "Selected Ids : " + selectedIds.get(i) + "\n" + "Selected Names : " + selectedNames.get(i) + "\n" + "DataString : " + dataString, Toast.LENGTH_SHORT).show();
+
+                            addChipCourse(selectedNames.get(i));
+                        }
+
+                        stepVenueChipgroup.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Log.d(TAG,"Dialog cancelled");
+                    }
+
+
+                });
+
+        multiSelectDialog.show(getActivity().getSupportFragmentManager(), "multiSelectDialog");
 
     }
 
@@ -113,5 +166,20 @@ public class StepVenueFragment extends Fragment {
 
 
         return valid;
+    }
+
+    private void addChipCourse(String course) {
+        Chip chip = new Chip(getContext());
+        chip.setChipText(course);
+        //chip.setCloseIconEnabled(true);
+        //chip.setCloseIconResource(R.drawable.ic_clear);
+
+        chip.setChipBackgroundColorResource(R.color.lightGrey);
+        chip.setTextAppearanceResource(R.style.ChipTextStyle2);
+        chip.setChipStartPadding(4f);
+        chip.setChipEndPadding(4f);
+
+        stepVenueChipgroup.addView(chip);
+
     }
 }
