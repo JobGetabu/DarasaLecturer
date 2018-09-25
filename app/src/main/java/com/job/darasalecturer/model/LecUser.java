@@ -11,14 +11,26 @@ public class LecUser {
     private String firstname;
     private String lastname;
     private String devicetoken;
+    private String school;
+    private String department;
+    private String currentsemester;
+    private String currentyear;
+    private String currentacademicyear;
 
     public LecUser() {
     }
 
-    public LecUser(String firstname, String lastname, String devicetoken) {
+    public LecUser(String firstname, String lastname,
+                   String devicetoken, String school, String department,
+                   String currentsemester, String currentyear, String currentacademicyear) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.devicetoken = devicetoken;
+        this.school = school;
+        this.department = department;
+        this.currentsemester = currentsemester;
+        this.currentyear = currentyear;
+        this.currentacademicyear = currentacademicyear;
     }
 
     public String getFirstname() {
@@ -51,6 +63,11 @@ public class LecUser {
                 "firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", devicetoken='" + devicetoken + '\'' +
+                ", school='" + school + '\'' +
+                ", department='" + department + '\'' +
+                ", currentsemester='" + currentsemester + '\'' +
+                ", currentyear='" + currentyear + '\'' +
+                ", currentacademicyear='" + currentacademicyear + '\'' +
                 '}';
     }
 }
