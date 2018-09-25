@@ -94,8 +94,8 @@ public class MainActivity extends AppCompatActivity  {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user == null) {
                     // Sign in logic here.
-                    finish();
                     sendToLogin();
+                    finish();
                 } else {
 
                     userId = mAuth.getCurrentUser().getUid();

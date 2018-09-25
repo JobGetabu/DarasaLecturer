@@ -26,7 +26,6 @@ public class AccountSetupViewModel extends AndroidViewModel {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
-    private String currentUserId;
 
     public static final String TAG = "AccountSetupVM";
 
@@ -45,7 +44,7 @@ public class AccountSetupViewModel extends AndroidViewModel {
         this.mFirestore = mFirestore;
 
         //init db refs 
-        userRef = mFirestore.collection(LECUSERCOL).document(currentUserId);
+        userRef = mFirestore.collection(LECUSERCOL).document(mAuth.getCurrentUser().getUid());
 
 
         //init livedatas
@@ -82,10 +81,6 @@ public class AccountSetupViewModel extends AndroidViewModel {
 
     public MediatorLiveData<LecUser> getLecUserMediatorLiveData() {
         return lecUserMediatorLiveData;
-    }
-
-    public void setLecUserMediatorLiveData(LecUser lecUser) {
-        this.lecUserMediatorLiveData.setValue(lecUser);
     }
 
     /**

@@ -53,6 +53,46 @@ public class LecUser {
         return devicetoken;
     }
 
+    public String getSchool() {
+        return school;
+    }
+
+    public void setSchool(String school) {
+        this.school = school;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getCurrentsemester() {
+        return currentsemester;
+    }
+
+    public void setCurrentsemester(String currentsemester) {
+        this.currentsemester = currentsemester;
+    }
+
+    public String getCurrentyear() {
+        return currentyear;
+    }
+
+    public void setCurrentyear(String currentyear) {
+        this.currentyear = currentyear;
+    }
+
+    public String getCurrentacademicyear() {
+        return currentacademicyear;
+    }
+
+    public void setCurrentacademicyear(String currentacademicyear) {
+        this.currentacademicyear = currentacademicyear;
+    }
+
     public void setDevicetoken(String devicetoken) {
         this.devicetoken = devicetoken;
     }

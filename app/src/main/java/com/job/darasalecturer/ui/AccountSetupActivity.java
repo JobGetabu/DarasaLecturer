@@ -1,9 +1,12 @@
 package com.job.darasalecturer.ui;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,8 +19,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.model.LecUser;
 import com.job.darasalecturer.util.AppStatus;
 import com.job.darasalecturer.util.DoSnack;
+import com.job.darasalecturer.viewmodel.AccountSetupViewModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +54,8 @@ public class AccountSetupActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
 
+    private AccountSetupViewModel model;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +73,16 @@ public class AccountSetupActivity extends AppCompatActivity {
         mFirestore = FirebaseFirestore.getInstance();
 
         doSnack = new DoSnack(this, AccountSetupActivity.this);
+
+        // View model
+        AccountSetupViewModel.Factory factory = new AccountSetupViewModel.Factory(
+                AccountSetupActivity.this.getApplication(), mAuth, mFirestore);
+
+        model = ViewModelProviders.of(AccountSetupActivity.this, factory)
+                .get(AccountSetupViewModel.class);
+
+        //ui observer
+        uiObserver();
     }
 
     @OnClick(R.id.setup_btn)
@@ -109,8 +126,20 @@ public class AccountSetupActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            pDialog.dismissWithAnimation();
-                            sendToSetClass();
+
+                            pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                            pDialog.setCancelable(true);
+                            pDialog.setTitleText("Saved Successfully");
+                            pDialog.setContentText("You're now set");
+                            pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    sDialog.dismissWithAnimation();
+
+                                    sendToSetClass();
+
+                                }
+                            });
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -125,8 +154,6 @@ public class AccountSetupActivity extends AppCompatActivity {
     private void sendToSetClass() {
 
         Intent aIntent = new Intent(this, AddClassActivity.class);
-        aIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        aIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(aIntent);
         finish();
     }
@@ -168,5 +195,19 @@ public class AccountSetupActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    private void uiObserver() {
+        model.getLecUserMediatorLiveData().observe(this, new Observer<LecUser>() {
+            @Override
+            public void onChanged(@Nullable LecUser lecUser) {
+                if (lecUser != null) {
+                    setupFirstname.getEditText().setText(lecUser.getFirstname());
+                    setupLastname.getEditText().setText(lecUser.getLastname());
+                    setupSchool.getEditText().setText(lecUser.getSchool());
+                    setupDepartment.getEditText().setText(lecUser.getDepartment());
+                }
+            }
+        });
     }
 }
