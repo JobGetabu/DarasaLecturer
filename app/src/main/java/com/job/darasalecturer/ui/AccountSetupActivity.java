@@ -36,5 +36,48 @@ public class AccountSetupActivity extends AppCompatActivity {
 
     @OnClick(R.id.setup_btn)
     public void onViewClicked() {
+
+        if (validate()){
+
+        }
+    }
+
+    private boolean validate() {
+        boolean valid = true;
+
+        String fname = setupFirstname.getEditText().getText().toString();
+        String lname = setupLastname.getEditText().getText().toString();
+        String school = setupSchool.getEditText().getText().toString();
+        String dept = setupDepartment.getEditText().getText().toString();
+
+        if (fname.isEmpty()) {
+            setupFirstname.setError("enter name");
+            valid = false;
+        } else {
+            setupFirstname.setError(null);
+        }
+
+        if (lname.isEmpty()) {
+            setupLastname.setError("enter name");
+            valid = false;
+        } else {
+            setupLastname.setError(null);
+        }
+
+        if (school.isEmpty()) {
+            setupSchool.setError("enter school");
+            valid = false;
+        } else {
+            setupSchool.setError(null);
+        }
+
+        if (dept.isEmpty()) {
+            setupDepartment.setError("enter dept");
+            valid = false;
+        } else {
+            setupDepartment.setError(null);
+        }
+
+        return valid;
     }
 }

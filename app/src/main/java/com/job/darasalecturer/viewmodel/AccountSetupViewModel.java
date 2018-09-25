@@ -69,7 +69,6 @@ public class AccountSetupViewModel extends AndroidViewModel {
                                 public void run() {
 
                                     lecUserMediatorLiveData.postValue(documentSnapshot.toObject(LecUser.class));
-
                                 }
                             });
 

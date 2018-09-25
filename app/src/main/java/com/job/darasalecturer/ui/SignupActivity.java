@@ -54,6 +54,12 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
 
+        setSupportActionBar(signupToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
+
         //firebase
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
