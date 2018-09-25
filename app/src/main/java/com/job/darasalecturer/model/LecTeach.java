@@ -1,4 +1,4 @@
-package com.job.darasalecturer.datasource;
+package com.job.darasalecturer.model;
 
 import android.support.annotation.Keep;
 

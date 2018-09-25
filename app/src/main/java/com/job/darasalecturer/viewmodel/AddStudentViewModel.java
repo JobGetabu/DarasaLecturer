@@ -3,7 +3,7 @@ package com.job.darasalecturer.viewmodel;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.job.darasalecturer.datasource.StudentDetails;
+import com.job.darasalecturer.model.StudentDetails;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -49,7 +49,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.job.darasalecturer.R;
-import com.job.darasalecturer.datasource.QRParser;
+import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.viewmodel.ScannerViewModel;
 import com.journeyapps.barcodescanner.BarcodeEncoder;

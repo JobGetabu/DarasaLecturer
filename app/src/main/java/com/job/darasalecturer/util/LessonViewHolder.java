@@ -20,8 +20,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
-import com.job.darasalecturer.datasource.LecTeachTime;
-import com.job.darasalecturer.datasource.QRParser;
+import com.job.darasalecturer.model.LecTeachTime;
+import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.ui.ScannerActivity;
 
 import java.text.DateFormat;

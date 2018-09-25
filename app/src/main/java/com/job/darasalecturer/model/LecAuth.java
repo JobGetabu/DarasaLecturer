@@ -1,4 +1,4 @@
-package com.job.darasalecturer.datasource;
+package com.job.darasalecturer.model;
 
 /**
  * Created by Job on Wednesday : 8/8/2018.

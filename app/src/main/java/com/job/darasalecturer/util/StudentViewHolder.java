@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.GThumb;
 import com.job.darasalecturer.R;
-import com.job.darasalecturer.datasource.StudentDetails;
+import com.job.darasalecturer.model.StudentDetails;
 import com.job.darasalecturer.viewmodel.AddStudentViewModel;
 
 import butterknife.BindView;

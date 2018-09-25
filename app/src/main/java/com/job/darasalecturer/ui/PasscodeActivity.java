@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hanks.passcodeview.PasscodeView;
 import com.job.darasalecturer.R;
-import com.job.darasalecturer.datasource.LecAuth;
+import com.job.darasalecturer.model.LecAuth;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

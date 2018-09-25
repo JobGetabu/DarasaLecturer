@@ -28,7 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.job.darasalecturer.R;
-import com.job.darasalecturer.datasource.LecTeachTime;
+import com.job.darasalecturer.model.LecTeachTime;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.LessonViewHolder;
 
