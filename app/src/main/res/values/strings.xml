@@ -59,6 +59,7 @@
     <string name="email_us">Email us</string>
     <string name="huh_no_classes">Huh! No Classes</string>
     <string name="set_current_semester">Set current semester</string>
+    <string name="select">Select</string>
 
     <array name="addclass_steps">
         <item>Intro</item>
@@ -76,5 +77,30 @@
         <item>Friday</item>
         <item>Saturday</item>
     </array>
+
+
+    <array name="demo_courses">
+        <item>Bs of Commerce</item>
+        <item>Bs of Purchasing Supplies and Management</item>
+        <item>Bs of Business Administration and Management</item>
+        <item>Bs of Science in Criminology and Security Management</item>
+        <item>Bs of Science in Information Technology</item>
+        <item>Bs. Food Science</item>
+        <item>Bs of Science in Computer Science </item>
+        <item>Bs in Business Information Technology</item>
+        <item>Bs of Science Electrical and Electronics Engineering</item>
+        <item>Bs of Science Mechatronic Engineering</item>
+    </array>
+
+
+
+
+
+
+
+
+
+
+
 
 </resources>

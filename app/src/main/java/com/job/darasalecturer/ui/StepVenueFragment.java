@@ -62,6 +62,8 @@ public class StepVenueFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         model = ViewModelProviders.of(getActivity()).get(AddClassViewModel.class);
+
+        stepVenueChipgroup.setVisibility(View.GONE);
     }
 
     @Override
@@ -72,6 +74,8 @@ public class StepVenueFragment extends Fragment {
 
     @OnClick(R.id.step_venue_course_btn)
     public void onStepVenueCourseBtnClicked() {
+
+
     }
 
     @OnClick(R.id.step_venue_back)
