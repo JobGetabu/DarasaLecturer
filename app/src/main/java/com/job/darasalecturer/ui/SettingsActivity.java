@@ -26,6 +26,12 @@ public class SettingsActivity extends AppCompatActivity {
     MaterialButton settingsPassword;
     @BindView(R.id.settings_manage_classes)
     MaterialButton settingsManageClasses;
+    @BindView(R.id.settings_current)
+    MaterialButton settingsCurrent;
+    @BindView(R.id.settings_help)
+    MaterialButton settingsHelp;
+    @BindView(R.id.settings_faq)
+    MaterialButton settingsFaq;
 
     private FirebaseAuth mAuth;
 
@@ -74,5 +80,20 @@ public class SettingsActivity extends AppCompatActivity {
         Intent addclassIntent = new Intent(this, AddClassActivity.class);
         startActivity(addclassIntent);
         finish();
+    }
+
+    @OnClick(R.id.settings_current)
+    public void onSettingsCurrentClicked() {
+        Intent cIntent = new Intent(this, CurrentSetupActivity.class);
+        startActivity(cIntent);
+        finish();
+    }
+
+    @OnClick(R.id.settings_help)
+    public void onSettingsHelpClicked() {
+    }
+
+    @OnClick(R.id.settings_faq)
+    public void onSettingsFaqClicked() {
     }
 }

@@ -147,7 +147,7 @@
                     android:layout_marginStart="52dp"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/nunito_bold"
-                    android:text="Set current semester"
+                    android:text="@string/set_current_semester"
                     android:textAlignment="textStart"
                     android:textAllCaps="false"
                     android:textColor="@color/darkgreyish"
