@@ -7,6 +7,7 @@ import android.webkit.WebView;
 import android.widget.ProgressBar;
 
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.util.WebViewController;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,5 +26,35 @@ public class FaqActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_faq);
         ButterKnife.bind(this);
+
+
+        //String prourl = getIntent().getStringExtra(PRODUCTURL);
+        String url = "https://hacela.app";
+
+        if (url == null){
+            finish();
+        }
+
+        WebViewController webViewController = new WebViewController(faqProgressBar);
+
+        faqWebView.setWebViewClient(webViewController);
+        faqWebView.getSettings().setJavaScriptEnabled(true);
+        faqWebView.loadUrl(url);
+
+        /*
+        *  String prourl = getIntent().getStringExtra(PRODUCTURL);
+
+        if (prourl == null){
+            finish();
+        }
+
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+
+        WebViewController webViewController = new WebViewController(progressBar);
+        WebView webView = (WebView) findViewById(R.id.webView);
+        webView.setWebViewClient(webViewController);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl(prourl);
+        * */
     }
 }
