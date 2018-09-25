@@ -2,7 +2,9 @@ package com.job.darasalecturer.ui;
 
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -10,20 +12,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
+import static com.job.darasalecturer.util.Constants.LECTEACHCOURSESUBCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
 
 /**
@@ -108,6 +117,8 @@ public class StepXinfoFragment extends Fragment {
             String lecteachid = mFirestore.collection(LECTEACHCOL).document().getId();
             String lecteachtimeid = mFirestore.collection(LECTEACHTIMECOL).document().getId();
 
+            model.getLecTeachMediatorLiveData().getValue().setLecid(lecid);
+
             model.getLecTeachTimeMediatorLiveData().getValue().setLecid(lecid);
             model.getLecTeachTimeMediatorLiveData().getValue().setLecteachid(lecteachid);
             model.getLecTeachTimeMediatorLiveData().getValue().setLecteachtimeid(lecteachtimeid);
@@ -124,14 +135,67 @@ public class StepXinfoFragment extends Fragment {
             // Get a new write batch
             WriteBatch batch = mFirestore.batch();
 
-            /* // Set the value of lecteach
+            // Set the value of lecteach
             DocumentReference lecteachRef =  mFirestore.collection(LECTEACHCOL).document(lecteachid);
             batch.set(lecteachRef, model.getLecTeachMediatorLiveData().getValue());
             DocumentReference lecteachtimeRef =  mFirestore.collection(LECTEACHTIMECOL).document(lecteachtimeid);
             batch.set(lecteachtimeRef, model.getLecTeachTimeMediatorLiveData().getValue());
-            */
 
-            Toast.makeText(getContext(), model.getLecTeachMediatorLiveData().getValue().toString(), Toast.LENGTH_SHORT).show();
+
+            DocumentReference courseRef =  mFirestore.collection(LECTEACHCOL).document(lecteachid)
+                    .collection(LECTEACHCOURSESUBCOL).document("courses");
+
+            Map<String,String> cMap = new HashMap<>();
+            int i = 1;
+            for (String course : model.getCourseList().getValue()){
+                cMap.put(String.valueOf(i),course);
+                i++;
+            }
+
+            batch.set(courseRef, cMap);
+
+            //load progress
+            final SweetAlertDialog pDialog;
+            pDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
+            pDialog.setCancelable(false);
+            pDialog.setContentText("Saving class");
+            pDialog.show();
+
+            batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()){
+
+                        pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                        pDialog.setCancelable(true);
+                        pDialog.setTitleText("Saved Successfully");
+                        pDialog.setContentText("You're now set");
+                        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+
+                                //showAddNewClassPrompt();
+                                startActivity(new Intent(getContext(),MainActivity.class));
+
+                            }
+                        });
+
+                    }else {
+                        pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                        pDialog.setCancelable(false);
+                        pDialog.setTitleText("Check Connection");
+                        pDialog.setContentText("Your class was saved and will show up once you're online");
+                        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                                startActivity(new Intent(getContext(),MainActivity.class));
+                            }
+                        });
+                    }
+                }
+            });
         }
     }
 

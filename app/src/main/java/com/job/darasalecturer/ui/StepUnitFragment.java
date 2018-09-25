@@ -101,8 +101,7 @@ public class StepUnitFragment extends Fragment {
                 mcurrentTime.set(Calendar.MONTH, 1);
                 mcurrentTime.set(Calendar.DAY_OF_MONTH, 1);
                 mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
-                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
-                mcurrentTime.set(Calendar.MINUTE, selectedHour);
+                mcurrentTime.set(Calendar.MINUTE, selectedMinute);
             }
         }, hour, minute, false);//Yes 24 hour time
         mTimePicker.setTitle("Select Lesson Time");
@@ -131,6 +130,8 @@ public class StepUnitFragment extends Fragment {
             model.getLecTeachMediatorLiveData().getValue().setUnitname(unitname);
             model.getLecTeachMediatorLiveData().getValue().setUnitcode(unitcode);
 
+            model.getLecTeachTimeMediatorLiveData().getValue().setUnitname(unitname);
+            model.getLecTeachTimeMediatorLiveData().getValue().setUnitcode(unitcode);
             model.getLecTeachTimeMediatorLiveData().getValue().setDay(day);
             model.getLecTeachTimeMediatorLiveData().getValue().setTime(time);
 

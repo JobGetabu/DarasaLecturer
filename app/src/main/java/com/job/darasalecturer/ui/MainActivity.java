@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity  {
     RecyclerView mainList;
     @BindView(R.id.main_fab)
     FloatingActionButton mainFab;
+    @BindView(R.id.main_no_class)
+    View noClassView;
 
     private static final String TAG = "main";
 
@@ -207,6 +209,18 @@ public class MainActivity extends AppCompatActivity  {
                         "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
 
                 Log.d(TAG, "onError: ", e);
+            }
+
+            @Override
+            public void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                if (getItemCount() == 0) {
+                    mainList.setVisibility(View.GONE);
+                    noClassView.setVisibility(View.VISIBLE);
+                } else {
+                    mainList.setVisibility(View.VISIBLE);
+                    noClassView.setVisibility(View.GONE);
+                }
             }
 
         };
