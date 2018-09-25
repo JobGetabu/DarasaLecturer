@@ -4,9 +4,11 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Address;
@@ -184,7 +186,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
         showPasscodeFragment = new ShowPasscodeFragment();
 
         //set up password
-        showPasscode();
+        setInitPasscode();
     }
 
     @Override
@@ -207,7 +209,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
         Toast.makeText(this, "Screen pinned", Toast.LENGTH_SHORT).show();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             pin();
-            pinned = true;
+            //pinned = true;
         }
     }
 
@@ -281,7 +283,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
                             }
                         }
 
-                        startActivity(new Intent(ScannerActivity.this,AddAttendanceActivity.class));
+                        startActivity(new Intent(ScannerActivity.this, AddAttendanceActivity.class));
                     }
 
                     @Override
@@ -339,18 +341,19 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void pin() {
-        startLockTask();
-        pinned = true;
+        //TODO: enable for final testing
+        // startLockTask();
+        // pinned = true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void unpin() {
         if (am.isInLockTaskMode()) {
-            stopLockTask();
-            pinned = false;
+            //stopLockTask();
+            //pinned = false;
         } else {
             Toast.makeText(this, "Application already unpinned !", LENGTH_LONG).show();
-            pinned = true;
+            //pinned = true;
         }
     }
 
@@ -372,12 +375,10 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
                             updatePinningStatus();
                             ScannerActivity.super.onBackPressed();
-
                         }
 
                         @Override
                         public void onFail() {
-
                         }
                     });
 
@@ -388,24 +389,19 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
         }
     }
 
-    private void showPasscode() {
-        mFirestore.collection(LECAUTHCOL).document(mAuth.getUid()).get(Source.CACHE)
+    private void setInitPasscode() {
+        mFirestore.collection(LECAUTHCOL).document(mAuth.getUid()).get(Source.DEFAULT)
                 .addOnSuccessListener(this, new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-
                         String passcode = documentSnapshot.getString("localpasscode");
-
-
-                        //showPasscodeFragment.show(getSupportFragmentManager(), ShowPasscodeFragment.TAG);
                         model.setPasscodeLiveData(passcode);
-
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
 
-                doSnack.showSnackbarDissaper("Set Password to continue", "Set", new View.OnClickListener() {
+                doSnack.showSnackbar("Set Password to continue", "Set", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(ScannerActivity.this, PasscodeActivity.class);
@@ -424,34 +420,56 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
         SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
 
         smartLocation.location(provider).start(this);
+
+        //register location change broadcast
+        registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
     }
 
     private void checkLocationOn() {
 
         final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(R.string.location);  // GPS not found
+        builder.setMessage(R.string.permission_rationale_location); // Want to enable?
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ScannerActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        AlertDialog dd = builder.create();
 
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            builder.setCancelable(false);
-            builder.setTitle(R.string.location);  // GPS not found
-            builder.setMessage(R.string.permission_rationale_location); // Want to enable?
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    ScannerActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                }
-            });
-            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    finish();
-                }
-            });
-            builder.create().show();
-            return;
+            dd.show();
+            if (!dd.isShowing()) {
+                doSnack.showShortSnackbar("Turn on Location for QR generation");
+            }
+        } else {
+
         }
 
     }
+
+    /**
+     * Following broadcast receiver is to listen the Location button toggle state in Android.
+     */
+    private BroadcastReceiver mGpsSwitchStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
+                // Make an action or refresh an already managed state.
+                checkLocationOn();
+            }
+        }
+    };
 
     @Override
     public void onLocationUpdated(Location location) {
@@ -463,14 +481,14 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
             locationcount++;
         }
 
-        //true second or more when location changes
+        /*//true second or more when location changes
         if (locationcount > 1 && this.location != location) {
 
             generateQR(location);
             locationcount++;
         }
 
-        this.location = location;
+        this.location = location;*/
     }
 
     private void generateQR(Location location) {
@@ -552,21 +570,41 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        //register location change broadcast
+        registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+    }
+
+    @Override
     protected void onResume() {
 
         startLocation();
+        //register location change broadcast
+        registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         super.onResume();
     }
 
     @Override
     protected void onPause() {
         stopLocation();
+        //unregister location change broadcast
+        try {
+            unregisterReceiver(mGpsSwitchStateReceiver);
+        } catch (IllegalArgumentException e) {
+        }
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
         stopLocation();
+        //unregister location change broadcast
+        try {
+            unregisterReceiver(mGpsSwitchStateReceiver);
+        } catch (IllegalArgumentException e) {
+        }
         super.onDestroy();
     }
 

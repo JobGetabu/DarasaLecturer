@@ -5,13 +5,15 @@ import android.os.Parcelable;
 
 import com.google.gson.Gson;
 
+import java.util.Date;
+
 /**
  * Created by Job on Sunday : 8/12/2018.
  */
 public class QRParser implements Parcelable {
     private String latitude;
     private String longitude;
-    private String lecid;
+    private Date time;
     private String lecteachtimeid;
     private String unitname;
     private String unitcode;
@@ -20,18 +22,11 @@ public class QRParser implements Parcelable {
     public QRParser() {
     }
 
-    public QRParser(String latitude, String longitude, String lecid,
+    public QRParser(String latitude, String longitude, Date time,
                     String lecteachtimeid, String unitname, String unitcode) {
         this.latitude = latitude;
         this.longitude = longitude;
-        this.lecid = lecid;
-        this.lecteachtimeid = lecteachtimeid;
-        this.unitname = unitname;
-        this.unitcode = unitcode;
-    }
-
-    public QRParser(String lecid, String lecteachtimeid, String unitname, String unitcode) {
-        this.lecid = lecid;
+        this.time =time;
         this.lecteachtimeid = lecteachtimeid;
         this.unitname = unitname;
         this.unitcode = unitcode;
@@ -51,14 +46,6 @@ public class QRParser implements Parcelable {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
-    }
-
-    public String getLecid() {
-        return lecid;
-    }
-
-    public void setLecid(String lecid) {
-        this.lecid = lecid;
     }
 
     public String getLecteachtimeid() {
@@ -85,6 +72,14 @@ public class QRParser implements Parcelable {
         this.unitcode = unitcode;
     }
 
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
     public String classToGson(Gson gson, QRParser qrParser){
 
         return gson.toJson(qrParser);
@@ -102,7 +97,7 @@ public class QRParser implements Parcelable {
         return "QRParser{" +
                 "latitude='" + latitude + '\'' +
                 ", longitude='" + longitude + '\'' +
-                ", lecid='" + lecid + '\'' +
+                ", time=" + time +
                 ", lecteachtimeid='" + lecteachtimeid + '\'' +
                 ", unitname='" + unitname + '\'' +
                 ", unitcode='" + unitcode + '\'' +
@@ -119,7 +114,7 @@ public class QRParser implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.latitude);
         dest.writeString(this.longitude);
-        dest.writeString(this.lecid);
+        dest.writeLong(this.time != null ? this.time.getTime() : -1);
         dest.writeString(this.lecteachtimeid);
         dest.writeString(this.unitname);
         dest.writeString(this.unitcode);
@@ -128,7 +123,8 @@ public class QRParser implements Parcelable {
     protected QRParser(Parcel in) {
         this.latitude = in.readString();
         this.longitude = in.readString();
-        this.lecid = in.readString();
+        long tmpTime = in.readLong();
+        this.time = tmpTime == -1 ? null : new Date(tmpTime);
         this.lecteachtimeid = in.readString();
         this.unitname = in.readString();
         this.unitcode = in.readString();

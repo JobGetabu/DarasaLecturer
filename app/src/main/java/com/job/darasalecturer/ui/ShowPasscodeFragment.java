@@ -11,6 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Source;
 import com.hanks.passcodeview.PasscodeView;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.util.DoSnack;
@@ -18,6 +23,8 @@ import com.job.darasalecturer.viewmodel.ScannerViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,12 +34,14 @@ public class ShowPasscodeFragment extends DialogFragment {
     public static final String TAG = "ShowPasscodeFragment";
 
     private OnSuccessFail onSuccessFail;
-    private DoSnack doSnack;;
+    private DoSnack doSnack;
 
     @BindView(R.id.passcodeView)
     PasscodeView passcodeView;
 
     private ScannerViewModel model;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore mFirestore;
 
     public void setOnSuccessFail(OnSuccessFail onSuccessFail) {
         this.onSuccessFail = onSuccessFail;
@@ -61,12 +70,54 @@ public class ShowPasscodeFragment extends DialogFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //firebase
+        mAuth = FirebaseAuth.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
+
         //init model
         model = ViewModelProviders.of(getActivity()).get(ScannerViewModel.class);
 
         doSnack = new DoSnack(getContext(), getActivity());
 
-        if (model.getPasscodeLiveData().getValue() != null){
+        mFirestore.collection(LECAUTHCOL).document(mAuth.getUid()).get(Source.CACHE)
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String pss = documentSnapshot.getString("localpasscode");
+
+                        if (pss.isEmpty()) {
+                            doSnack.showSnackbarDissaper("Set Password to continue", "Set", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent(getContext(), PasscodeActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+                        } else {
+                            passcodeView
+                                    .setPasscodeLength(4)
+                                    .setLocalPasscode(pss)
+                                    .setFirstInputTip(getResources().getString(R.string.enter_your_pin))
+                                    .setPasscodeType(PasscodeView.PasscodeViewType.TYPE_CHECK_PASSCODE)
+                                    .setListener(new PasscodeView.PasscodeViewListener() {
+                                        @Override
+                                        public void onFail() {
+                                            onSuccessFail.onFail();
+                                            dismiss();
+                                        }
+
+                                        @Override
+                                        public void onSuccess(String number) {
+
+                                            onSuccessFail.onSuccess();
+                                            dismiss();
+                                        }
+                                    });
+                        }
+                    }
+                });
+
+        if (model.getPasscodeLiveData().getValue() != null) {
 
             passcodeView
                     .setPasscodeLength(4)
@@ -89,7 +140,7 @@ public class ShowPasscodeFragment extends DialogFragment {
                             dismiss();
                         }
                     });
-        }else {
+        } else {
             doSnack.showSnackbarDissaper("Set Password to continue", "Set", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
