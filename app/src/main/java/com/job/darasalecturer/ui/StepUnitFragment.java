@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -18,6 +19,7 @@ import com.job.darasalecturer.R;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,9 +44,12 @@ public class StepUnitFragment extends Fragment {
     TextView stepUnitBack;
     @BindView(R.id.step_unit_next)
     TextView stepUnitNext;
+    @BindView(R.id.step_unit__day)
+    Spinner stepUnitDay;
     Unbinder unbinder;
 
     private AddClassViewModel model;
+    Calendar mcurrentTime = Calendar.getInstance();
 
     public StepUnitFragment() {
         // Required empty public constructor
@@ -80,7 +85,7 @@ public class StepUnitFragment extends Fragment {
 
         stepUnitTime.setVisibility(View.GONE);
 
-        Calendar mcurrentTime = Calendar.getInstance();
+
         int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
         int minute = mcurrentTime.get(Calendar.MINUTE);
         TimePickerDialog mTimePicker;
@@ -89,6 +94,13 @@ public class StepUnitFragment extends Fragment {
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 stepUnitTime.setVisibility(View.VISIBLE);
                 stepUnitTime.getEditText().setText( selectedHour + ":" + selectedMinute);
+
+                mcurrentTime.set(Calendar.YEAR, 2018);
+                mcurrentTime.set(Calendar.MONTH, 1);
+                mcurrentTime.set(Calendar.DAY_OF_MONTH, 1);
+                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
+                mcurrentTime.set(Calendar.HOUR_OF_DAY, selectedHour);
+                mcurrentTime.set(Calendar.MINUTE, selectedHour);
             }
         }, hour, minute, false);//Yes 24 hour time
         mTimePicker.setTitle("Select Lesson Time");
@@ -105,6 +117,18 @@ public class StepUnitFragment extends Fragment {
         if (validate()) {
 
             model.setCurrentStep(2);
+
+            String unitname = stepUnitUnitname.getEditText().getText().toString();
+            String unitcode = stepUnitUnitcode.getEditText().getText().toString();
+            String day = stepUnitDay.getSelectedItem().toString();
+            Date time = mcurrentTime.getTime();
+
+            model.getLecTeachMediatorLiveData().getValue().setUnitname(unitname);
+            model.getLecTeachMediatorLiveData().getValue().setUnitcode(unitcode);
+
+            model.getLecTeachTimeMediatorLiveData().getValue().setDay(day);
+            model.getLecTeachTimeMediatorLiveData().getValue().setTime(time);
+
         }
     }
 

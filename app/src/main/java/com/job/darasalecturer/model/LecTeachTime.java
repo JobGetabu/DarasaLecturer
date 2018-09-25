@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Keep;
 
-import com.google.firebase.Timestamp;
+import java.util.Date;
 
 
 /**
@@ -16,7 +16,7 @@ public class LecTeachTime implements Parcelable {
     private String lecid;
     private String lecteachid;
     private String day;
-    private com.google.firebase.Timestamp time;
+    private Date time;
     private String unitcode;
     private String unitname;
     private String venue;
@@ -26,7 +26,7 @@ public class LecTeachTime implements Parcelable {
     }
 
     public LecTeachTime(String lecid, String lecteachid, String day,
-                        Timestamp time, String unitcode, String unitname, String venue, String lecteachtimeid) {
+                        Date time, String unitcode, String unitname, String venue, String lecteachtimeid) {
         this.lecid = lecid;
         this.lecteachid = lecteachid;
         this.day = day;
@@ -61,11 +61,11 @@ public class LecTeachTime implements Parcelable {
         this.day = day;
     }
 
-    public Timestamp getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(Timestamp time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 
@@ -126,7 +126,7 @@ public class LecTeachTime implements Parcelable {
         dest.writeString(this.lecid);
         dest.writeString(this.lecteachid);
         dest.writeString(this.day);
-        dest.writeParcelable(this.time, flags);
+        dest.writeLong(this.time != null ? this.time.getTime() : -1);
         dest.writeString(this.unitcode);
         dest.writeString(this.unitname);
         dest.writeString(this.venue);
@@ -137,7 +137,8 @@ public class LecTeachTime implements Parcelable {
         this.lecid = in.readString();
         this.lecteachid = in.readString();
         this.day = in.readString();
-        this.time = in.readParcelable(Timestamp.class.getClassLoader());
+        long tmpTime = in.readLong();
+        this.time = tmpTime == -1 ? null : new Date(tmpTime);
         this.unitcode = in.readString();
         this.unitname = in.readString();
         this.venue = in.readString();
