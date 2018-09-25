@@ -28,6 +28,12 @@ public class FaqActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
 
+        setSupportActionBar(faqToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
+
         //String prourl = getIntent().getStringExtra(PRODUCTURL);
         String url = "https://hacela.app";
 

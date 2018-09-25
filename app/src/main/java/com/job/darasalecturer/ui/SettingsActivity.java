@@ -98,5 +98,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     @OnClick(R.id.settings_faq)
     public void onSettingsFaqClicked() {
+        Intent fIntent = new Intent(this, FaqActivity.class);
+        startActivity(fIntent);
+
     }
 }

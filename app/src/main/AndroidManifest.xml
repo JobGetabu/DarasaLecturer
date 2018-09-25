@@ -65,7 +65,9 @@
             android:name=".ui.AddClassActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".ui.CurrentSetupActivity" />
-        <activity android:name=".ui.FaqActivity"></activity>
+        <activity android:name=".ui.FaqActivity"
+            android:parentActivityName=".ui.SettingsActivity"
+            />
     </application>
 
 </manifest>
