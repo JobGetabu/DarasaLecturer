@@ -34,6 +34,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.job.darasalecturer.util.Constants.LECUSERCOL;
 
+
+//TODO: Is this required for lec app ? ? ??
 public class CurrentSetupActivity extends AppCompatActivity {
 
     @BindView(R.id.current_toolbar)
