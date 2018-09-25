@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.model.LecTeach;
+import com.job.darasalecturer.model.LecTeachTime;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
 
 import java.util.Calendar;
@@ -122,6 +124,9 @@ public class StepUnitFragment extends Fragment {
             String unitcode = stepUnitUnitcode.getEditText().getText().toString();
             String day = stepUnitDay.getSelectedItem().toString();
             Date time = mcurrentTime.getTime();
+
+            model.getLecTeachMediatorLiveData().setValue(new LecTeach());
+            model.getLecTeachTimeMediatorLiveData().setValue(new LecTeachTime());
 
             model.getLecTeachMediatorLiveData().getValue().setUnitname(unitname);
             model.getLecTeachMediatorLiveData().getValue().setUnitcode(unitcode);

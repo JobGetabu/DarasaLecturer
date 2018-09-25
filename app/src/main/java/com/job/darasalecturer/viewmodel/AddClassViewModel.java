@@ -15,18 +15,16 @@ import java.util.List;
 public class AddClassViewModel extends ViewModel {
 
     private MediatorLiveData<Integer> currentStep;
-    private MediatorLiveData<LecTeach> lecTeachMediatorLiveData;
-    private MediatorLiveData<LecTeachTime> lecTeachTimeMediatorLiveData;
-    private MediatorLiveData<List<String>> courseList;
+    private MediatorLiveData<LecTeach> lecTeachMediatorLiveData = new MediatorLiveData<>();
+    private MediatorLiveData<LecTeachTime> lecTeachTimeMediatorLiveData = new MediatorLiveData<>();
+    private MediatorLiveData<List<String>> courseList = new MediatorLiveData<>();
 
     private LiveData<LecTeach> lecTeachLiveData;
     private LiveData<LecTeachTime> lecTeachTimeLiveData;
 
     public AddClassViewModel() {
         currentStep = new MediatorLiveData<>();
-        lecTeachMediatorLiveData = new MediatorLiveData<>();
-        lecTeachTimeMediatorLiveData = new MediatorLiveData<>();
-        courseList = new MediatorLiveData<>();
+
     }
 
     public MediatorLiveData<Integer> getCurrentStep() {

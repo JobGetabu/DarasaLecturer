@@ -10,7 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
 
@@ -18,6 +22,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
+import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +47,9 @@ public class StepXinfoFragment extends Fragment {
     Unbinder unbinder;
 
     private AddClassViewModel model;
+
+    private FirebaseFirestore mFirestore;
+    private FirebaseAuth mAuth;
 
     public StepXinfoFragment() {
         // Required empty public constructor
@@ -65,6 +75,10 @@ public class StepXinfoFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //firebase
+        mFirestore = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
         model = ViewModelProviders.of(getActivity()).get(AddClassViewModel.class);
     }
 
@@ -86,14 +100,42 @@ public class StepXinfoFragment extends Fragment {
             String school = stepXSchool.getEditText().getText().toString();
 
             model.getLecTeachMediatorLiveData().getValue().setSemester(sem);
-            model.getLecTeachMediatorLiveData().getValue().setStudyyear(unitcode);
+            model.getLecTeachMediatorLiveData().getValue().setStudyyear(yr);
+            model.getLecTeachMediatorLiveData().getValue().setAcademicyear(academ);
+            model.getLecTeachMediatorLiveData().getValue().setSchool(school);
 
-            model.getLecTeachTimeMediatorLiveData().getValue().setDay(day);
-            model.getLecTeachTimeMediatorLiveData().getValue().setTime(time);
+            String lecid = mAuth.getCurrentUser().getUid();
+            String lecteachid = mFirestore.collection(LECTEACHCOL).document().getId();
+            String lecteachtimeid = mFirestore.collection(LECTEACHTIMECOL).document().getId();
+
+            model.getLecTeachTimeMediatorLiveData().getValue().setLecid(lecid);
+            model.getLecTeachTimeMediatorLiveData().getValue().setLecteachid(lecteachid);
+            model.getLecTeachTimeMediatorLiveData().getValue().setLecteachtimeid(lecteachtimeid);
+
+            if (model.getCourseList().getValue() != null && model.getCourseList().getValue().size() > 1){
+                model.getLecTeachMediatorLiveData().getValue().setCombiner(true);
+
+                //push courses list
+
+            }else {
+                model.getLecTeachMediatorLiveData().getValue().setCombiner(false);
+            }
+
+            // Get a new write batch
+            WriteBatch batch = mFirestore.batch();
+
+            /* // Set the value of lecteach
+            DocumentReference lecteachRef =  mFirestore.collection(LECTEACHCOL).document(lecteachid);
+            batch.set(lecteachRef, model.getLecTeachMediatorLiveData().getValue());
+            DocumentReference lecteachtimeRef =  mFirestore.collection(LECTEACHTIMECOL).document(lecteachtimeid);
+            batch.set(lecteachtimeRef, model.getLecTeachTimeMediatorLiveData().getValue());
+            */
+
+            Toast.makeText(getContext(), model.getLecTeachMediatorLiveData().getValue().toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    public boolean validate() {
+    private boolean validate() {
         boolean valid = true;
 
         String sem = stepXSemester.getEditText().getText().toString();
