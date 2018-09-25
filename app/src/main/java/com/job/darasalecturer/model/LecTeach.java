@@ -13,9 +13,13 @@ public class LecTeach {
     private String unitname;
     private String semester;
     private String studyyear;
+    private String academicyear;
     private Boolean combiner;
     private String school;
     private String department;
+
+    //studyyear = 2018
+    //academic year = 2018/19
 
     public LecTeach() {
     }
@@ -97,6 +101,14 @@ public class LecTeach {
         this.department = department;
     }
 
+    public String getAcademicyear() {
+        return academicyear;
+    }
+
+    public void setAcademicyear(String academicyear) {
+        this.academicyear = academicyear;
+    }
+
     @Override
     public String toString() {
         return "LecTeach{" +
@@ -105,6 +117,7 @@ public class LecTeach {
                 ", unitname='" + unitname + '\'' +
                 ", semester='" + semester + '\'' +
                 ", studyyear='" + studyyear + '\'' +
+                ", academicyear='" + academicyear + '\'' +
                 ", combiner=" + combiner +
                 ", school='" + school + '\'' +
                 ", department='" + department + '\'' +

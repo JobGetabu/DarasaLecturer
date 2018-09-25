@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abdeveloper.library.MultiSelectDialog;
 import com.abdeveloper.library.MultiSelectModel;
@@ -116,7 +117,7 @@ public class StepVenueFragment extends Fragment {
                                 for (Map.Entry<String, Object> entry : mapdata.entrySet()) {
                                     //System.out.println(entry.getKey() + "/" + entry.getValue());
 
-                                    listOfCourses.add(new MultiSelectModel(i,entry.getValue().toString()));
+                                    listOfCourses.add(new MultiSelectModel(i, entry.getValue().toString()));
                                     i++;
                                 }
 
@@ -128,7 +129,7 @@ public class StepVenueFragment extends Fragment {
 
     }
 
-    private void promptCourseList(ArrayList<MultiSelectModel> listOfCourses ){
+    private void promptCourseList(ArrayList<MultiSelectModel> listOfCourses) {
         //MultiSelectModel
         MultiSelectDialog multiSelectDialog = new MultiSelectDialog()
                 .title(getResources().getString(R.string.select_course)) //setting title for dialog
@@ -149,13 +150,14 @@ public class StepVenueFragment extends Fragment {
 
                             addChipCourse(selectedNames.get(i));
                         }
+                        model.setCourseList(selectedNames);
 
                         stepVenueChipgroup.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onCancel() {
-                        Log.d(TAG,"Dialog cancelled");
+                        Log.d(TAG, "Dialog cancelled");
                     }
 
 
@@ -173,6 +175,14 @@ public class StepVenueFragment extends Fragment {
         if (validate()) {
 
             model.setCurrentStep(3);
+
+            String venue = stepVenueName.getEditText().getText().toString();
+            String dept = stepVenueDepartment.getEditText().getText().toString();
+
+            model.getLecTeachMediatorLiveData().getValue().setDepartment(dept);
+
+            model.getLecTeachTimeMediatorLiveData().getValue().setVenue(venue);
+
         }
     }
 
@@ -196,6 +206,10 @@ public class StepVenueFragment extends Fragment {
             stepVenueDepartment.setError(null);
         }
 
+        if (stepVenueChipgroup.getVisibility() == View.GONE ){
+            Toast.makeText(getContext(), "Select a Course", Toast.LENGTH_SHORT).show();
+            valid = false;
+        }
 
         return valid;
     }

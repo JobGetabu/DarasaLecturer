@@ -80,6 +80,16 @@ public class StepXinfoFragment extends Fragment {
         //finish
         if (validate()) {
 
+            String sem = stepXSemester.getEditText().getText().toString();
+            String yr = stepXYear.getEditText().getText().toString();
+            String academ = stepXAcadyear.getEditText().getText().toString();
+            String school = stepXSchool.getEditText().getText().toString();
+
+            model.getLecTeachMediatorLiveData().getValue().setSemester(sem);
+            model.getLecTeachMediatorLiveData().getValue().setStudyyear(unitcode);
+
+            model.getLecTeachTimeMediatorLiveData().getValue().setDay(day);
+            model.getLecTeachTimeMediatorLiveData().getValue().setTime(time);
         }
     }
 

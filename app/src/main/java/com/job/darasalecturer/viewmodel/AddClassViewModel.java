@@ -7,6 +7,8 @@ import android.arch.lifecycle.ViewModel;
 import com.job.darasalecturer.model.LecTeach;
 import com.job.darasalecturer.model.LecTeachTime;
 
+import java.util.List;
+
 /**
  * Created by Job on Monday : 9/24/2018.
  */
@@ -15,6 +17,7 @@ public class AddClassViewModel extends ViewModel {
     private MediatorLiveData<Integer> currentStep;
     private MediatorLiveData<LecTeach> lecTeachMediatorLiveData;
     private MediatorLiveData<LecTeachTime> lecTeachTimeMediatorLiveData;
+    private MediatorLiveData<List<String>> courseList;
 
     private LiveData<LecTeach> lecTeachLiveData;
     private LiveData<LecTeachTime> lecTeachTimeLiveData;
@@ -23,6 +26,7 @@ public class AddClassViewModel extends ViewModel {
         currentStep = new MediatorLiveData<>();
         lecTeachMediatorLiveData = new MediatorLiveData<>();
         lecTeachTimeMediatorLiveData = new MediatorLiveData<>();
+        courseList = new MediatorLiveData<>();
     }
 
     public MediatorLiveData<Integer> getCurrentStep() {
@@ -49,4 +53,11 @@ public class AddClassViewModel extends ViewModel {
         this.lecTeachTimeMediatorLiveData.setValue(lecTeachTimeMediatorLiveData);
     }
 
+    public MediatorLiveData<List<String>> getCourseList() {
+        return courseList;
+    }
+
+    public void setCourseList(List<String> courseList) {
+        this.courseList.setValue(courseList);
+    }
 }
