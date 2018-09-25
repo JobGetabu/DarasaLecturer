@@ -54,6 +54,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     @OnClick(R.id.settings_manage_account)
     public void onSettingsManageAccountClicked() {
+        Intent mIntent = new Intent(this, AccountSetupActivity.class);
+        startActivity(mIntent);
+        finish();
     }
 
     @OnClick(R.id.settings_logout)
