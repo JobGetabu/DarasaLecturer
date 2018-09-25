@@ -3,6 +3,7 @@ package com.job.darasalecturer.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.design.chip.Chip;
@@ -17,15 +18,24 @@ import android.widget.TextView;
 
 import com.abdeveloper.library.MultiSelectDialog;
 import com.abdeveloper.library.MultiSelectModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Source;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static com.job.darasalecturer.util.Constants.DKUTCOURSES;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,6 +60,9 @@ public class StepVenueFragment extends Fragment {
     private AddClassViewModel model;
     private static final String TAG = "stepvenue";
 
+    private FirebaseFirestore mFirestore;
+    private FirebaseAuth mAuth;
+
     public StepVenueFragment() {
         // Required empty public constructor
     }
@@ -69,8 +82,11 @@ public class StepVenueFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         model = ViewModelProviders.of(getActivity()).get(AddClassViewModel.class);
-
         stepVenueChipgroup.setVisibility(View.GONE);
+
+        //firebase
+        mFirestore = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -82,19 +98,37 @@ public class StepVenueFragment extends Fragment {
     @OnClick(R.id.step_venue_course_btn)
     public void onStepVenueCourseBtnClicked() {
 
-        //List of Countries with Name and Id
-        ArrayList<MultiSelectModel> listOfCourses= new ArrayList<>();
-        listOfCourses.add(new MultiSelectModel(1,"Bs of Commerce"));
-        listOfCourses.add(new MultiSelectModel(2,"Bs of Purchasing Supplies and Management"));
-        listOfCourses.add(new MultiSelectModel(3,"Bs of Business Administration and Management"));
-        listOfCourses.add(new MultiSelectModel(4,"Bs of Business Administration and Management"));
-        listOfCourses.add(new MultiSelectModel(5,"Bs. Food Science"));
-        listOfCourses.add(new MultiSelectModel(6,"Bs of Science in Computer Science"));
-        listOfCourses.add(new MultiSelectModel(7,"Bs of Business Administration and Management"));
-        listOfCourses.add(new MultiSelectModel(8,"Bs of Science in Criminology and Security Management"));
-        listOfCourses.add(new MultiSelectModel(9,"Bs of Science Electrical and Electronics Engineering"));
-        listOfCourses.add(new MultiSelectModel(10,"Bs of Science Mechatronic Engineering"));
+        mFirestore.collection(DKUTCOURSES).document("dkut")
+                .get(Source.DEFAULT)
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
 
+                            Map<String, Object> mapdata = task.getResult().getData();
+
+                            if (mapdata != null) {
+
+                                //List of courses with Name and Id
+                                ArrayList<MultiSelectModel> listOfCourses = new ArrayList<>();
+
+                                int i = 1;
+                                for (Map.Entry<String, Object> entry : mapdata.entrySet()) {
+                                    //System.out.println(entry.getKey() + "/" + entry.getValue());
+
+                                    listOfCourses.add(new MultiSelectModel(i,entry.getValue().toString()));
+                                    i++;
+                                }
+
+                                promptCourseList(listOfCourses);
+                            }
+                        }
+                    }
+                });
+
+    }
+
+    private void promptCourseList(ArrayList<MultiSelectModel> listOfCourses ){
         //MultiSelectModel
         MultiSelectDialog multiSelectDialog = new MultiSelectDialog()
                 .title(getResources().getString(R.string.select_course)) //setting title for dialog
@@ -126,9 +160,7 @@ public class StepVenueFragment extends Fragment {
 
 
                 });
-
         multiSelectDialog.show(getActivity().getSupportFragmentManager(), "multiSelectDialog");
-
     }
 
     @OnClick(R.id.step_venue_back)
