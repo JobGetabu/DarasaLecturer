@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity  {
         CollectionReference lecTeachTimeRef = mFirestore.collection(LECTEACHTIMECOL);
         Query mQuery = lecTeachTimeRef
                 .whereEqualTo("lecid", userId)
-                .orderBy("time", Query.Direction.DESCENDING);
+                .orderBy("time", Query.Direction.ASCENDING);
 
         FirestoreRecyclerOptions<LecTeachTime> options = new FirestoreRecyclerOptions.Builder<LecTeachTime>()
                 .setQuery(mQuery, LecTeachTime.class)
