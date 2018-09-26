@@ -176,7 +176,7 @@ public class StepXinfoFragment extends Fragment {
                                 sDialog.dismissWithAnimation();
 
                                 //showAddNewClassPrompt();
-                                startActivity(new Intent(getContext(),MainActivity.class));
+                                sendToMain();
 
                             }
                         });
@@ -236,5 +236,13 @@ public class StepXinfoFragment extends Fragment {
         }
 
         return valid;
+    }
+
+    private void sendToMain() {
+
+        Intent mainIntent = new Intent(getContext(), MainActivity.class);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(mainIntent);
     }
 }

@@ -19,6 +19,8 @@ public class LecTeachTime implements Parcelable {
     private Date time;
     private String unitcode;
     private String unitname;
+    private String semester;
+    private String studyyear;
     private String venue;
     private String lecteachtimeid;
 
