@@ -1,5 +1,12 @@
 package com.job.darasalecturer.util;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.support.annotation.StringRes;
+
+import com.job.darasalecturer.R;
+
 /**
  * Created by Job on Friday : 8/3/2018.
  */
@@ -23,4 +30,22 @@ public class Constants {
             ".LOCATION_DATA_EXTRA";
     public static final int LOCATION_INTERVAL = 10000;
     public static final int FASTEST_LOCATION_INTERVAL = 5000;
+
+    public static void createEmailIntent(Context ctx,
+                                           final @StringRes int int_email,
+                                           final @StringRes int int_subject,
+                                           final String message) {
+
+        final String toEmail = ctx.getString(R.string.dev_email);
+        final String subject = ctx.getString(R.string.dev_subject);
+
+        Intent send = new Intent(Intent.ACTION_SENDTO);
+        String uriText = "mailto:" + Uri.encode(toEmail) +
+                "?subject=" + Uri.encode(subject) +
+                "&body=" + Uri.encode(message);
+        Uri uri = Uri.parse(uriText);
+
+        send.setData(uri);
+        ctx.startActivity(Intent.createChooser(send, "Send Email to Darasa"));
+    }
 }

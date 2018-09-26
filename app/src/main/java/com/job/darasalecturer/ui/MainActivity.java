@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -32,6 +31,7 @@ import com.job.darasalecturer.model.LecTeachTime;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.LessonViewHolder;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -75,6 +75,9 @@ public class MainActivity extends AppCompatActivity  {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_menu));
+
+        //subtitle
+        showDateOfClasses(Calendar.getInstance());
 
         mainToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -266,7 +269,9 @@ public class MainActivity extends AppCompatActivity  {
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
 
 
-                Toast.makeText(MainActivity.this, sdf.format(myCalendar.getTime()) , Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, sdf.format(myCalendar.getTime()) , Toast.LENGTH_SHORT).show();
+                //subtitle
+                showDateOfClasses(myCalendar);
             }
         };
 
@@ -278,5 +283,16 @@ public class MainActivity extends AppCompatActivity  {
     private void sendToSettings() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+    }
+
+    private void showDateOfClasses(Calendar c){
+
+        DateFormat dateFormat2 = new SimpleDateFormat("EEE, MMM d, ''yy"); //Wed, Jul 4, '18
+
+        mainToolbar.setSubtitle("Showing: "+dateFormat2.format(c.getTime()));
+        mainToolbar.setSubtitleTextAppearance(this,R.style.ToolbarSubtitleAppearance);
+
+        int day = c.get(Calendar.DAY_OF_WEEK);
+        int daydate = c.get(Calendar.DAY_OF_MONTH);
     }
 }

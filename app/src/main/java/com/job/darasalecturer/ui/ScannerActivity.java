@@ -53,6 +53,7 @@ import com.google.zxing.common.BitMatrix;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.util.DoSnack;
+import com.job.darasalecturer.util.DrawableHelper;
 import com.job.darasalecturer.viewmodel.ScannerViewModel;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.victor.loading.newton.NewtonCradleLoading;
@@ -143,6 +144,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
         setSupportActionBar(scanToolbar);
         getSupportActionBar().setTitle("");
+
 
         //firebase
         mAuth = FirebaseAuth.getInstance();
@@ -448,10 +450,11 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             dd.show();
-            if (!dd.isShowing()) {
-                doSnack.showShortSnackbar("Turn on Location for QR generation");
-            }
+            setUpLocationUi(false);
+
         } else {
+            dd.dismiss();
+            setUpLocationUi(true);
 
         }
 
@@ -668,5 +671,26 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
             scanQrImageView.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    private void setUpLocationUi(Boolean on_off) {
+        if (on_off) {
+            scanLocationBool.setText("Location : ON");
+
+            DrawableHelper
+                    .withContext(this)
+                    .withColor(R.color.darkbluish)
+                    .withDrawable(R.drawable.ic_location_on)
+                    .tint()
+                    .applyTo(scanLocImg);
+        } else {
+            scanLocationBool.setText("Location : OFF");
+            DrawableHelper
+                    .withContext(this)
+                    .withColor(R.color.greyish)
+                    .withDrawable(R.drawable.ic_location_on)
+                    .tint()
+                    .applyTo(scanLocImg);
+        }
     }
 }

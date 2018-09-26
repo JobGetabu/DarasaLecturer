@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.util.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,6 +95,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     @OnClick(R.id.settings_help)
     public void onSettingsHelpClicked() {
+        Constants.createEmailIntent(this,R.string.dev_email,R.string.dev_subject,
+                "Case Id \n"+mAuth.getCurrentUser().getDisplayName()+" \n"+mAuth.getCurrentUser().getUid()+"\n\n");
     }
 
     @OnClick(R.id.settings_faq)

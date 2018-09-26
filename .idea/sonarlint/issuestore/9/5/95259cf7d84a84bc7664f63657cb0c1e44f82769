@@ -1,9 +1,9 @@
 
-Wsquid:UnusedPrivateMethod"-Remove this unused private "sendToQr" method.(öµÁî8ÂÒğà,
-Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(Ò“ÿšùÿÿÿÿ8ÂÒğà,
-Esquid:S1068")Remove this unused "mUser" private field.(çÎùÜ8ÂÒğà,
-Lsquid:S1068"+Remove this unused "doSnack" private field.(¯¨ÓÍûÿÿÿÿ8ÂÒğà,
-psquid:S1450"TRemove the "mUser" field and declare it as a local variable in the relevant methods.(çÎùÜ8ÂÒğà,
-wsquid:S1450"VRemove the "doSnack" field and declare it as a local variable in the relevant methods.(¯¨ÓÍûÿÿÿÿ8ÂÒğà,
-lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(Ò“ÿšùÿÿÿÿ8ÂÒğà,
-Ssquid:S1135"2Complete the task associated to this TODO comment.(» æÿÿÿÿÿ8ÂÒğà,
+Wsquid:UnusedPrivateMethod"-Remove this unused private "sendToQr" method.(öµÁî8ÏÿØ‘á,
+Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(Ò“ÿšùÿÿÿÿ8ÏÿØ‘á,
+Esquid:S1068")Remove this unused "mUser" private field.(çÎùÜ8ÏÿØ‘á,
+Lsquid:S1068"+Remove this unused "doSnack" private field.(¯¨ÓÍûÿÿÿÿ8ÏÿØ‘á,
+psquid:S1450"TRemove the "mUser" field and declare it as a local variable in the relevant methods.(çÎùÜ8ÏÿØ‘á,
+wsquid:S1450"VRemove the "doSnack" field and declare it as a local variable in the relevant methods.(¯¨ÓÍûÿÿÿÿ8ÏÿØ‘á,
+lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(Ò“ÿšùÿÿÿÿ8ÏÿØ‘á,
+Ssquid:S1135"2Complete the task associated to this TODO comment.(» æÿÿÿÿÿ8ÏÿØ‘á,
