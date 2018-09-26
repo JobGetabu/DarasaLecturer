@@ -20,9 +20,12 @@ import android.widget.DatePicker;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -42,8 +45,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
+import static com.job.darasalecturer.util.Constants.LECUSERCOL;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.main_toolbar)
     Toolbar mainToolbar;
@@ -62,6 +66,7 @@ public class MainActivity extends AppCompatActivity  {
     private FirebaseFirestore mFirestore;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirestoreRecyclerAdapter adapter;
+    private Query mQuery = null;
 
     private DoSnack doSnack;
 
@@ -104,7 +109,8 @@ public class MainActivity extends AppCompatActivity  {
 
                     userId = mAuth.getCurrentUser().getUid();
 
-                    setUpList(classListQuery(Calendar.getInstance()));
+                    classListQuery(Calendar.getInstance());
+
                 }
             }
         };
@@ -175,18 +181,42 @@ public class MainActivity extends AppCompatActivity  {
         return true;
     }
 
-    private Query classListQuery(Calendar c){
-
-        int day = c.get(Calendar.DAY_OF_WEEK);
-        String sDay = Constants.getDay(day);
+    private Query classListQuery(Calendar c) {
 
 
-        // Create a reference to the lecTeachTime collection
-        CollectionReference lecTeachTimeRef = mFirestore.collection(LECTEACHTIMECOL);
-        Query mQuery = lecTeachTimeRef
-                .whereEqualTo("lecid", userId)
-                .whereEqualTo("day", sDay)
-                .orderBy("time", Query.Direction.ASCENDING);
+        final int day = c.get(Calendar.DAY_OF_WEEK);
+        final String sDay = Constants.getDay(day);
+
+        mFirestore.collection(LECUSERCOL).document(userId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String currentsemester = documentSnapshot.getString("currentsemester");
+                        String currentyear = documentSnapshot.getString("currentyear");
+
+                        // Create a reference to the lecTeachTime collection
+                        CollectionReference lecTeachTimeRef = mFirestore.collection(LECTEACHTIMECOL);
+                        mQuery = lecTeachTimeRef
+                                .whereEqualTo("lecid", userId)
+                                .whereEqualTo("day", sDay)
+                                .whereEqualTo("semester", currentsemester)
+                                .whereEqualTo("studyyear", currentyear)
+                                .orderBy("time", Query.Direction.ASCENDING);
+
+                        setUpList(mQuery);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        // Show a snackbar on errors
+                        Snackbar.make(findViewById(android.R.id.content),
+                                "Update Settings or check connection.", Snackbar.LENGTH_INDEFINITE).show();
+                    }
+                });
+
 
         return mQuery;
     }
@@ -194,14 +224,6 @@ public class MainActivity extends AppCompatActivity  {
     private void setUpList(Query mQuery) {
 
         initList();
-
-        /*// Create a reference to the lecTeachTime collection
-        CollectionReference lecTeachTimeRef = mFirestore.collection(LECTEACHTIMECOL);
-        Query mQuery = lecTeachTimeRef
-                .whereEqualTo("lecid", userId)
-                .orderBy("time", Query.Direction.ASCENDING);
-
-        */
 
         FirestoreRecyclerOptions<LecTeachTime> options = new FirestoreRecyclerOptions.Builder<LecTeachTime>()
                 .setQuery(mQuery, LecTeachTime.class)
@@ -221,7 +243,7 @@ public class MainActivity extends AppCompatActivity  {
             @Override
             protected void onBindViewHolder(@NonNull final LessonViewHolder holder, int position, @NonNull LecTeachTime model) {
 
-                holder.init(MainActivity.this, mFirestore,mAuth,model);
+                holder.init(MainActivity.this, mFirestore, mAuth, model);
                 holder.setUpUi(model);
             }
 
@@ -292,7 +314,8 @@ public class MainActivity extends AppCompatActivity  {
                 //Toast.makeText(MainActivity.this, sdf.format(myCalendar.getTime()) , Toast.LENGTH_SHORT).show();
                 //subtitle
                 showDateOfClasses(myCalendar);
-                setUpList(classListQuery(myCalendar));
+
+                classListQuery(myCalendar);
             }
         };
 
@@ -306,12 +329,12 @@ public class MainActivity extends AppCompatActivity  {
         startActivity(intent);
     }
 
-    private void showDateOfClasses(Calendar c){
+    private void showDateOfClasses(Calendar c) {
 
         DateFormat dateFormat2 = new SimpleDateFormat("EEE, MMM d, ''yy"); //Wed, Jul 4, '18
 
-        mainToolbar.setSubtitle("Showing: "+dateFormat2.format(c.getTime()));
-        mainToolbar.setSubtitleTextAppearance(this,R.style.ToolbarSubtitleAppearance);
+        mainToolbar.setSubtitle("Showing: " + dateFormat2.format(c.getTime()));
+        mainToolbar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleAppearance);
 
         int day = c.get(Calendar.DAY_OF_WEEK);
         int daydate = c.get(Calendar.DAY_OF_MONTH);
