@@ -96,7 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
     @OnClick(R.id.settings_help)
     public void onSettingsHelpClicked() {
         Constants.createEmailIntent(this,R.string.dev_email,R.string.dev_subject,
-                "Case Id \n"+mAuth.getCurrentUser().getDisplayName()+" \n"+mAuth.getCurrentUser().getUid()+"\n\n");
+                "Case Id \n"+mAuth.getCurrentUser().getUid()+" \n \n "+mAuth.getCurrentUser().getDisplayName()+"\n");
     }
 
     @OnClick(R.id.settings_faq)

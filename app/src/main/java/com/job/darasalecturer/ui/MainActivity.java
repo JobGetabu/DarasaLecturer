@@ -28,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.LecTeachTime;
+import com.job.darasalecturer.util.Constants;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.LessonViewHolder;
 
@@ -102,7 +103,8 @@ public class MainActivity extends AppCompatActivity  {
                 } else {
 
                     userId = mAuth.getCurrentUser().getUid();
-                    setUpList();
+
+                    setUpList(classListQuery(Calendar.getInstance()));
                 }
             }
         };
@@ -173,15 +175,33 @@ public class MainActivity extends AppCompatActivity  {
         return true;
     }
 
-    private void setUpList() {
+    private Query classListQuery(Calendar c){
 
-        initList();
+        int day = c.get(Calendar.DAY_OF_WEEK);
+        String sDay = Constants.getDay(day);
+
 
         // Create a reference to the lecTeachTime collection
         CollectionReference lecTeachTimeRef = mFirestore.collection(LECTEACHTIMECOL);
         Query mQuery = lecTeachTimeRef
                 .whereEqualTo("lecid", userId)
+                .whereEqualTo("day", sDay)
                 .orderBy("time", Query.Direction.ASCENDING);
+
+        return mQuery;
+    }
+
+    private void setUpList(Query mQuery) {
+
+        initList();
+
+        /*// Create a reference to the lecTeachTime collection
+        CollectionReference lecTeachTimeRef = mFirestore.collection(LECTEACHTIMECOL);
+        Query mQuery = lecTeachTimeRef
+                .whereEqualTo("lecid", userId)
+                .orderBy("time", Query.Direction.ASCENDING);
+
+        */
 
         FirestoreRecyclerOptions<LecTeachTime> options = new FirestoreRecyclerOptions.Builder<LecTeachTime>()
                 .setQuery(mQuery, LecTeachTime.class)
@@ -272,6 +292,7 @@ public class MainActivity extends AppCompatActivity  {
                 //Toast.makeText(MainActivity.this, sdf.format(myCalendar.getTime()) , Toast.LENGTH_SHORT).show();
                 //subtitle
                 showDateOfClasses(myCalendar);
+                setUpList(classListQuery(myCalendar));
             }
         };
 

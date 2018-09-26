@@ -48,4 +48,32 @@ public class Constants {
         send.setData(uri);
         ctx.startActivity(Intent.createChooser(send, "Send Email to Darasa"));
     }
+
+    public static String getDay(int day) {
+        switch (day) {
+            case 7:
+                return "Saturday";
+
+            case 6:
+                return "Friday";
+
+            case 5:
+                return "Thursday";
+
+            case 4:
+                return "Wednesday";
+
+            case 3:
+                return "Tuesday";
+
+            case 2:
+                return "Monday";
+
+            case 1:
+                return "Sunday";
+
+            default:
+                return "";
+        }
+    }
 }

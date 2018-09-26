@@ -35,7 +35,7 @@ public class FaqActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
 
         //String prourl = getIntent().getStringExtra(PRODUCTURL);
-        String url = "https://hacela.app";
+        String url = "http://jobgetabu.me/FAQ/";
 
         if (url == null){
             finish();
