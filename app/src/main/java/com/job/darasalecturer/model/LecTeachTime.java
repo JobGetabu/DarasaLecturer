@@ -28,13 +28,16 @@ public class LecTeachTime implements Parcelable {
     }
 
     public LecTeachTime(String lecid, String lecteachid, String day,
-                        Date time, String unitcode, String unitname, String venue, String lecteachtimeid) {
+                        Date time, String unitcode, String unitname,
+                        String semester, String studyyear, String venue, String lecteachtimeid) {
         this.lecid = lecid;
         this.lecteachid = lecteachid;
         this.day = day;
         this.time = time;
         this.unitcode = unitcode;
         this.unitname = unitname;
+        this.semester = semester;
+        this.studyyear = studyyear;
         this.venue = venue;
         this.lecteachtimeid = lecteachtimeid;
     }
@@ -103,6 +106,22 @@ public class LecTeachTime implements Parcelable {
         this.lecteachtimeid = lecteachtimeid;
     }
 
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
+
+    public String getStudyyear() {
+        return studyyear;
+    }
+
+    public void setStudyyear(String studyyear) {
+        this.studyyear = studyyear;
+    }
+
     @Override
     public String toString() {
         return "LecTeachTime{" +
@@ -112,6 +131,8 @@ public class LecTeachTime implements Parcelable {
                 ", time=" + time +
                 ", unitcode='" + unitcode + '\'' +
                 ", unitname='" + unitname + '\'' +
+                ", semester='" + semester + '\'' +
+                ", studyyear='" + studyyear + '\'' +
                 ", venue='" + venue + '\'' +
                 ", lecteachtimeid='" + lecteachtimeid + '\'' +
                 '}';
@@ -131,6 +152,8 @@ public class LecTeachTime implements Parcelable {
         dest.writeLong(this.time != null ? this.time.getTime() : -1);
         dest.writeString(this.unitcode);
         dest.writeString(this.unitname);
+        dest.writeString(this.semester);
+        dest.writeString(this.studyyear);
         dest.writeString(this.venue);
         dest.writeString(this.lecteachtimeid);
     }
@@ -143,6 +166,8 @@ public class LecTeachTime implements Parcelable {
         this.time = tmpTime == -1 ? null : new Date(tmpTime);
         this.unitcode = in.readString();
         this.unitname = in.readString();
+        this.semester = in.readString();
+        this.studyyear = in.readString();
         this.venue = in.readString();
         this.lecteachtimeid = in.readString();
     }
