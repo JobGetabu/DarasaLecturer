@@ -113,6 +113,9 @@ public class StepXinfoFragment extends Fragment {
             model.getLecTeachMediatorLiveData().getValue().setAcademicyear(academ);
             model.getLecTeachMediatorLiveData().getValue().setSchool(school);
 
+            model.getLecTeachTimeMediatorLiveData().getValue().setSemester(sem);
+            model.getLecTeachTimeMediatorLiveData().getValue().setStudyyear(yr);
+
             String lecid = mAuth.getCurrentUser().getUid();
             String lecteachid = mFirestore.collection(LECTEACHCOL).document().getId();
             String lecteachtimeid = mFirestore.collection(LECTEACHTIMECOL).document().getId();
