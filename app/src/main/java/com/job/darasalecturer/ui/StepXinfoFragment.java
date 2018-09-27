@@ -20,6 +20,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.model.DoneClasses;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
 
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.job.darasalecturer.util.Constants.DONECLASSES;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOURSESUBCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
@@ -135,6 +137,9 @@ public class StepXinfoFragment extends Fragment {
                 model.getLecTeachMediatorLiveData().getValue().setCombiner(false);
             }
 
+            //set up DoneClasses db
+            DoneClasses doneClasses = new DoneClasses();
+
             // Get a new write batch
             WriteBatch batch = mFirestore.batch();
 
@@ -143,6 +148,8 @@ public class StepXinfoFragment extends Fragment {
             batch.set(lecteachRef, model.getLecTeachMediatorLiveData().getValue());
             DocumentReference lecteachtimeRef =  mFirestore.collection(LECTEACHTIMECOL).document(lecteachtimeid);
             batch.set(lecteachtimeRef, model.getLecTeachTimeMediatorLiveData().getValue());
+            DocumentReference doneClassRef =  mFirestore.collection(DONECLASSES).document(lecteachtimeid);
+            batch.set(doneClassRef, doneClasses);
 
 
             DocumentReference courseRef =  mFirestore.collection(LECTEACHCOL).document(lecteachid)

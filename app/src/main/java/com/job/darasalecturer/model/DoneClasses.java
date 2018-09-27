@@ -8,19 +8,19 @@ public class DoneClasses {
     private String lecteachtimeid;
     private String unitname;
     private String unitcode;
-    private int number;
+    private double number;
 
     public DoneClasses() {
     }
 
-    public DoneClasses(String lecteachtimeid, String unitname, String unitcode, int number) {
+    public DoneClasses(String lecteachtimeid, String unitname, String unitcode, double number) {
         this.lecteachtimeid = lecteachtimeid;
         this.unitname = unitname;
         this.unitcode = unitcode;
         this.number = number;
     }
 
-    public DoneClasses(String unitname, String unitcode, int number) {
+    public DoneClasses(String unitname, String unitcode, double number) {
         this.unitname = unitname;
         this.unitcode = unitcode;
         this.number = number;
@@ -50,7 +50,7 @@ public class DoneClasses {
         this.unitcode = unitcode;
     }
 
-    public int getNumber() {
+    public double getNumber() {
         return number;
     }
 

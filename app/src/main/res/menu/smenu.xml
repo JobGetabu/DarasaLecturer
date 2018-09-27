@@ -4,15 +4,15 @@
 
 
     <item
-        android:id="@+id/smenu_record"
-        android:title="@string/record_attendance" />
+        android:id="@+id/smenu_save"
+        android:title="@string/save_class" />
     <item
         android:id="@+id/smenu_pin"
         android:icon="@drawable/ic_pin"
         android:title="@string/pin_screen"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/smenu_confirm"
+        android:id="@+id/smenu_addattendees"
         android:title="@string/add_attendee"
         />
 </menu>

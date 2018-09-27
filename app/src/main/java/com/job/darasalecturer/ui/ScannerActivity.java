@@ -42,9 +42,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Source;
+import com.google.firebase.firestore.Transaction;
 import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -60,12 +63,14 @@ import com.victor.loading.newton.NewtonCradleLoading;
 import com.victor.loading.rotate.RotateLoading;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.OnReverseGeocodingListener;
 import io.nlopez.smartlocation.SmartLocation;
@@ -73,6 +78,7 @@ import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProv
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 import static android.widget.Toast.LENGTH_LONG;
+import static com.job.darasalecturer.util.Constants.DONECLASSES;
 import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOURSESUBCOL;
@@ -250,7 +256,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
                 updatePinningStatus();
                 break;
-            case R.id.smenu_record:
+            case R.id.smenu_save:
                 showPasscodeFragment.show(getSupportFragmentManager(), ShowPasscodeFragment.TAG);
                 showPasscodeFragment.setOnSuccessFail(new ShowPasscodeFragment.OnSuccessFail() {
                     @Override
@@ -260,9 +266,8 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
                                 unpin();
                             }
                         }
-                        //TODO: end class officially
                         //notification will be better.
-                        Toast.makeText(ScannerActivity.this, "Class attendance recorded", Toast.LENGTH_LONG).show();
+                        saveAndEndClass();
                     }
 
                     @Override
@@ -273,7 +278,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
                 break;
 
-            case R.id.smenu_confirm:
+            case R.id.smenu_addattendees:
 
                 showPasscodeFragment.show(getSupportFragmentManager(), ShowPasscodeFragment.TAG);
                 showPasscodeFragment.setOnSuccessFail(new ShowPasscodeFragment.OnSuccessFail() {
@@ -692,5 +697,140 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
                     .tint()
                     .applyTo(scanLocImg);
         }
+    }
+
+    private void saveAndEndClass(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("Save class");  // GPS not found
+        builder.setMessage("This will record number of students that attended this lesson"+
+                "\n Note: Add attendee(s) is recording attendance of students without smartphones");
+        builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                dialogInterface.dismiss();
+                
+                final SweetAlertDialog pDialog;
+                pDialog = new SweetAlertDialog(ScannerActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+                pDialog.setCancelable(false);
+                pDialog.setContentText("Saving class attendance");
+                pDialog.show();
+                
+                Map<String,Object> doneClassMAp = new HashMap<>();
+                doneClassMAp.put("lecteachtimeid",qrParser.getLecteachtimeid());
+                doneClassMAp.put("unitname",qrParser.getUnitname());
+                doneClassMAp.put("unitcode",qrParser.getUnitcode());
+
+                mFirestore.collection(DONECLASSES).document(qrParser.getLecteachtimeid())
+                        .update(doneClassMAp)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+
+                                updateClassTransaction(pDialog);
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                        pDialog.setCancelable(true);
+                        pDialog.setTitleText("Error lost connection");
+                        pDialog.setContentText("You're offline");
+                        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+
+
+                            }
+                        });
+
+                    }
+                });
+
+            }
+        });
+        builder.setNeutralButton(R.string.add_attendee, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                startActivity(new Intent(ScannerActivity.this, AddAttendanceActivity.class));
+            }
+        });
+        builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void updateClassTransaction(final SweetAlertDialog pDialog) {
+
+        final DocumentReference cdDocRef = mFirestore.collection(DONECLASSES).document(qrParser.getLecteachtimeid());
+
+        mFirestore.runTransaction(new Transaction.Function<Void>() {
+            @Override
+            public Void apply(Transaction transaction) throws FirebaseFirestoreException {
+                DocumentSnapshot snapshot = transaction.get(cdDocRef);
+                double newPopulation = snapshot.getDouble("number") + 1;
+                transaction.update(cdDocRef, "number", newPopulation);
+
+                // Success
+                return null;
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "Transaction success!");
+
+                pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                pDialog.setCancelable(true);
+                pDialog.setTitleText("Saved Successfully");
+                pDialog.setContentText("You're now set");
+                pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+
+                        //showAddNewClassPrompt();
+                        sendToMain();
+
+                    }
+                });
+
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Transaction failure.", e);
+
+                        pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                        pDialog.setCancelable(true);
+                        pDialog.setTitleText("Error lost connection");
+                        pDialog.setContentText("You're offline");
+                        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+
+                            }
+                        });
+                    }
+                });
+    }
+
+    private void sendToMain() {
+
+        Intent mainIntent = new Intent(this, MainActivity.class);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(mainIntent);
     }
 }
