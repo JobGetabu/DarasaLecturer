@@ -149,6 +149,7 @@ public class LecTeachTime implements Parcelable {
                 '}';
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -166,6 +167,7 @@ public class LecTeachTime implements Parcelable {
         dest.writeString(this.studyyear);
         dest.writeString(this.venue);
         dest.writeString(this.lecteachtimeid);
+        dest.writeStringList(this.courses);
     }
 
     protected LecTeachTime(Parcel in) {
@@ -180,6 +182,7 @@ public class LecTeachTime implements Parcelable {
         this.studyyear = in.readString();
         this.venue = in.readString();
         this.lecteachtimeid = in.readString();
+        this.courses = in.createStringArrayList();
     }
 
     public static final Creator<LecTeachTime> CREATOR = new Creator<LecTeachTime>() {
