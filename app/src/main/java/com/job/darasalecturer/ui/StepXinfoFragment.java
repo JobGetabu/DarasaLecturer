@@ -23,6 +23,7 @@ import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.DoneClasses;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -127,6 +128,9 @@ public class StepXinfoFragment extends Fragment {
             model.getLecTeachTimeMediatorLiveData().getValue().setLecid(lecid);
             model.getLecTeachTimeMediatorLiveData().getValue().setLecteachid(lecteachid);
             model.getLecTeachTimeMediatorLiveData().getValue().setLecteachtimeid(lecteachtimeid);
+
+            ArrayList<String> courses = new ArrayList<>(model.getCourseList().getValue());
+            model.getLecTeachTimeMediatorLiveData().getValue().setCourses(courses);
 
             if (model.getCourseList().getValue() != null && model.getCourseList().getValue().size() > 1){
                 model.getLecTeachMediatorLiveData().getValue().setCombiner(true);

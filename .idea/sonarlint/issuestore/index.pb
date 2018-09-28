@@ -208,3 +208,9 @@ k
 ;app/src/main/java/com/job/darasalecturer/model/LecUser.java,9\1\9152fb6d7865a9e735478cc42e9e8a291c14e992
 l
 <app/src/main/java/com/job/darasalecturer/model/QRParser.java,5\2\5297a0187597e104ab20184553c7ce9c35ad8a37
+
+_app/build/generated/source/apt/debug/com/job/darasalecturer/ui/ScannerActivity_ViewBinding.java,1\5\1527bb48245da69a053ebbdc7b9cc7e4a29b7cfb
+q
+Aapp/src/main/java/com/job/darasalecturer/util/DrawableHelper.java,9\6\96ece7abeb0a790653d700b69a368c4e60cc4157
+o
+?app/src/main/java/com/job/darasalecturer/model/DoneClasses.java,c\0\c0284e90b817d47b16cf847f841e9b0ccb7f6113

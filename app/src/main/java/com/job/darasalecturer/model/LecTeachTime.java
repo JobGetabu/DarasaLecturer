@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Keep;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -23,6 +24,7 @@ public class LecTeachTime implements Parcelable {
     private String studyyear;
     private String venue;
     private String lecteachtimeid;
+    private ArrayList<String> courses;
 
     public LecTeachTime() {
     }
@@ -120,6 +122,14 @@ public class LecTeachTime implements Parcelable {
 
     public void setStudyyear(String studyyear) {
         this.studyyear = studyyear;
+    }
+
+    public ArrayList<String> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(ArrayList<String> courses) {
+        this.courses = courses;
     }
 
     @Override
