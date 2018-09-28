@@ -145,9 +145,9 @@ public class LecTeachTime implements Parcelable {
                 ", studyyear='" + studyyear + '\'' +
                 ", venue='" + venue + '\'' +
                 ", lecteachtimeid='" + lecteachtimeid + '\'' +
+                ", courses=" + courses +
                 '}';
     }
-
 
     @Override
     public int describeContents() {
