@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Location;
 import android.location.LocationManager;
@@ -74,7 +75,11 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.OnReverseGeocodingListener;
 import io.nlopez.smartlocation.SmartLocation;
+import io.nlopez.smartlocation.location.LocationProvider;
+import io.nlopez.smartlocation.location.config.LocationParams;
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
+import io.nlopez.smartlocation.location.providers.LocationManagerProvider;
+import io.nlopez.smartlocation.location.providers.MultiFallbackProvider;
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 import static android.widget.Toast.LENGTH_LONG;
@@ -83,7 +88,7 @@ import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOURSESUBCOL;
 
-public class ScannerActivity extends AppCompatActivity implements OnLocationUpdatedListener {
+public class ScannerActivity extends AppCompatActivity  {
 
     private static final int PIN_NUMBER_REQUEST_CODE = 200;
     private static final String TAG = "Scanner";
@@ -138,7 +143,8 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
     private FirebaseAuth mAuth;
 
     private LocationGooglePlayServicesProvider provider;
-    private Location location;
+    private SweetAlertDialog pDialogLoc;
+    private Location mLocation;
     private int locationcount = 1;
     private ShowPasscodeFragment showPasscodeFragment;
 
@@ -421,15 +427,53 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
     private void startLocation() {
 
-        provider = new LocationGooglePlayServicesProvider();
-        provider.setCheckLocationSettings(true);
+        pDialogLoc = new SweetAlertDialog(ScannerActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialogLoc.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+        pDialogLoc.setTitleText("Accessing Location" + "\n Just a moment...");
+        pDialogLoc.setCancelable(true);
+        pDialogLoc.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                if (mLocation != null) {
 
-        SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
-
-        smartLocation.location(provider).start(this);
+                } else {
+                    Toast.makeText(ScannerActivity.this, "Location not acquired", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        });
+        pDialogLoc.show();
 
         //register location change broadcast
         registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+
+        LocationManagerProvider locationManagerProvider = new LocationManagerProvider();
+
+        LocationProvider fallbackProvider = new MultiFallbackProvider.Builder()
+                 .withProvider(locationManagerProvider).withGooglePlayServicesProvider().build();
+
+        SmartLocation.with(this)
+                .location(fallbackProvider)
+                .config(LocationParams.NAVIGATION)
+                .oneFix()
+                .start(new OnLocationUpdatedListener() {
+                    @Override
+                    public void onLocationUpdated(Location location) {
+
+                        Log.d(TAG, "onLocationUpdated: " + location);
+                        showLocation(location);
+
+                        mLocation = location;
+                        generateQR(location);
+
+                        if (mLocation != null) {
+                            if (pDialogLoc.isShowing()) {
+                                pDialogLoc.dismiss();
+                            }
+                        }
+                    }
+                });
+
     }
 
     private void checkLocationOn() {
@@ -479,25 +523,6 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
         }
     };
 
-    @Override
-    public void onLocationUpdated(Location location) {
-        showLocation(location);
-
-        //true first time
-        if (locationcount == 1) {
-            generateQR(location);
-            locationcount++;
-        }
-
-        /*//true second or more when location changes
-        if (locationcount > 1 && this.location != location) {
-
-            generateQR(location);
-            locationcount++;
-        }
-
-        this.location = location;*/
-    }
 
     private void generateQR(Location location) {
 

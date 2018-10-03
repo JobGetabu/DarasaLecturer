@@ -196,11 +196,6 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
 
             DateFormat dateFormat2 = new SimpleDateFormat("hh.mm aa");
             lsTime.setText(dateFormat2.format(date));
-
-            int day = c.get(Calendar.DAY_OF_WEEK);
-            int daydate = c.get(Calendar.DAY_OF_MONTH);
-
-
         }
     }
 
