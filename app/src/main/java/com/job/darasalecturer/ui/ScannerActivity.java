@@ -501,9 +501,7 @@ public class ScannerActivity extends AppCompatActivity implements OnLocationUpda
 
     private void generateQR(Location location) {
 
-        qrParser.setLatitude(String.valueOf(location.getLatitude()));
-        qrParser.setLongitude(String.valueOf(location.getLongitude()));
-
+        qrParser.setLocation(location);
         String qrtext = qrParser.classToGson(gson, qrParser);
 
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
