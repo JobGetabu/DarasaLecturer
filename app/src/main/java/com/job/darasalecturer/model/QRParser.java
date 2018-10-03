@@ -7,7 +7,10 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -16,7 +19,7 @@ import java.util.Date;
 public class QRParser implements Parcelable {
     private Location location;
     private ArrayList<String> courses;
-    private String classtime;
+    private Date classtime;
     private String lecteachtimeid;
     private String unitname;
     private String unitcode;
@@ -42,7 +45,7 @@ public class QRParser implements Parcelable {
         }
     }
 
-    public QRParser(Location location, ArrayList<String> courses, String classtime,
+    public QRParser(Location location, ArrayList<String> courses, Date classtime,
                     String lecteachtimeid, String unitname, String unitcode, Date date) {
         this.location = location;
         this.courses = courses;
@@ -69,11 +72,11 @@ public class QRParser implements Parcelable {
         this.courses = courses;
     }
 
-    public String getClasstime() {
+    public Date getClasstime() {
         return classtime;
     }
 
-    public void setClasstime(String classtime) {
+    public void setClasstime(Date classtime) {
         this.classtime = classtime;
     }
 
@@ -122,6 +125,20 @@ public class QRParser implements Parcelable {
                 '}';
     }
 
+    private String lessonTimeInString(Date timestamp) {
+        //Timestamp timestamp = model.getTimestamp();
+        if (timestamp != null) {
+
+            Date date = timestamp;
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+
+            DateFormat dateFormat2 = new SimpleDateFormat("hh.mm aa");
+            return dateFormat2.format(date);
+        }
+        return null;
+    }
+
 
     @Override
     public int describeContents() {
@@ -132,7 +149,7 @@ public class QRParser implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.location, flags);
         dest.writeStringList(this.courses);
-        dest.writeString(this.classtime);
+        dest.writeLong(this.classtime != null ? this.classtime.getTime() : -1);
         dest.writeString(this.lecteachtimeid);
         dest.writeString(this.unitname);
         dest.writeString(this.unitcode);
@@ -142,7 +159,8 @@ public class QRParser implements Parcelable {
     protected QRParser(Parcel in) {
         this.location = in.readParcelable(Location.class.getClassLoader());
         this.courses = in.createStringArrayList();
-        this.classtime = in.readString();
+        long tmpClasstime = in.readLong();
+        this.classtime = tmpClasstime == -1 ? null : new Date(tmpClasstime);
         this.lecteachtimeid = in.readString();
         this.unitname = in.readString();
         this.unitcode = in.readString();

@@ -93,7 +93,8 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
     public void onLsBtnClicked() {
 
         QRParser qrParser = new QRParser();
-        qrParser.set(Calendar.getInstance().getTime());
+        qrParser.setDate(Calendar.getInstance().getTime());
+        qrParser.setClasstime(lecTeachTime.getTime());
         qrParser.setCourses(lecTeachTime.getCourses());
         qrParser.setLecteachtimeid(lecTeachTime.getLecteachtimeid());
         qrParser.setUnitcode(lecTeachTime.getUnitcode());
