@@ -1,15 +1,15 @@
 
-Zsquid:UnusedPrivateMethod–"-Remove this unused private "sendToQr" method.(öµÁî8¡„ôÁá,
-Nsquid:S1068G"+Remove this unused "doSnack" private field.(¯¨ÓÍûÿÿÿÿ8¡„ôÁá,
-Lsquid:S1481Ó"(Remove this unused "day" local variable.(Îšìÿÿÿÿÿ8¡„ôÁá,
-_squid:S1854Ô";Remove this useless assignment to local variable "daydate".(‚İ»âøÿÿÿÿ8¡„ôÁá,
-rsquid:S1450@"TRemove the "mUser" field and declare it as a local variable in the relevant methods.(çÎùÜ8¡„ôÁá,
-Psquid:S1481Ô",Remove this unused "daydate" local variable.(‚İ»âøÿÿÿÿ8¡„ôÁá,
-Vsquid:S1135¯"2Complete the task associated to this TODO comment.(» æÿÿÿÿÿ8¡„ôÁá,
-ysquid:S1450G"VRemove the "doSnack" field and declare it as a local variable in the relevant methods.(¯¨ÓÍûÿÿÿÿ8¡„ôÁá,
-Lsquid:S1481·"(Remove this unused "sdf" local variable.(¥¦üÈÿÿÿÿÿ8¡„ôÁá,
-[squid:S1854·"7Remove this useless assignment to local variable "sdf".(¥¦üÈÿÿÿÿÿ8¡„ôÁá,
-Gsquid:S1068@")Remove this unused "mUser" private field.(çÎùÜ8¡„ôÁá,
-[squid:S1854Ó"7Remove this useless assignment to local variable "day".(Îšìÿÿÿÿÿ8¡„ôÁá,
-osquid:S1301­"KReplace this "switch" statement by "if" statements to increase readability.(Ò“ÿšùÿÿÿÿ8¡„ôÁá,
-]"squid:SwitchLastCaseIsDefaultCheck­""Add a default case to this switch.(Ò“ÿšùÿÿÿÿ8¡„ôÁá,
+wsquid:S1450"VRemove the "doSnack" field and declare it as a local variable in the relevant methods.(¯¨ÓÍûÿÿÿÿ8¡„ôÁá,
+psquid:S1450"TRemove the "mUser" field and declare it as a local variable in the relevant methods.(çÎùÜ8¡„ôÁá,
+Isquid:S1481"(Remove this unused "sdf" local variable.(¥¦üÈÿÿÿÿÿ8¡„ôÁá,
+lsquid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(Ò“ÿšùÿÿÿÿ8¡„ôÁá,
+Esquid:S1068")Remove this unused "mUser" private field.(çÎùÜ8¡„ôÁá,
+Z"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(Ò“ÿšùÿÿÿÿ8¡„ôÁá,
+Isquid:S1481"(Remove this unused "day" local variable.(Îšìÿÿÿÿÿ8¡„ôÁá,
+Msquid:S1481",Remove this unused "daydate" local variable.(‚İ»âøÿÿÿÿ8¡„ôÁá,
+Xsquid:S1854"7Remove this useless assignment to local variable "sdf".(¥¦üÈÿÿÿÿÿ8¡„ôÁá,
+Wsquid:UnusedPrivateMethod"-Remove this unused private "sendToQr" method.(öµÁî8¡„ôÁá,
+Lsquid:S1068"+Remove this unused "doSnack" private field.(¯¨ÓÍûÿÿÿÿ8¡„ôÁá,
+\squid:S1854";Remove this useless assignment to local variable "daydate".(‚İ»âøÿÿÿÿ8¡„ôÁá,
+Xsquid:S1854"7Remove this useless assignment to local variable "day".(Îšìÿÿÿÿÿ8¡„ôÁá,
+Ssquid:S1135"2Complete the task associated to this TODO comment.(» æÿÿÿÿÿ8¡„ôÁá,

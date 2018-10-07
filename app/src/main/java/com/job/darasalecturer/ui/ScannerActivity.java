@@ -431,7 +431,8 @@ public class ScannerActivity extends AppCompatActivity  {
         pDialogLoc.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
         pDialogLoc.setTitleText("Accessing Location" + "\n Just a moment...");
         pDialogLoc.setCancelable(true);
-        pDialogLoc.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        pDialogLoc.show();
+        /*pDialogLoc.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
                 if (mLocation != null) {
@@ -441,8 +442,7 @@ public class ScannerActivity extends AppCompatActivity  {
                     finish();
                 }
             }
-        });
-        pDialogLoc.show();
+        });*/
 
         //register location change broadcast
         registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
@@ -453,7 +453,7 @@ public class ScannerActivity extends AppCompatActivity  {
                  .withProvider(locationManagerProvider).withGooglePlayServicesProvider().build();
 
         SmartLocation.with(this)
-                .location(fallbackProvider)
+                .location()
                 .config(LocationParams.NAVIGATION)
                 .oneFix()
                 .start(new OnLocationUpdatedListener() {
@@ -465,6 +465,8 @@ public class ScannerActivity extends AppCompatActivity  {
 
                         mLocation = location;
                         generateQR(location);
+
+                        pDialogLoc.dismiss();
 
                         if (mLocation != null) {
                             if (pDialogLoc.isShowing()) {

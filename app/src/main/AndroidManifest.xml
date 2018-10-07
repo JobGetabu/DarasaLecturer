@@ -39,6 +39,10 @@
             android:value="@integer/google_play_services_version"
             tools:replace="android:value" />
 
+        <meta-data
+            android:name="com.google.android.nearby.messages.API_KEY"
+            android:value="AIzaSyDMu5NAQRU1j1xRbOGN3v85M-CN9FP5rys" />
+
         <activity
             android:name=".ui.ScannerActivity"
             android:screenOrientation="portrait" />
