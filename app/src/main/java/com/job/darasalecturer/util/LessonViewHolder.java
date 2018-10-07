@@ -2,6 +2,8 @@ package com.job.darasalecturer.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
@@ -36,6 +38,8 @@ import butterknife.OnClick;
 import static com.job.darasalecturer.ui.ScannerActivity.LECTEACHIDEXTRA;
 import static com.job.darasalecturer.ui.ScannerActivity.QRPARSEREXTRA;
 import static com.job.darasalecturer.ui.ScannerActivity.VENUEEXTRA;
+import static com.job.darasalecturer.util.Constants.CURRENT_SEM_PREF_NAME;
+import static com.job.darasalecturer.util.Constants.CURRENT_YEAR_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOURSESUBCOL;
 
@@ -99,8 +103,18 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         qrParser.setLecteachtimeid(lecTeachTime.getLecteachtimeid());
         qrParser.setUnitcode(lecTeachTime.getUnitcode());
         qrParser.setUnitname(lecTeachTime.getUnitname());
+        getSemYearPref(qrParser);
 
         sendToQr(qrParser);
+    }
+
+    private void getSemYearPref(QRParser qrParser) {
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(mContext);
+        // Check prefs and pass to qrparser
+        qrParser.setSemester(sharedPreferences.getString(CURRENT_SEM_PREF_NAME,"0"));
+        qrParser.setYear(sharedPreferences.getString(CURRENT_YEAR_PREF_NAME,"2000"));
+
     }
 
     @OnClick(R.id.ls_loc_img)

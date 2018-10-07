@@ -20,6 +20,10 @@ public class Constants {
     public static final String STUDENTDETAILSCOL = "StudentDetails";
     public static final String DKUTCOURSES = "DkutCourses";
 
+    //prefs
+    public static final String CURRENT_SEM_PREF_NAME = "CURRENT_SEM_PREF_NAME";
+    public static final String CURRENT_YEAR_PREF_NAME = "CURRENT_YEAR_PREF_NAME";
+
     //for future  when we will access even finer location details
     public static final int SUCCESS_RESULT = 0;
     public static final int FAILURE_RESULT = 1;

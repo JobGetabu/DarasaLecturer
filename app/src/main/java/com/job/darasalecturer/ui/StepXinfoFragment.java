@@ -189,7 +189,7 @@ public class StepXinfoFragment extends Fragment {
                             public void onClick(SweetAlertDialog sDialog) {
                                 sDialog.dismissWithAnimation();
 
-                                //showAddNewClassPrompt();
+
                                 sendToMain();
 
                             }
