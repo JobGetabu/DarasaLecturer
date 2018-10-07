@@ -24,6 +24,8 @@ public class QRParser implements Parcelable {
     private String unitname;
     private String unitcode;
     private Date date;
+    private String semester;
+    private String year;
 
 
     public QRParser() {
@@ -46,7 +48,7 @@ public class QRParser implements Parcelable {
     }
 
     public QRParser(Location location, ArrayList<String> courses, Date classtime,
-                    String lecteachtimeid, String unitname, String unitcode, Date date) {
+                    String lecteachtimeid, String unitname, String unitcode, Date date, String semester, String year) {
         this.location = location;
         this.courses = courses;
         this.classtime = classtime;
@@ -54,6 +56,8 @@ public class QRParser implements Parcelable {
         this.unitname = unitname;
         this.unitcode = unitcode;
         this.date = date;
+        this.semester = semester;
+        this.year = year;
     }
 
     public Location getLocation() {
@@ -112,6 +116,22 @@ public class QRParser implements Parcelable {
         this.date = date;
     }
 
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
     @Override
     public String toString() {
         return "QRParser{" +
@@ -154,6 +174,8 @@ public class QRParser implements Parcelable {
         dest.writeString(this.unitname);
         dest.writeString(this.unitcode);
         dest.writeLong(this.date != null ? this.date.getTime() : -1);
+        dest.writeString(this.semester);
+        dest.writeString(this.year);
     }
 
     protected QRParser(Parcel in) {
@@ -166,6 +188,8 @@ public class QRParser implements Parcelable {
         this.unitcode = in.readString();
         long tmpDate = in.readLong();
         this.date = tmpDate == -1 ? null : new Date(tmpDate);
+        this.semester = in.readString();
+        this.year = in.readString();
     }
 
     public static final Creator<QRParser> CREATOR = new Creator<QRParser>() {
