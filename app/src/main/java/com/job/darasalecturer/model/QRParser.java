@@ -16,8 +16,8 @@ import java.util.Date;
  * Created by Job on Sunday : 8/12/2018.
  */
 public class QRParser implements Parcelable {
-    private String latitude;
-    private String longitude;
+    private double latitude;
+    private double longitude;
     private ArrayList<String> courses;
     private Date classtime;
     private String lecteachtimeid;
@@ -47,7 +47,7 @@ public class QRParser implements Parcelable {
         }
     }
 
-    public QRParser(String latitude, String longitude, ArrayList<String> courses, Date classtime,
+    public QRParser(double latitude, double longitude, ArrayList<String> courses, Date classtime,
                     String lecteachtimeid, String unitname, String unitcode, Date date, String semester, String year) {
         this.latitude = latitude;
         this.longitude = longitude;
@@ -61,19 +61,19 @@ public class QRParser implements Parcelable {
         this.year = year;
     }
 
-    public String getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
@@ -180,8 +180,8 @@ public class QRParser implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.latitude);
-        dest.writeString(this.longitude);
+        dest.writeDouble(this.latitude);
+        dest.writeDouble(this.longitude);
         dest.writeStringList(this.courses);
         dest.writeLong(this.classtime != null ? this.classtime.getTime() : -1);
         dest.writeString(this.lecteachtimeid);
@@ -193,8 +193,8 @@ public class QRParser implements Parcelable {
     }
 
     protected QRParser(Parcel in) {
-        this.latitude = in.readString();
-        this.longitude = in.readString();
+        this.latitude = in.readDouble();
+        this.longitude = in.readDouble();
         this.courses = in.createStringArrayList();
         long tmpClasstime = in.readLong();
         this.classtime = tmpClasstime == -1 ? null : new Date(tmpClasstime);

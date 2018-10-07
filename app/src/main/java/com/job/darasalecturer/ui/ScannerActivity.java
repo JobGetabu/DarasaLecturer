@@ -526,7 +526,7 @@ public class ScannerActivity extends AppCompatActivity  {
 
     private void generateQR(Location location) {
 
-        qrParser.setLocation(location);
+        qrParser.setLatitude(location.getLatitude());
         String qrtext = qrParser.classToGson(gson, qrParser);
 
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
