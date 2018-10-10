@@ -66,6 +66,8 @@
     <string name="dev_subject">Support Darasa Lecturer App</string>
     <string name="save_class">Save Class</string>
 
+    <string name="error_missing_permissions">Cannot start without required permissions</string>
+
     <array name="addclass_steps">
         <item>Intro</item>
         <item>Unit</item>

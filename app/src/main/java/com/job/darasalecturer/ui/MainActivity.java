@@ -2,10 +2,13 @@ package com.job.darasalecturer.ui;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -46,8 +50,13 @@ import butterknife.OnClick;
 
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasalecturer.util.Constants.LECUSERCOL;
+import static com.job.darasalecturer.util.Constants.REQUIRED_PERMISSIONS;
+import static com.job.darasalecturer.util.Constants.hasPermissions;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "main";
+    private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
 
     @BindView(R.id.main_toolbar)
     Toolbar mainToolbar;
@@ -58,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.main_no_class)
     View noClassView;
 
-    private static final String TAG = "main";
 
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
@@ -142,6 +150,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (adapter != null) {
             adapter.startListening();
+        }
+
+        if (!hasPermissions(this, REQUIRED_PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this,REQUIRED_PERMISSIONS, REQUEST_CODE_REQUIRED_PERMISSIONS);
         }
     }
 
@@ -343,5 +355,26 @@ public class MainActivity extends AppCompatActivity {
 
         int day = c.get(Calendar.DAY_OF_WEEK);
         int daydate = c.get(Calendar.DAY_OF_MONTH);
+    }
+
+    /** Handles user acceptance (or denial) of our permission request. */
+    @CallSuper
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode != REQUEST_CODE_REQUIRED_PERMISSIONS) {
+            return;
+        }
+
+        for (int grantResult : grantResults) {
+            if (grantResult == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(this, R.string.error_missing_permissions, Toast.LENGTH_LONG).show();
+                finish();
+                return;
+            }
+        }
+        recreate();
     }
 }
