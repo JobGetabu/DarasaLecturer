@@ -176,6 +176,10 @@ public class MainActivity extends AppCompatActivity {
 
                 sendToLogin();
                 break;
+
+            case R.id.hmenu_nearby:
+
+                startActivity(new Intent(this,NearbyActivity.class));
         }
 
         return true;
@@ -301,6 +305,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
                 // TODO Auto-generated method stub
+
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
