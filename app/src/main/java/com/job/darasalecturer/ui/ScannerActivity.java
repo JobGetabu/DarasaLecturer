@@ -1,6 +1,5 @@
 package com.job.darasalecturer.ui;
 
-import android.Manifest;
 import android.app.ActivityManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -21,8 +20,6 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -182,7 +179,7 @@ public class ScannerActivity extends AppCompatActivity  {
         // Keep the screen always on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-
+        /*
         // Check if the location services are enabled
         checkLocationOn();
         SmartLocation.with(this).location().state().locationServicesEnabled();
@@ -192,6 +189,7 @@ public class ScannerActivity extends AppCompatActivity  {
             return;
         }
         startLocation();
+        */
 
         showLoader(true);
         rotateloading.start();
@@ -201,6 +199,8 @@ public class ScannerActivity extends AppCompatActivity  {
 
         //set up password
         setInitPasscode();
+
+        generateQR();
     }
 
     @Override
@@ -464,7 +464,7 @@ public class ScannerActivity extends AppCompatActivity  {
                         showLocation(location);
 
                         mLocation = location;
-                        generateQR(location);
+                        //generateQR(location);
 
                         pDialogLoc.dismiss();
 
@@ -526,11 +526,9 @@ public class ScannerActivity extends AppCompatActivity  {
     };
 
 
-    private void generateQR(Location location) {
+    private void generateQR() {
 
-        qrParser.setLatitude(location.getLatitude());
         String qrtext = qrParser.classToGson(gson, qrParser);
-
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
             BitMatrix bitMatrix = multiFormatWriter.encode(qrtext, BarcodeFormat.QR_CODE, dptoInt(200), dptoInt(200));
@@ -553,7 +551,7 @@ public class ScannerActivity extends AppCompatActivity  {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_PERMISSION_ID && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            startLocation();
+            //startLocation();
         }
     }
 
@@ -607,37 +605,24 @@ public class ScannerActivity extends AppCompatActivity  {
         super.onStart();
 
         //register location change broadcast
-        registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+        //registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
     }
 
     @Override
     protected void onResume() {
 
-        startLocation();
         //register location change broadcast
-        registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+        //registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        stopLocation();
-        //unregister location change broadcast
-        try {
-            unregisterReceiver(mGpsSwitchStateReceiver);
-        } catch (IllegalArgumentException e) {
-        }
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        stopLocation();
-        //unregister location change broadcast
-        try {
-            unregisterReceiver(mGpsSwitchStateReceiver);
-        } catch (IllegalArgumentException e) {
-        }
         super.onDestroy();
     }
 
@@ -753,7 +738,7 @@ public class ScannerActivity extends AppCompatActivity  {
                             @Override
                             public void onSuccess(Void aVoid) {
 
-                                updateClassTransaction(pDialog);
+                                //updateClassTransaction(pDialog);
 
                             }
                         }).addOnFailureListener(new OnFailureListener() {
