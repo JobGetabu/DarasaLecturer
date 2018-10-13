@@ -80,7 +80,7 @@
         <activity
             android:name=".ui.FaqActivity"
             android:parentActivityName=".ui.SettingsActivity" />
-        <activity android:name=".ui.NearbyActivity"></activity>
+        <activity android:name=".ui.NearbyActivity"/>
     </application>
 
 </manifest>

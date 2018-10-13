@@ -24,6 +24,7 @@ import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import com.google.android.gms.nearby.connection.Strategy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.job.darasalecturer.R;
 
 import butterknife.BindView;
@@ -46,6 +47,10 @@ public class NearbyActivity extends AppCompatActivity {
     private String SERVICE_ID = "com.job.darasalecturer";
     private StringBuilder stringBuilder;
 
+    //firebase
+
+    private FirebaseAuth mAuth;
+
     // Our handle to Nearby Connections
     private ConnectionsClient connectionsClient;
 
@@ -55,9 +60,12 @@ public class NearbyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_nearby);
         ButterKnife.bind(this);
 
+        //firebase
+        mAuth = FirebaseAuth.getInstance();
+
         connectionsClient = Nearby.getConnectionsClient(this);
 
-
+        stringBuilder = new StringBuilder();
         stringBuilder.append("");
         btnDisconnect.setVisibility(View.GONE);
     }
@@ -102,7 +110,7 @@ public class NearbyActivity extends AppCompatActivity {
     }
 
     private String getUserNickname() {
-        return "dummy lec user";
+        return mAuth.getCurrentUser().getDisplayName();
     }
 
     private final EndpointDiscoveryCallback mEndpointDiscoveryCallback =
@@ -119,10 +127,13 @@ public class NearbyActivity extends AppCompatActivity {
 
                                     // We successfully requested a connection. Now both sides
                                     // must accept before the connection is established.
+
                                     //TODO: List the discovered devices here
 
                                     stringBuilder.append("device: -> " + discoveredEndpointInfo.getEndpointName());
                                     cntDeviceInfo.setText(stringBuilder);
+
+
 
                                 }
                             }).addOnFailureListener(
@@ -151,6 +162,7 @@ public class NearbyActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void unusedResult) {
                                 // We're discovering!
+                                Log.i(TAG, "onSuccess: we're discovering");
                             }
                         })
                 .addOnFailureListener(
@@ -172,6 +184,7 @@ public class NearbyActivity extends AppCompatActivity {
                     // Automatically accept the connection on both sides.
                     connectionsClient.acceptConnection(endpointId, mPayloadCallback);
 
+
                     //TODO: handle disconnect for "unverified" students
                 }
 
@@ -180,12 +193,18 @@ public class NearbyActivity extends AppCompatActivity {
                     switch (result.getStatus().getStatusCode()) {
                         case ConnectionsStatusCodes.STATUS_OK:
                             // We're connected! Can now start sending and receiving data.
+                            btnDisconnect.setVisibility(View.VISIBLE);
+                            btnCnt.setVisibility(View.GONE);
                             break;
                         case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:
                             // The connection was rejected by one or both sides.
+                            btnDisconnect.setVisibility(View.GONE);
+                            btnCnt.setVisibility(View.VISIBLE);
                             break;
                         case ConnectionsStatusCodes.STATUS_ERROR:
                             // The connection broke before it was able to be accepted.
+                            btnDisconnect.setVisibility(View.GONE);
+                            btnCnt.setVisibility(View.VISIBLE);
                             break;
                     }
                 }
@@ -194,6 +213,9 @@ public class NearbyActivity extends AppCompatActivity {
                 public void onDisconnected(String endpointId) {
                     // We've been disconnected from this endpoint. No more data can be
                     // sent or received.
+
+                    btnDisconnect.setVisibility(View.GONE);
+                    btnCnt.setVisibility(View.VISIBLE);
                 }
             };
 

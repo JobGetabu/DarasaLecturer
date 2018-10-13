@@ -8,7 +8,6 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,8 +49,6 @@ import butterknife.OnClick;
 
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasalecturer.util.Constants.LECUSERCOL;
-import static com.job.darasalecturer.util.Constants.REQUIRED_PERMISSIONS;
-import static com.job.darasalecturer.util.Constants.hasPermissions;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -150,10 +147,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (adapter != null) {
             adapter.startListening();
-        }
-
-        if (!hasPermissions(this, REQUIRED_PERMISSIONS)) {
-            ActivityCompat.requestPermissions(this,REQUIRED_PERMISSIONS, REQUEST_CODE_REQUIRED_PERMISSIONS);
         }
     }
 
