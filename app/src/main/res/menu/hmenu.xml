@@ -6,7 +6,4 @@
         android:id="@+id/hmenu_logout"
         android:title="@string/logout" />
 
-    <item
-        android:id="@+id/hmenu_nearby"
-        android:title="Nearby" />
 </menu>

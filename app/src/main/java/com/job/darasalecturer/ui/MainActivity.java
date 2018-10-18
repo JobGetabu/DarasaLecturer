@@ -182,9 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 sendToLogin();
                 break;
 
-            case R.id.hmenu_nearby:
 
-                startActivity(new Intent(this,NearbyActivity.class));
         }
 
         return true;
