@@ -182,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
                 sendToLogin();
                 break;
 
-
         }
 
         return true;

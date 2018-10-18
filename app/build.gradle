@@ -84,8 +84,8 @@ dependencies {
     //multiselect dialogue
     implementation 'com.github.abumoallim:Android-Multi-Select-Dialog:v1.9'
 
-    //nearby api
-    implementation 'com.google.android.gms:play-services-nearby:15.0.1'
+    //work manager
+    implementation "android.arch.work:work-runtime:1.0.0-alpha10"
 
     //architecture components
     // ViewModel and LiveData
