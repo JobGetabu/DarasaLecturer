@@ -685,7 +685,6 @@ public class ScannerActivity extends AppCompatActivity  {
             scanLoadingImage.setVisibility(View.GONE);
             scanQrImageView.setVisibility(View.VISIBLE);
         }
-
     }
 
     private void setUpLocationUi(Boolean on_off) {
