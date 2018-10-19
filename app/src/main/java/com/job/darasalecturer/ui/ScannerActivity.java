@@ -63,6 +63,7 @@ import com.victor.loading.newton.NewtonCradleLoading;
 import com.victor.loading.rotate.RotateLoading;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,7 +87,9 @@ import io.nlopez.smartlocation.location.providers.MultiFallbackProvider;
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 import static android.widget.Toast.LENGTH_LONG;
-import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_ARG;
+import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_LECTTID_ARG;
+import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITCODE_ARG;
+import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITNAME_ARG;
 import static com.job.darasalecturer.util.Constants.DONECLASSES;
 import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
@@ -758,7 +761,21 @@ public class ScannerActivity extends AppCompatActivity {
 
                 } else {
 
-                    updateClassTransaction(pDialog);
+                    Map<String, Object> doneClassMAp = new HashMap<>();
+                    doneClassMAp.put("lecteachtimeid", qrParser.getLecteachtimeid());
+                    doneClassMAp.put("unitname", qrParser.getUnitname());
+                    doneClassMAp.put("unitcode", qrParser.getUnitcode());
+
+                    mFirestore.collection(DONECLASSES).document(qrParser.getLecteachtimeid())
+                            .update(doneClassMAp)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+                                    updateClassTransaction(pDialog);
+                                }
+                            });
+
 
                 }
 
@@ -786,7 +803,9 @@ public class ScannerActivity extends AppCompatActivity {
 
         // Create the Data object:
         Data myData = new Data.Builder()
-                .putString(KEY_QR_ARG, qrParser.getLecteachtimeid())
+                .putString(KEY_QR_LECTTID_ARG, qrParser.getLecteachtimeid())
+                .putString(KEY_QR_UNITNAME_ARG, qrParser.getUnitname())
+                .putString(KEY_QR_UNITCODE_ARG, qrParser.getUnitcode())
                 .build();
 
         //set network required
