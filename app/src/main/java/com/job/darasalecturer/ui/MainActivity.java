@@ -47,6 +47,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.job.darasalecturer.util.Constants.DKUTCOURSES;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasalecturer.util.Constants.LECUSERCOL;
 
@@ -115,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
                     userId = mAuth.getCurrentUser().getUid();
 
                     classListQuery(Calendar.getInstance());
+
+                    //courses cache
+                    getCoursesCache();
 
                 }
             }
@@ -366,5 +370,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         recreate();
+    }
+
+    private void getCoursesCache(){
+        //TODO: Change this to remote configue value
+        //caches the courses when activity loads up with internet connection
+        mFirestore.collection(DKUTCOURSES).document("dkut")
+                .get();
     }
 }

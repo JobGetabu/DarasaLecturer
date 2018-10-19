@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import androidx.work.Constraints;
 import androidx.work.Data;
@@ -817,8 +818,14 @@ public class ScannerActivity extends AppCompatActivity {
         OneTimeWorkRequest transWork = new OneTimeWorkRequest.Builder(TransactionWorker.class)
                 .setConstraints(myConstraints)
                 .setInputData(myData)
+
                 .build();
-        WorkManager.getInstance().enqueue(transWork);
+        UUID transWorkId = transWork.getId();
+        WorkManager.getInstance()
+                .enqueue(transWork);
+
+
+
     }
 
     private void updateClassTransaction(final SweetAlertDialog pDialog) {

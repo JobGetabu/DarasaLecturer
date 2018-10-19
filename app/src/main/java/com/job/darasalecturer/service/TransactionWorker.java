@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
+import com.job.darasalecturer.util.NotificationUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,6 +57,23 @@ public class TransactionWorker extends Worker {
         String unitname = getInputData().getString(KEY_QR_UNITNAME_ARG);
         String unitcode = getInputData().getString(KEY_QR_UNITCODE_ARG);
 
+
+        doTheTransaction(new MyResultCallback() {
+            @Override
+            public Result onResultCallback(Result result) {
+                Log.d(TAG, "onResultCallback: => Worker.Result " + result.name());
+
+                return result;
+            }
+        }, lecteachtimeid,unitname, unitcode);
+
+
+        //using retry cause it doesn't wait for our callback
+        return Result.FAILURE;
+    }
+
+    private void doTheTransaction(final MyResultCallback resultCallback, final String lecteachtimeid, final String unitname, String unitcode) {
+
         Map<String, Object> doneClassMAp = new HashMap<>();
         doneClassMAp.put("lecteachtimeid", lecteachtimeid);
         doneClassMAp.put("unitname", unitname);
@@ -67,58 +85,50 @@ public class TransactionWorker extends Worker {
                     @Override
                     public void onSuccess(Void aVoid) {
 
-
-                        doTheTransaction(new MyResultCallback() {
+                        final DocumentReference cdDocRef = mFirestore.collection(DONECLASSES).document(lecteachtimeid);
+                        mFirestore.runTransaction(new Transaction.Function<Void>() {
                             @Override
-                            public Result onResultCallback(Result result) {
-                                Log.d(TAG, "onResultCallback: => Worker.Result " + result.name());
+                            public Void apply(Transaction transaction) throws FirebaseFirestoreException {
+                                DocumentSnapshot snapshot = transaction.get(cdDocRef);
+                                double newPopulation = snapshot.getDouble("number") + 1;
+                                transaction.update(cdDocRef, "number", newPopulation);
 
-                                return result;
+                                // Success
+                                return null;
                             }
-                        }, lecteachtimeid);
+                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "Transaction success! => Worker");
+
+                                //show notification
+
+                                // Indicate success or failure with your return value:
+                                resultCallback.onResultCallback(Result.SUCCESS);
+
+                                String title = unitname;
+                                String message = "Class has been successfully saved in the background";
+                                new NotificationUtil().showStandardHeadsUpNotification(getApplicationContext(),title, message);
+
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Transaction failure.  => Worker", e);
+
+                                //do a reschedule of the transaction
+                                resultCallback.onResultCallback(Result.RETRY);
+                            }
+                        });
+
                     }
-                });
-
-
-        //using retry cause it doesn't wait for our callback
-        return Result.RETRY;
-    }
-
-    private void doTheTransaction(final MyResultCallback resultCallback, String lecteachtimeid) {
-
-        final DocumentReference cdDocRef = mFirestore.collection(DONECLASSES).document(lecteachtimeid);
-
-        mFirestore.runTransaction(new Transaction.Function<Void>() {
-            @Override
-            public Void apply(Transaction transaction) throws FirebaseFirestoreException {
-                DocumentSnapshot snapshot = transaction.get(cdDocRef);
-                double newPopulation = snapshot.getDouble("number") + 1;
-                transaction.update(cdDocRef, "number", newPopulation);
-
-                // Success
-                return null;
-            }
-        }).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(TAG, "Transaction success! => Worker");
-
-                //show notification
-
-                // Indicate success or failure with your return value:
-                resultCallback.onResultCallback(Result.SUCCESS);
-
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
+                }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Transaction failure.  => Worker", e);
-
-                //do a reschedule of the transaction
+                // Indicate success or failure with your return value:
                 resultCallback.onResultCallback(Result.RETRY);
             }
         });
-
     }
 }
