@@ -53,6 +53,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.QRParser;
+import com.job.darasalecturer.service.TransactionWorker;
 import com.job.darasalecturer.util.AppStatus;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.DrawableHelper;
@@ -65,6 +66,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -80,6 +86,7 @@ import io.nlopez.smartlocation.location.providers.MultiFallbackProvider;
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 import static android.widget.Toast.LENGTH_LONG;
+import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_ARG;
 import static com.job.darasalecturer.util.Constants.DONECLASSES;
 import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
@@ -726,10 +733,14 @@ public class ScannerActivity extends AppCompatActivity {
                 pDialog.setContentText("Saving class attendance");
                 pDialog.show();
 
-                //check network availability
-                //perform a job schedule if offline
 
                 if (!AppStatus.getInstance(getApplicationContext()).isOnline()) {
+
+                    //check network availability
+                    //perform a job schedule if offline
+
+                    scheduleTransactionWork();
+
 
                     doSnack.showShortSnackbar(getString(R.string.youre_offline));
 
@@ -769,6 +780,26 @@ public class ScannerActivity extends AppCompatActivity {
         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void scheduleTransactionWork() {
+
+        // Create the Data object:
+        Data myData = new Data.Builder()
+                .putString(KEY_QR_ARG, qrParser.getLecteachtimeid())
+                .build();
+
+        //set network required
+        Constraints myConstraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
+        // ...then create and enqueue a OneTimeWorkRequest that uses those arguments
+        OneTimeWorkRequest transWork = new OneTimeWorkRequest.Builder(TransactionWorker.class)
+                .setConstraints(myConstraints)
+                .setInputData(myData)
+                .build();
+        WorkManager.getInstance().enqueue(transWork);
     }
 
     private void updateClassTransaction(final SweetAlertDialog pDialog) {

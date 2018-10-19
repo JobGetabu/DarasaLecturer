@@ -54,4 +54,8 @@ public class DarasaLec extends MultiDexApplication {
         super.attachBaseContext(context);
         MultiDex.install(this);
     }
+
+    public FirebaseFirestore getmFirestore() {
+        return mFirestore;
+    }
 }
