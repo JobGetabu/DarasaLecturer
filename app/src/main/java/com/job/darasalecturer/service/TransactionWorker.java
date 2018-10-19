@@ -12,6 +12,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -27,8 +30,11 @@ public class TransactionWorker extends Worker {
     private FirebaseFirestore mFirestore;
 
     // Define the parameter keys:
-    public static final String KEY_DB_ARG = "X";
-    public static final String KEY_QR_ARG = "Y";
+
+    public static final String KEY_QR_LECTTID_ARG = "X";
+    public static final String KEY_QR_UNITNAME_ARG = "Y";
+    public static final String KEY_QR_UNITCODE_ARG = "Z";
+
 
     public TransactionWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -46,22 +52,39 @@ public class TransactionWorker extends Worker {
         }
 
         // Fetch the arguments (and specify default values):
-        String lecteachtimeid = getInputData().getString(KEY_QR_ARG);
+        final String lecteachtimeid = getInputData().getString(KEY_QR_LECTTID_ARG);
+        String unitname = getInputData().getString(KEY_QR_UNITNAME_ARG);
+        String unitcode = getInputData().getString(KEY_QR_UNITCODE_ARG);
 
-        doTheTransaction(new MyResultCallback() {
-            @Override
-            public Result onResultCallback(Result result) {
-                Log.d(TAG, "onResultCallback: => Worker.Result "+result.name());
+        Map<String, Object> doneClassMAp = new HashMap<>();
+        doneClassMAp.put("lecteachtimeid", lecteachtimeid);
+        doneClassMAp.put("unitname", unitname);
+        doneClassMAp.put("unitcode", unitcode);
 
-                return result;
-            }
-        }, lecteachtimeid);
+        mFirestore.collection(DONECLASSES).document(lecteachtimeid)
+                .update(doneClassMAp)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+
+                        doTheTransaction(new MyResultCallback() {
+                            @Override
+                            public Result onResultCallback(Result result) {
+                                Log.d(TAG, "onResultCallback: => Worker.Result " + result.name());
+
+                                return result;
+                            }
+                        }, lecteachtimeid);
+                    }
+                });
+
 
         //using retry cause it doesn't wait for our callback
         return Result.RETRY;
     }
 
-    private void doTheTransaction(final MyResultCallback resultCallback, String lecteachtimeid){
+    private void doTheTransaction(final MyResultCallback resultCallback, String lecteachtimeid) {
 
         final DocumentReference cdDocRef = mFirestore.collection(DONECLASSES).document(lecteachtimeid);
 
