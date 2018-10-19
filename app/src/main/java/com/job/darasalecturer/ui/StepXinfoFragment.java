@@ -92,6 +92,8 @@ public class StepXinfoFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         model = ViewModelProviders.of(getActivity()).get(AddClassViewModel.class);
+
+        //TODO: Make a smart autofill for the fields previous values
     }
 
     @OnClick(R.id.step_x_back)
