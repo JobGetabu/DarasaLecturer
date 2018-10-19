@@ -67,6 +67,7 @@
     <string name="save_class">Save Class</string>
 
     <string name="error_missing_permissions">Cannot start without required permissions</string>
+    <string name="youre_offline">You\'re offline</string>
 
     <array name="addclass_steps">
         <item>Intro</item>

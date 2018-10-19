@@ -53,6 +53,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.QRParser;
+import com.job.darasalecturer.util.AppStatus;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.DrawableHelper;
 import com.job.darasalecturer.viewmodel.ScannerViewModel;
@@ -61,7 +62,6 @@ import com.victor.loading.newton.NewtonCradleLoading;
 import com.victor.loading.rotate.RotateLoading;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +85,7 @@ import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOURSESUBCOL;
 
-public class ScannerActivity extends AppCompatActivity  {
+public class ScannerActivity extends AppCompatActivity {
 
     private static final int PIN_NUMBER_REQUEST_CODE = 200;
     private static final String TAG = "Scanner";
@@ -450,7 +450,7 @@ public class ScannerActivity extends AppCompatActivity  {
         LocationManagerProvider locationManagerProvider = new LocationManagerProvider();
 
         LocationProvider fallbackProvider = new MultiFallbackProvider.Builder()
-                 .withProvider(locationManagerProvider).withGooglePlayServicesProvider().build();
+                .withProvider(locationManagerProvider).withGooglePlayServicesProvider().build();
 
         SmartLocation.with(this)
                 .location()
@@ -708,57 +708,49 @@ public class ScannerActivity extends AppCompatActivity  {
         }
     }
 
-    private void saveAndEndClass(){
+    private void saveAndEndClass() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
         builder.setTitle("Save class");  // GPS not found
-        builder.setMessage("This will record number of students that attended this lesson"+
+        builder.setMessage("This will record number of students that attended this lesson" +
                 "\n Note: Add attendee(s) is recording attendance of students without smartphones");
         builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialogInterface, int i) {
 
                 dialogInterface.dismiss();
-                
+
                 final SweetAlertDialog pDialog;
                 pDialog = new SweetAlertDialog(ScannerActivity.this, SweetAlertDialog.PROGRESS_TYPE);
                 pDialog.setCancelable(false);
                 pDialog.setContentText("Saving class attendance");
                 pDialog.show();
-                
-                Map<String,Object> doneClassMAp = new HashMap<>();
-                doneClassMAp.put("lecteachtimeid",qrParser.getLecteachtimeid());
-                doneClassMAp.put("unitname",qrParser.getUnitname());
-                doneClassMAp.put("unitcode",qrParser.getUnitcode());
 
-                mFirestore.collection(DONECLASSES).document(qrParser.getLecteachtimeid())
-                        .update(doneClassMAp)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
+                //check network availability
+                //perform a job schedule if offline
 
-                                //updateClassTransaction(pDialog);
+                if (!AppStatus.getInstance(getApplicationContext()).isOnline()) {
 
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                    doSnack.showShortSnackbar(getString(R.string.youre_offline));
 
-                        pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
-                        pDialog.setCancelable(true);
-                        pDialog.setTitleText("Error lost connection");
-                        pDialog.setContentText("You're offline");
-                        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                sDialog.dismissWithAnimation();
+                    pDialog.changeAlertType(SweetAlertDialog.WARNING_TYPE);
+                    pDialog.setCancelable(true);
+                    pDialog.setTitleText(getString(R.string.youre_offline));
+                    pDialog.setContentText("Don't worry, We'll save the \n Class once you're Online");
+                    pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                            finish();
+                        }
+                    });
 
+                } else {
 
-                            }
-                        });
+                    updateClassTransaction(pDialog);
 
-                    }
-                });
+                }
+
 
             }
         });
@@ -820,17 +812,8 @@ public class ScannerActivity extends AppCompatActivity  {
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Transaction failure.", e);
 
-                        pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
-                        pDialog.setCancelable(true);
-                        pDialog.setTitleText("Error lost connection");
-                        pDialog.setContentText("You're offline");
-                        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                sDialog.dismissWithAnimation();
+                        //do a reschedule of the transaction
 
-                            }
-                        });
                     }
                 });
     }
