@@ -66,7 +66,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import androidx.work.Constraints;
 import androidx.work.Data;
@@ -91,6 +90,7 @@ import static android.widget.Toast.LENGTH_LONG;
 import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_LECTTID_ARG;
 import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITCODE_ARG;
 import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITNAME_ARG;
+import static com.job.darasalecturer.ui.AddAttendanceActivity.ADDATTENDANCE_EXTRA;
 import static com.job.darasalecturer.util.Constants.DONECLASSES;
 import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
@@ -307,7 +307,7 @@ public class ScannerActivity extends AppCompatActivity {
                             }
                         }
 
-                        startActivity(new Intent(ScannerActivity.this, AddAttendanceActivity.class));
+                        toAddAttendanceActivity();
                     }
 
                     @Override
@@ -733,7 +733,8 @@ public class ScannerActivity extends AppCompatActivity {
 
                 final SweetAlertDialog pDialog;
                 pDialog = new SweetAlertDialog(ScannerActivity.this, SweetAlertDialog.PROGRESS_TYPE);
-                pDialog.setCancelable(false);
+                pDialog.setCancelable(true);
+                pDialog.setCanceledOnTouchOutside(false);
                 pDialog.setContentText("Saving class attendance");
                 pDialog.show();
 
@@ -776,18 +777,15 @@ public class ScannerActivity extends AppCompatActivity {
                                     updateClassTransaction(pDialog);
                                 }
                             });
-
-
                 }
-
-
             }
         });
         builder.setNeutralButton(R.string.add_attendee, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                startActivity(new Intent(ScannerActivity.this, AddAttendanceActivity.class));
+                toAddAttendanceActivity();
+
             }
         });
         builder.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -818,9 +816,8 @@ public class ScannerActivity extends AppCompatActivity {
         OneTimeWorkRequest transWork = new OneTimeWorkRequest.Builder(TransactionWorker.class)
                 .setConstraints(myConstraints)
                 .setInputData(myData)
-
                 .build();
-        UUID transWorkId = transWork.getId();
+
         WorkManager.getInstance()
                 .enqueue(transWork);
 
@@ -881,5 +878,11 @@ public class ScannerActivity extends AppCompatActivity {
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(mainIntent);
+    }
+
+    private void toAddAttendanceActivity(){
+        Intent addAttendIntent = new Intent(ScannerActivity.this, AddAttendanceActivity.class);
+        addAttendIntent.putExtra(ADDATTENDANCE_EXTRA, qrParser);
+        startActivity(addAttendIntent);
     }
 }

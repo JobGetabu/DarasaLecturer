@@ -60,8 +60,6 @@ public class StudentViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
-
-
     }
 
     public void init(LifecycleOwner mActivity, FirebaseFirestore mFirestore, StudentDetails model, AddStudentViewModel addStudentViewModel) {
