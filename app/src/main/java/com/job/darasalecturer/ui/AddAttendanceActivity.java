@@ -1,5 +1,6 @@
 package com.job.darasalecturer.ui;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -51,6 +52,9 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
     private static final String TAG = "AddStudent";
     public static final String ADDATTENDANCE_EXTRA = "ADDATTENDANCE_EXTRA";
+    public static final String CURRENT_SEM_EXTRA = "CURRENT_SEM_EXTRA";
+    public static final String CURRENT_YR_EXTRA = "CURRENT_YR_EXTRA";
+    public static final int SEM_YR_REQUEST_CODE = 102;
 
     @BindView(R.id.stud_toolbar)
     Toolbar studToolbar;
@@ -70,6 +74,7 @@ public class AddAttendanceActivity extends AppCompatActivity {
     private DoSnack doSnack;
     private Query mQuery = null;
     private SharedPreferences mSharedPreferences;
+    private QRParser qrParser;
 
     private AddStudentViewModel addStudentViewModel;
     private List<StudentDetails> studentDetailsList = new ArrayList<>();
@@ -98,7 +103,7 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
         //retrieve courses
 
-        QRParser qrParser = getIntent().getParcelableExtra(ADDATTENDANCE_EXTRA);
+        qrParser = getIntent().getParcelableExtra(ADDATTENDANCE_EXTRA);
 
 
         constructQuery(qrParser);
@@ -292,7 +297,19 @@ public class AddAttendanceActivity extends AppCompatActivity {
     @OnClick(R.id.textView_to_current_settings)
     public void onTextViewClicked() {
         Intent cIntent = new Intent(this, CurrentSetupActivity.class);
-        startActivity(cIntent);
+        startActivityForResult(cIntent, SEM_YR_REQUEST_CODE);
         Toast.makeText(this, "Click save to update settings", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+
+            constructQuery(qrParser);
+        }
+
+
     }
 }

@@ -1,5 +1,6 @@
 package com.job.darasalecturer.ui;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -34,6 +35,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.job.darasalecturer.ui.AddAttendanceActivity.CURRENT_SEM_EXTRA;
+import static com.job.darasalecturer.ui.AddAttendanceActivity.CURRENT_YR_EXTRA;
 import static com.job.darasalecturer.util.Constants.CURRENT_SEM_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.CURRENT_YEAR_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.LECUSERCOL;
@@ -120,6 +123,8 @@ public class CurrentSetupActivity extends AppCompatActivity {
             lecMap.put("currentyear", syr);
             lecMap.put("currentacademicyear", ayr);
 
+            setSemYearPref(sem, syr);
+
             // Set the value of 'Users'
             DocumentReference usersRef = mFirestore.collection(LECUSERCOL).document(mAuth.getCurrentUser().getUid());
 
@@ -137,7 +142,6 @@ public class CurrentSetupActivity extends AppCompatActivity {
                                 public void onClick(SweetAlertDialog sDialog) {
                                     sDialog.dismissWithAnimation();
 
-                                    setSemYearPref(sem, syr);
                                     sendToSetClass();
 
                                 }
@@ -162,6 +166,11 @@ public class CurrentSetupActivity extends AppCompatActivity {
 
         sharedPreferencesEditor.apply();
 
+        //if started activity was {AddAttendance}
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(CURRENT_SEM_EXTRA, sem);
+        resultIntent.putExtra(CURRENT_YR_EXTRA, syr);
+        setResult(Activity.RESULT_OK, resultIntent);
     }
 
     private void sendToSetClass() {
