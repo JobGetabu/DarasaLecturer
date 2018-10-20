@@ -108,7 +108,7 @@ public class CurrentSetupActivity extends AppCompatActivity {
             final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
             pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
             pDialog.setTitleText("Just a moment...");
-            pDialog.setCancelable(false);
+            pDialog.setCancelable(true);
             pDialog.show();
 
             final String sem = currentSemester.getEditText().getText().toString();

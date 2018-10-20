@@ -2,7 +2,10 @@ package com.job.darasalecturer.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.chip.Chip;
@@ -18,15 +21,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.model.StudentDetails;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.StudentViewHolder;
@@ -37,12 +41,16 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
+import static com.job.darasalecturer.util.Constants.CURRENT_SEM_PREF_NAME;
+import static com.job.darasalecturer.util.Constants.CURRENT_YEAR_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.STUDENTDETAILSCOL;
 
 public class AddAttendanceActivity extends AppCompatActivity {
 
     private static final String TAG = "AddStudent";
+    public static final String ADDATTENDANCE_EXTRA = "ADDATTENDANCE_EXTRA";
 
     @BindView(R.id.stud_toolbar)
     Toolbar studToolbar;
@@ -50,6 +58,8 @@ public class AddAttendanceActivity extends AppCompatActivity {
     ChipGroup studChipgroup;
     @BindView(R.id.stud_list)
     RecyclerView studList;
+    @BindView(R.id.stud_no_student)
+    View noStudView;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
@@ -58,6 +68,8 @@ public class AddAttendanceActivity extends AppCompatActivity {
     private MenuItem saveMenu;
     private boolean anySelected;
     private DoSnack doSnack;
+    private Query mQuery = null;
+    private SharedPreferences mSharedPreferences;
 
     private AddStudentViewModel addStudentViewModel;
     private List<StudentDetails> studentDetailsList = new ArrayList<>();
@@ -82,11 +94,42 @@ public class AddAttendanceActivity extends AppCompatActivity {
         addStudentViewModel = ViewModelProviders.of(this).get(AddStudentViewModel.class);
 
         doSnack = new DoSnack(this, AddAttendanceActivity.this);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        setUpList();
+        //retrieve courses
+
+        QRParser qrParser = getIntent().getParcelableExtra(ADDATTENDANCE_EXTRA);
+
+
+        constructQuery(qrParser);
 
         //init observers
         studentListObserver();
+    }
+
+    private void constructQuery(QRParser qrParser) {
+
+
+        String currentsemester = mSharedPreferences.getString(CURRENT_SEM_PREF_NAME, "0");
+        String currentyear = mSharedPreferences.getString(CURRENT_YEAR_PREF_NAME, "2000");
+
+
+        ArrayList<String> courses = qrParser.getCourses();
+
+        mQuery = mFirestore.collection(STUDENTDETAILSCOL)
+                .whereEqualTo("currentyear", currentyear)
+                .whereEqualTo("currentsemester", currentsemester)
+                .orderBy("regnumber", Query.Direction.ASCENDING);
+
+        /*for (String c : courses) {
+            mQuery.whereEqualTo("course", c);
+
+        }*/
+        Log.d(TAG, "sem: " + qrParser.getSemester() + " year:" + qrParser.getYear());
+
+
+        setUpList(mQuery);
+
     }
 
     public void updateSaveStatus() {
@@ -111,8 +154,9 @@ public class AddAttendanceActivity extends AppCompatActivity {
         super.onOptionsItemSelected(item);
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case R.id.amenu_save:
+                Toast.makeText(this, "Save the attendees", Toast.LENGTH_SHORT).show();
                 break;
         }
         return true;
@@ -142,18 +186,13 @@ public class AddAttendanceActivity extends AppCompatActivity {
         studList.setLayoutManager(linearLayoutManager);
         studList.setHasFixedSize(true);
     }
-    private void setUpList(){
+
+    private void setUpList(Query query) {
 
         initList();
 
-        // Create a reference to the lecTeachTime collection
-        CollectionReference studentDetailsRef = mFirestore.collection(STUDENTDETAILSCOL);
-        Query mQuery = studentDetailsRef
-                //.whereEqualTo("lecid", userId)
-                .orderBy("regnumber", Query.Direction.ASCENDING);
-
         FirestoreRecyclerOptions<StudentDetails> options = new FirestoreRecyclerOptions.Builder<StudentDetails>()
-                .setQuery(mQuery, StudentDetails.class)
+                .setQuery(query, StudentDetails.class)
                 .build();
 
         adapter = new FirestoreRecyclerAdapter<StudentDetails, StudentViewHolder>(options) {
@@ -170,11 +209,10 @@ public class AddAttendanceActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull final StudentViewHolder holder, int position, @NonNull StudentDetails model) {
 
-                holder.init(AddAttendanceActivity.this, mFirestore,model,addStudentViewModel);
+                holder.init(AddAttendanceActivity.this, mFirestore, model, addStudentViewModel);
                 holder.setUpUi(model);
 
             }
-
 
 
             @Override
@@ -186,6 +224,18 @@ public class AddAttendanceActivity extends AppCompatActivity {
                 Log.d(TAG, "onError: ", e);
             }
 
+            @Override
+            public void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                if (getItemCount() == 0) {
+                    studList.setVisibility(View.GONE);
+                    noStudView.setVisibility(View.VISIBLE);
+                } else {
+                    studList.setVisibility(View.VISIBLE);
+                    noStudView.setVisibility(View.GONE);
+                }
+            }
+
         };
 
         adapter.startListening();
@@ -193,27 +243,27 @@ public class AddAttendanceActivity extends AppCompatActivity {
         studList.setAdapter(adapter);
     }
 
-    private void studentListObserver(){
+    private void studentListObserver() {
         addStudentViewModel.getStudListMediatorLiveData().observe(this, new Observer<List<StudentDetails>>() {
             @Override
             public void onChanged(@Nullable List<StudentDetails> studentDetails) {
-                if (studentDetails != null){
+                if (studentDetails != null) {
 
                     studentDetailsList = studentDetails;
 
                     studChipgroup.removeAllViews();
 
-                    for(StudentDetails stud : studentDetails){
+                    for (StudentDetails stud : studentDetails) {
                         addChipStudent(stud);
 
 
                     }
 
-                    if (studentDetails.isEmpty()){
+                    if (studentDetails.isEmpty()) {
 
                         anySelected = false;
                         updateSaveStatus();
-                    }else {
+                    } else {
 
                         anySelected = true;
                         updateSaveStatus();
@@ -237,5 +287,12 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
         studChipgroup.addView(chip);
 
+    }
+
+    @OnClick(R.id.textView_to_current_settings)
+    public void onTextViewClicked() {
+        Intent cIntent = new Intent(this, CurrentSetupActivity.class);
+        startActivity(cIntent);
+        Toast.makeText(this, "Click save to update settings", Toast.LENGTH_LONG).show();
     }
 }
