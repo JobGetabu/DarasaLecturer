@@ -50,6 +50,21 @@
         </android.support.design.chip.ChipGroup>
     </HorizontalScrollView>
 
+    <include
+        android:id="@+id/stud_no_student"
+        layout="@layout/nostudents_layout"
+        android:visibility="visible"
+
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stud_toolbar"
+
+        />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/stud_list"
         android:layout_width="0dp"
@@ -60,5 +75,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/stud_horizontalScrollView"
-        tools:listitem="@layout/single_attendance" />
+        tools:listitem="@layout/single_attendance"
+        android:visibility="gone"
+        />
 </android.support.constraint.ConstraintLayout>
