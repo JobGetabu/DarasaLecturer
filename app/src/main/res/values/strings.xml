@@ -56,7 +56,7 @@
     <string name="finish">Finish</string>
 
     <string name="no_class_text">You\'ve no classes today. Take \na second to recharge</string>
-    <string name="no_students_text">You\'ve no students showing. Update \nthe current semester in <u>settings</u></string>
+    <string name="no_students_text">You\'ve no students showing. Update \nthe current semester in <u>settings</u> \n and hit save</string>
     <string name="email_us">Email us</string>
     <string name="huh_no_classes">Huh! No Classes</string>
     <string name="huh_no_students">Huh! No Students</string>

@@ -13,6 +13,7 @@ import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -26,11 +27,17 @@ import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.firebase.ui.firestore.ObservableSnapshotArray;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.adapter.ConfirmAttendanceAdapter;
+import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.model.StudentDetails;
 import com.job.darasalecturer.util.DoSnack;
@@ -51,6 +58,7 @@ import static com.job.darasalecturer.util.Constants.STUDENTDETAILSCOL;
 public class AddAttendanceActivity extends AppCompatActivity {
 
     private static final String TAG = "AddStudent";
+
     public static final String ADDATTENDANCE_EXTRA = "ADDATTENDANCE_EXTRA";
     public static final String CURRENT_SEM_EXTRA = "CURRENT_SEM_EXTRA";
     public static final String CURRENT_YR_EXTRA = "CURRENT_YR_EXTRA";
@@ -77,7 +85,9 @@ public class AddAttendanceActivity extends AppCompatActivity {
     private QRParser qrParser;
 
     private AddStudentViewModel addStudentViewModel;
+    private ConfirmAttendanceAdapter confirmAttendanceAdapter;
     private List<StudentDetails> studentDetailsList = new ArrayList<>();
+    private List<StudentDetails> fullStudentDetailsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,24 +112,26 @@ public class AddAttendanceActivity extends AppCompatActivity {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         //retrieve courses
-
         qrParser = getIntent().getParcelableExtra(ADDATTENDANCE_EXTRA);
-
-
         constructQuery(qrParser);
 
         //init observers
         studentListObserver();
+        //setup our list
+        initList();
     }
 
     private void constructQuery(QRParser qrParser) {
+
+        Log.d(TAG, "sem: " + qrParser.getSemester() + " year:" + qrParser.getYear());
 
 
         String currentsemester = mSharedPreferences.getString(CURRENT_SEM_PREF_NAME, "0");
         String currentyear = mSharedPreferences.getString(CURRENT_YEAR_PREF_NAME, "2000");
 
 
-        ArrayList<String> courses = qrParser.getCourses();
+        final ArrayList<String> courses = qrParser.getCourses();
+
 
         mQuery = mFirestore.collection(STUDENTDETAILSCOL)
                 .whereEqualTo("currentyear", currentyear)
@@ -130,20 +142,71 @@ public class AddAttendanceActivity extends AppCompatActivity {
             mQuery.whereEqualTo("course", c);
 
         }*/
-        Log.d(TAG, "sem: " + qrParser.getSemester() + " year:" + qrParser.getYear());
+
+        /*
+         * Another approach in creating query to support complexity need
+         * */
+
+        mFirestore.collection(STUDENTDETAILSCOL)
+                .whereEqualTo("currentyear", currentyear)
+                .whereEqualTo("currentsemester", currentsemester)
+                .orderBy("regnumber", Query.Direction.ASCENDING)
+                .get()
+                .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forMainThreadTasks(),new OnSuccessListener<QuerySnapshot>() {
+
+                    @Override
+                    public void onSuccess(final QuerySnapshot queryDocumentSnapshots) {
 
 
-        setUpList(mQuery);
+
+                                for (final QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                    //DocumentReference reference = document.getDocumentReference("course");
+                                    //String stringReference = reference.getPath();
+
+                                    String stringRef = document.getString("course");
+                                    if (courses.contains(stringRef)) {
+                                        //Log.d(TAG, "Reference found!");
+
+                                        //heavy operation
+
+                                        StudentDetails studentDetails = document.toObject(StudentDetails.class);
+                                        Log.d(TAG, "Record found!" + studentDetails.toString());
+                                        fullStudentDetailsList.add(studentDetails);
+
+                                    }
+                                }
+
+
+
+                        //adapter init
+                        confirmAttendanceAdapter = new ConfirmAttendanceAdapter(fullStudentDetailsList,
+                                AddAttendanceActivity.this, mFirestore, addStudentViewModel);
+
+                        studList.setAdapter(confirmAttendanceAdapter);
+                        confirmAttendanceAdapter.notifyDataSetChanged();
+
+                        if (confirmAttendanceAdapter.getItemCount() == 0) {
+                            studList.setVisibility(View.GONE);
+                            noStudView.setVisibility(View.VISIBLE);
+                        } else {
+                            studList.setVisibility(View.VISIBLE);
+                            noStudView.setVisibility(View.GONE);
+                        }
+                    }
+                });
+
+
+        //setUpList(mQuery);
 
     }
 
     public void updateSaveStatus() {
-        if (anySelected) {
-            saveMenu.setVisible(true);
-        } else {
-            saveMenu.setVisible(false);
-        }
-
+        if (saveMenu != null)
+            if (anySelected) {
+                saveMenu.setVisible(true);
+            } else {
+                saveMenu.setVisible(false);
+            }
     }
 
     @Override
@@ -190,6 +253,7 @@ public class AddAttendanceActivity extends AppCompatActivity {
                 LinearLayoutManager(this.getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         studList.setLayoutManager(linearLayoutManager);
         studList.setHasFixedSize(true);
+        studList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
     private void setUpList(Query query) {
@@ -243,9 +307,14 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
         };
 
+
         adapter.startListening();
         adapter.notifyDataSetChanged();
         studList.setAdapter(adapter);
+
+        ObservableSnapshotArray dataItems = adapter.getSnapshots();
+
+
     }
 
     private void studentListObserver() {
@@ -309,7 +378,5 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
             constructQuery(qrParser);
         }
-
-
     }
 }

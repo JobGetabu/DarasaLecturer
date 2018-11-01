@@ -33,8 +33,10 @@ public class ScannerViewModel extends ViewModel {
         timeLiveData.setValue("done!");
     }
 
+    //shows the time for scanning QR
+    // 45000 => 4.5minutes, 1,800,000
     private void timer(){
-        new CountDownTimer(45000, 1000) {
+        new CountDownTimer(1800000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 String timer = (toMinutes(millisUntilFinished) +" : " + toSec(millisUntilFinished));

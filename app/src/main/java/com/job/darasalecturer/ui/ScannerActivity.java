@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -234,7 +233,7 @@ public class ScannerActivity extends AppCompatActivity {
         Toast.makeText(this, "Screen pinned", Toast.LENGTH_SHORT).show();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             pin();
-            //pinned = true;
+            pinned = true;
         }
     }
 
@@ -251,9 +250,8 @@ public class ScannerActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess() {
                             if (pinned) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                    unpin();
-                                }
+                                unpin();
+
                                 Toast.makeText(ScannerActivity.this, "Screen Unpinned", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -265,10 +263,7 @@ public class ScannerActivity extends AppCompatActivity {
                     });
 
                 } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        pin();
-                        Toast.makeText(this, "Screen pinned", Toast.LENGTH_SHORT).show();
-                    }
+                    pin();
                 }
 
                 updatePinningStatus();
@@ -345,6 +340,7 @@ public class ScannerActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess() {
                                         model.reStartTimer();
+                                        scanLoading.start();
                                         showLoader(false);
                                     }
 
@@ -363,21 +359,26 @@ public class ScannerActivity extends AppCompatActivity {
         });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
     private void pin() {
-        //TODO: enable for final testing
-        // startLockTask();
-        // pinned = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //TODO: enable for final testing
+            startLockTask();
+            pinned = true;
+            Toast.makeText(this, "Screen pinned", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
     private void unpin() {
-        if (am.isInLockTaskMode()) {
-            //stopLockTask();
-            //pinned = false;
-        } else {
-            Toast.makeText(this, "Application already unpinned !", LENGTH_LONG).show();
-            //pinned = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (am.isInLockTaskMode()) {
+                stopLockTask();
+                pinned = false;
+            } else {
+                Toast.makeText(this, "Application already unpinned !", LENGTH_LONG).show();
+                pinned = true;
+            }
         }
     }
 
@@ -650,6 +651,12 @@ public class ScannerActivity extends AppCompatActivity {
 
 
         fillUpScanDetails(qrParser);
+
+        fillUpRatingBars();
+    }
+
+    private void fillUpRatingBars() {
+        //TODO: Show in realtime students who have scanned for the current class
     }
 
     private void fillUpScanDetails(QRParser qrParser) {
@@ -822,7 +829,6 @@ public class ScannerActivity extends AppCompatActivity {
                 .enqueue(transWork);
 
 
-
     }
 
     private void updateClassTransaction(final SweetAlertDialog pDialog) {
@@ -880,7 +886,7 @@ public class ScannerActivity extends AppCompatActivity {
         startActivity(mainIntent);
     }
 
-    private void toAddAttendanceActivity(){
+    private void toAddAttendanceActivity() {
         Intent addAttendIntent = new Intent(ScannerActivity.this, AddAttendanceActivity.class);
         addAttendIntent.putExtra(ADDATTENDANCE_EXTRA, qrParser);
         startActivity(addAttendIntent);
