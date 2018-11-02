@@ -35,7 +35,7 @@ public class FaqActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
 
         //String prourl = getIntent().getStringExtra(PRODUCTURL);
-        String url = "http://jobgetabu.me/FAQ/";
+        String url = "https://sling254.github.io/darasa-faq/";
 
         if (url == null){
             finish();

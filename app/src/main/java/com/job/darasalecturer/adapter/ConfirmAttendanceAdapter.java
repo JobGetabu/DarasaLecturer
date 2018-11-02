@@ -54,7 +54,7 @@ public class ConfirmAttendanceAdapter extends RecyclerView.Adapter<ConfirmAttend
     public void onBindViewHolder(@NonNull StudViewHolder holder, int position) {
 
         StudentDetails model = studentDetails.get(position);
-        //holder.init(mActivity, mFirestore, model, addStudentViewModel);
+        holder.init(mActivity, mFirestore, model, addStudentViewModel);
         holder.setUpUi(model);
     }
 
