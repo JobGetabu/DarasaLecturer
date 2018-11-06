@@ -13,12 +13,13 @@ public class StudentScanClass {
     private Date classtime;
     private Date date;
     private String studentscanid;
+    private String querydate;
 
     public StudentScanClass() {
     }
 
     public StudentScanClass(String semester, String year, String studentid, String lecteachtimeid,
-                            Date classtime, Date date, String studentscanid) {
+                            Date classtime, Date date, String studentscanid,String querydate) {
         this.semester = semester;
         this.year = year;
         this.studentid = studentid;
@@ -26,6 +27,7 @@ public class StudentScanClass {
         this.classtime = classtime;
         this.date = date;
         this.studentscanid = studentscanid;
+        this.querydate = querydate;
     }
 
     public String getSemester() {
@@ -82,5 +84,13 @@ public class StudentScanClass {
 
     public void setStudentscanid(String studentscanid) {
         this.studentscanid = studentscanid;
+    }
+
+    public String getQuerydate() {
+        return querydate;
+    }
+
+    public void setQuerydate(String querydate) {
+        this.querydate = querydate;
     }
 }

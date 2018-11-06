@@ -139,13 +139,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/scan_unit_details">
 
                 <TextView
+                    android:id="@+id/scan_num_students"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="4dp"
                     android:paddingEnd="8dp"
                     android:paddingStart="8dp"
                     android:paddingTop="4dp"
-                    android:text="40" />
+                    tools:text="40"
+                    android:text="0"
+                    />
 
 
                 <me.zhanghai.android.materialratingbar.MaterialRatingBar
@@ -154,9 +157,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:numStars="5"
+                    android:numStars="0"
+                    tools:numStars="5"
                     android:paddingStart="4dp"
-                    android:rating="3.5" />
+                    android:rating="0"
+                    tools:rating="2.5"
+                    />
             </LinearLayout>
 
         </android.support.constraint.ConstraintLayout>

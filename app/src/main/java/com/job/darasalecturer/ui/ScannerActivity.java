@@ -38,13 +38,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 import com.google.firebase.firestore.Transaction;
@@ -54,6 +52,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.service.TransactionWorker;
 import com.job.darasalecturer.util.AppStatus;
@@ -96,10 +95,12 @@ import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_LECTTID_AR
 import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITCODE_ARG;
 import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITNAME_ARG;
 import static com.job.darasalecturer.ui.AddAttendanceActivity.ADDATTENDANCE_EXTRA;
+import static com.job.darasalecturer.util.Constants.DATE_SCAN_FORMAT;
 import static com.job.darasalecturer.util.Constants.DONECLASSES;
 import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOURSESUBCOL;
+import static com.job.darasalecturer.util.Constants.STUDENTDETAILSCOL;
 import static com.job.darasalecturer.util.Constants.STUDENTSCANCLASSCOL;
 
 public class ScannerActivity extends AppCompatActivity {
@@ -136,6 +137,8 @@ public class ScannerActivity extends AppCompatActivity {
     MaterialRatingBar itemColRating;
     @BindView(R.id.scan_location_bool)
     TextView scanLocationBool;
+    @BindView(R.id.scan_num_students)
+    TextView scanNumStudents;
     @BindView(R.id.scan_loc_img)
     ImageView scanLocImg;
     @BindView(R.id.scan_venue)
@@ -161,6 +164,10 @@ public class ScannerActivity extends AppCompatActivity {
     private Location mLocation;
     private int locationcount = 1;
     private ShowPasscodeFragment showPasscodeFragment;
+
+    private int noOfStudents;
+    private int noOfScans;
+    private int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -662,42 +669,90 @@ public class ScannerActivity extends AppCompatActivity {
         fillUpRatingBars();
     }
 
-    private int noOfScans = 0;
     private void fillUpRatingBars() {
         //TODO: Show in realtime students who have scanned for the current class
 
-        int noOfStudents;
+        //get short date today
+        Calendar c = Calendar.getInstance();
+        DateFormat dateFormat2 = new SimpleDateFormat(DATE_SCAN_FORMAT);
+        String today = dateFormat2.format(c.getTime());
 
         /*
-        * rating = no of scans / no of students * 5
-        * */
+         * rating = no of scans / no of students * 5
+         * */
         mFirestore.collection(STUDENTSCANCLASSCOL)
-                .whereEqualTo("lecteachtimeid",qrParser.getLecteachtimeid())
-                .whereEqualTo("semester",qrParser.getSemester())
-                .whereEqualTo("year",qrParser.getYear())
-                .whereEqualTo("classtime",qrParser.getClasstime())
+                .whereEqualTo("lecteachtimeid", qrParser.getLecteachtimeid())
+                .whereEqualTo("semester", qrParser.getSemester())
+                .whereEqualTo("year", qrParser.getYear())
+                .whereEqualTo("classtime", qrParser.getClasstime())
+                .whereEqualTo("querydate", today)
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                //get short date today
-                Calendar c = Calendar.getInstance();
-                DateFormat dateFormat2 = new SimpleDateFormat("dd-mm-yyy");
-                String today =dateFormat2.format(c.getTime());
+                noOfScans = queryDocumentSnapshots.size();
+                getNumberOfStudents(noOfScans);
 
-                for (QueryDocumentSnapshot d: queryDocumentSnapshots){
-                    Timestamp timestamp = d.getTimestamp("date");
-
-                    String thatday = dateFormat2.format(timestamp.toDate());
-
-                    if (today.equals(thatday)){
-                        noOfScans ++ ;
-                    }
-                }
-
-                Log.d(TAG, "onSuccess: "+noOfScans);
             }
         });
+    }
+
+
+    private void getNumberOfStudents(final int noOfScans) {
+
+        DefaultExecutorSupplier.getInstance().forMainThreadTasks()
+                .execute(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        final ArrayList<String> courses = qrParser.getCourses();
+
+
+                        for (String c : courses) {
+
+                            mFirestore.collection(STUDENTDETAILSCOL)
+                                    .whereEqualTo("course", c)
+                                    .whereEqualTo("currentsemester", qrParser.getSemester())
+                                    .whereEqualTo("currentyear", qrParser.getYear())
+                                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                                    noOfStudents += queryDocumentSnapshots.size();
+                                    index++;
+
+                                    if (index >= courses.size()) {
+
+                                        //now we have noOfStudents and noOfScans
+
+                                        double rating = noOfScans / noOfStudents * 5;
+                                        int perc = noOfScans / noOfStudents * 100;
+
+
+                                        scanNumStudents.setText(String.valueOf(noOfStudents));
+                                        itemColRating.setRating(Float.parseFloat(String.valueOf(rating)));
+
+                                        if (perc < 30){
+                                            scanSatisfactionProgressBar.setProgress(perc);
+                                            scanSatisfactionProgressBar.setSecondaryProgress(0);
+
+                                        }else if(perc > 30){
+                                            scanSatisfactionProgressBar.setProgress(perc);
+                                            scanSatisfactionProgressBar.setSecondaryProgress(perc - 30);
+                                        }
+
+
+                                        scanPercentageText.setText(String.valueOf(perc)+" %");
+                                        Log.d(TAG, "scans done is "+noOfScans);
+
+                                    }
+                                }
+                            });
+                        }
+
+                    }
+                });
+
     }
 
     private void fillUpScanDetails(QRParser qrParser) {

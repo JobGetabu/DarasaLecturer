@@ -17,11 +17,15 @@ import com.job.darasalecturer.model.StudentScanClass;
 import com.job.darasalecturer.util.NotificationUtil;
 
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import static com.job.darasalecturer.util.Constants.DATE_SCAN_FORMAT;
 import static com.job.darasalecturer.util.Constants.STUDENTSCANCLASSCOL;
 
 /**
@@ -88,9 +92,14 @@ public class AddAttendanceWorker extends Worker {
 
     private void doTheTransaction(final MyResultCallback resultCallback, final List<StudentDetails> studentDetailsList ) {
 
+        //get short date today
+        Calendar c = Calendar.getInstance();
+        DateFormat dateFormat2 = new SimpleDateFormat(DATE_SCAN_FORMAT);
+        String today = dateFormat2.format(c.getTime());
+
+
         // Get a new write batch
         WriteBatch batch = mFirestore.batch();
-
 
         for (StudentDetails s:studentDetailsList){
 
@@ -104,6 +113,7 @@ public class AddAttendanceWorker extends Worker {
             scanClass.setYear(qrParser.getYear());
             scanClass.setStudentid(s.getStudentid());
             scanClass.setStudentscanid(key);
+            scanClass.setQuerydate(today);
 
             // Set the value of student-scan
             DocumentReference scanRef =  mFirestore.collection(STUDENTSCANCLASSCOL).document(key);
