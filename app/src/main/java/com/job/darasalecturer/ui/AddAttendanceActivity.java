@@ -1,11 +1,11 @@
 package com.job.darasalecturer.ui;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -50,9 +50,7 @@ import com.job.darasalecturer.viewmodel.AddStudentViewModel;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import androidx.work.Constraints;
 import androidx.work.Data;
@@ -62,7 +60,9 @@ import androidx.work.WorkManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.job.darasalecturer.service.AddAttendanceWorker.KEY_QR_OBJ_ARG;
 import static com.job.darasalecturer.service.AddAttendanceWorker.KEY_STUD_LIST_ARG;
 import static com.job.darasalecturer.util.Constants.CURRENT_SEM_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.CURRENT_YEAR_PREF_NAME;
@@ -412,22 +412,40 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
     @OnClick(R.id.stud_save_btn)
     public void onSaveBtnViewClicked() {
+
+        final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+        pDialog.setCancelable(false);
+        pDialog.setTitleText("Saving Attendance");
+        pDialog.setTitleText(getString(R.string.you_set));
+        pDialog.setCancelable(true);
+        pDialog.show();
+
         saveStudents(addStudentViewModel.getStudListMediatorLiveData().getValue());
+
+        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sDialog) {
+                sDialog.dismissWithAnimation();
+
+                finish();
+            }
+        });
 
     }
 
     private void saveStudents(List<StudentDetails> studentDetails) {
 
-        Map<String, Object> studListMap = new HashMap<>();
-        studListMap.put("list", studentDetails);
+        Type qrObject = new TypeToken<QRParser>(){}.getType();
+        String qrString = gson.toJson(qrParser,qrObject);
 
         Type listOfStudObject = new TypeToken<List<StudentDetails>>(){}.getType();
-        String s = gson.toJson(studentDetails, listOfStudObject);
+        String students = gson.toJson(studentDetails, listOfStudObject);
 
         // Create the Data object:
-        @SuppressLint("RestrictedApi")
         Data myData = new Data.Builder()
-                .putString(KEY_STUD_LIST_ARG,s)
+                .putString(KEY_STUD_LIST_ARG,students)
+                .putString(KEY_QR_OBJ_ARG,qrString)
                 .build();
 
         //set network required

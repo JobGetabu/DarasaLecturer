@@ -75,6 +75,7 @@
     <string name="chooseEmailClient">Check Email</string>
     <string name="for_studs_unable">For Students unable to scan Qr</string>
     <string name="confirm_attendance">Confirm Attendance</string>
+    <string name="you_set">You\'re all set</string>
 
     <array name="addclass_steps">
         <item>Intro</item>
