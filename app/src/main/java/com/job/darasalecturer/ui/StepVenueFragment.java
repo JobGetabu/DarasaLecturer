@@ -2,6 +2,7 @@ package com.job.darasalecturer.ui;
 
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,6 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.job.darasalecturer.util.Constants.DKUTCOURSES;
 
@@ -99,12 +101,20 @@ public class StepVenueFragment extends Fragment {
     @OnClick(R.id.step_venue_course_btn)
     public void onStepVenueCourseBtnClicked() {
 
+        final SweetAlertDialog pDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+        pDialog.setTitleText("Loading courses...");
+        pDialog.setCancelable(true);
+        pDialog.show();
+
         mFirestore.collection(DKUTCOURSES).document("dkut")
                 .get(Source.DEFAULT)
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
+
+                            pDialog.dismiss();
 
                             Map<String, Object> mapdata = task.getResult().getData();
 

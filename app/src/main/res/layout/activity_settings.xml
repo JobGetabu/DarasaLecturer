@@ -139,6 +139,23 @@
                     app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
                 <android.support.design.button.MaterialButton
+                    android:id="@+id/settings_remove_class"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="52dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/nunito_bold"
+                    android:text="Remove a class"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/darkgreyish"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+                <android.support.design.button.MaterialButton
                     android:id="@+id/settings_current"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"

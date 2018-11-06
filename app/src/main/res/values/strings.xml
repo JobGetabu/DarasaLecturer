@@ -63,6 +63,7 @@
     <string name="set_current_semester">Set current semester</string>
     <string name="select">Select</string>
     <string name="select_course">Select course(s)</string>
+    <string name="select_class_delete">Select a class to delete</string>
 
     <string name="dev_email">developer.getabujob@gmai.com</string>
     <string name="dev_subject">Support Darasa Lecturer App</string>
