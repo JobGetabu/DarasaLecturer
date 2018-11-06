@@ -55,6 +55,19 @@
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
+
+            <Spinner
+                android:id="@+id/step_unit__day"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minWidth="24dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:entries="@array/days"
+                android:padding="8dp"
+                android:tooltipText="Lecture day" />
+
             <android.support.design.button.MaterialButton
                 android:id="@+id/step_unit_time_btn"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -63,6 +76,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginBottom="42dp"
                 android:background="@color/material_blue_grey_80"
                 android:fontFamily="@font/nunito_bold"
                 android:text="@string/time_of_lecture"
@@ -73,7 +87,7 @@
                 app:additionalPaddingLeftForIcon="16dp"
                 app:additionalPaddingRightForIcon="16dp"
                 app:backgroundTint="@color/contentDividerLine"
-                app:icon="@drawable/ic_checklist"
+                app:icon="@drawable/ic_time"
                 app:iconTint="@color/colorAccent" />
 
             <android.support.design.widget.TextInputLayout
@@ -96,20 +110,6 @@
                     />
             </android.support.design.widget.TextInputLayout>
 
-
-
-            <Spinner
-                android:id="@+id/step_unit__day"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="42dp"
-                android:entries="@array/days"
-                android:padding="8dp"
-                android:tooltipText="Lecture day" />
-
         </LinearLayout>
     </ScrollView>
 
@@ -121,7 +121,7 @@
         android:gravity="bottom"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="42dp"
         >
 
     <!-- request button -->
