@@ -38,11 +38,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Source;
 import com.google.firebase.firestore.Transaction;
 import com.google.gson.Gson;
@@ -61,7 +64,10 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.victor.loading.newton.NewtonCradleLoading;
 import com.victor.loading.rotate.RotateLoading;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +100,7 @@ import static com.job.darasalecturer.util.Constants.DONECLASSES;
 import static com.job.darasalecturer.util.Constants.LECAUTHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOURSESUBCOL;
+import static com.job.darasalecturer.util.Constants.STUDENTSCANCLASSCOL;
 
 public class ScannerActivity extends AppCompatActivity {
 
@@ -655,8 +662,42 @@ public class ScannerActivity extends AppCompatActivity {
         fillUpRatingBars();
     }
 
+    private int noOfScans = 0;
     private void fillUpRatingBars() {
         //TODO: Show in realtime students who have scanned for the current class
+
+        int noOfStudents;
+
+        /*
+        * rating = no of scans / no of students * 5
+        * */
+        mFirestore.collection(STUDENTSCANCLASSCOL)
+                .whereEqualTo("lecteachtimeid",qrParser.getLecteachtimeid())
+                .whereEqualTo("semester",qrParser.getSemester())
+                .whereEqualTo("year",qrParser.getYear())
+                .whereEqualTo("classtime",qrParser.getClasstime())
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                //get short date today
+                Calendar c = Calendar.getInstance();
+                DateFormat dateFormat2 = new SimpleDateFormat("dd-mm-yyy");
+                String today =dateFormat2.format(c.getTime());
+
+                for (QueryDocumentSnapshot d: queryDocumentSnapshots){
+                    Timestamp timestamp = d.getTimestamp("date");
+
+                    String thatday = dateFormat2.format(timestamp.toDate());
+
+                    if (today.equals(thatday)){
+                        noOfScans ++ ;
+                    }
+                }
+
+                Log.d(TAG, "onSuccess: "+noOfScans);
+            }
+        });
     }
 
     private void fillUpScanDetails(QRParser qrParser) {

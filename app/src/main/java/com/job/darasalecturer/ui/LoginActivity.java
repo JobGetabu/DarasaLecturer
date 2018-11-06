@@ -1,5 +1,6 @@
 package com.job.darasalecturer.ui;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.TextView;
 
@@ -32,6 +35,8 @@ import static com.job.darasalecturer.util.Constants.LECUSERCOL;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG = "login";
+
     @BindView(R.id.login_toolbar)
     Toolbar loginToolbar;
     @BindView(R.id.login_input_email)
@@ -40,8 +45,8 @@ public class LoginActivity extends AppCompatActivity {
     TextInputLayout loginInputPassword;
     @BindView(R.id.login_btn)
     TextView loginBtn;
-
-    private static final String TAG = "login";
+    @BindView(R.id.login_forgotpass)
+    TextView loginForgotpass;
 
 
     private FirebaseAuth mAuth;
@@ -66,6 +71,8 @@ public class LoginActivity extends AppCompatActivity {
         mFirestore = FirebaseFirestore.getInstance();
 
         doSnack = new DoSnack(this, LoginActivity.this);
+
+        loginForgotpass.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -78,14 +85,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.login_btn)
-    public void onViewClicked() {
+    public void onLoginBtnViewClicked() {
 
         if (!AppStatus.getInstance(getApplicationContext()).isOnline()) {
 
             doSnack.showSnackbar("You're offline", "Retry", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onViewClicked();
+                    onLoginBtnViewClicked();
                 }
             });
 
@@ -139,6 +146,7 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 pDialog.dismiss();
                                 doSnack.UserAuthToastExceptions(authtask);
+                                loginForgotpass.setVisibility(View.VISIBLE);
                             }
                         }
                     });
@@ -178,6 +186,43 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isEmailValid(CharSequence email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    @OnClick(R.id.login_forgotpass)
+    public void onForgotPassViewClicked() {
+        final String email = loginInputEmail.getEditText().getText().toString();
+
+
+        if (email.isEmpty() || !isEmailValid(email)) {
+            loginInputEmail.setError("enter valid email to reset password");
+            return;
+        } else {
+            loginInputEmail.setError(null);
+        }
+
+        mAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Email sent.");
+                            doSnack.showSnackbar("Email sent to " + email, "Check", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                                    intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+                                    try {
+                                        //startActivity(intent);
+                                        startActivity(Intent.createChooser(intent, getString(R.string.chooseEmailClient)));
+                                    } catch (ActivityNotFoundException e) { }
+                                }
+                            });
+                        }else {
+                            doSnack.showShortSnackbar("You're not registered :(");
+                        }
+                    }
+                });
     }
 }

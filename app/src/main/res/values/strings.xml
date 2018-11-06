@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DarasaLecturer</string>
+    <string name="app_name">Darasa Lecturer</string>
     <string name="content_decription">Default content description</string>
     <string name="need_a_new_account">Need a new account ?</string>
     <string name="already_have_account">Already have account</string>
@@ -70,6 +70,9 @@
 
     <string name="error_missing_permissions">Cannot start without required permissions</string>
     <string name="youre_offline">You\'re offline</string>
+    <string name="forgot_password"><u>Forgot password?</u></string>
+
+    <string name="chooseEmailClient">Check Email</string>
 
     <array name="addclass_steps">
         <item>Intro</item>
