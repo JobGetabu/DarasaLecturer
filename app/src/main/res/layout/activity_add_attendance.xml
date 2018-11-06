@@ -12,9 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        app:subtitle="For Students unable to scan Qr"
+        app:subtitle="@string/for_studs_unable"
         app:subtitleTextColor="#fff"
-        app:title="Confirm Attendance"
+        app:title="@string/confirm_attendance"
         app:titleTextColor="@android:color/white" />
 
     <HorizontalScrollView
@@ -68,13 +68,33 @@
         android:id="@+id/stud_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/stud_save_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/stud_horizontalScrollView"
         tools:listitem="@layout/single_attendance"
         android:visibility="visible"
         />
+
+    <android.support.design.button.MaterialButton
+        android:id="@+id/stud_save_btn"
+        android:layout_width="0dp"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_height="wrap_content"
+        android:text="Save Attendees"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:icon="@drawable/ic_checkmark"
+        app:iconPadding="8dp"
+        app:additionalPaddingLeftForIcon="32dp"
+        android:textAlignment="center"
+        android:gravity="center"
+        app:cornerRadius="0dp"
+        app:backgroundTint="@color/darkbluish"
+        app:rippleColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

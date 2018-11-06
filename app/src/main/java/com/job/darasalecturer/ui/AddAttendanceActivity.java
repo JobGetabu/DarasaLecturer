@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.button.MaterialButton;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.Snackbar;
@@ -19,7 +20,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,6 +72,8 @@ public class AddAttendanceActivity extends AppCompatActivity {
     RecyclerView studList;
     @BindView(R.id.stud_no_student)
     View noStudView;
+    @BindView(R.id.stud_save_btn)
+    MaterialButton studSaveBtn;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
@@ -152,30 +154,28 @@ public class AddAttendanceActivity extends AppCompatActivity {
                 .whereEqualTo("currentsemester", currentsemester)
                 .orderBy("regnumber", Query.Direction.ASCENDING)
                 .get()
-                .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forMainThreadTasks(),new OnSuccessListener<QuerySnapshot>() {
+                .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forMainThreadTasks(), new OnSuccessListener<QuerySnapshot>() {
 
                     @Override
                     public void onSuccess(final QuerySnapshot queryDocumentSnapshots) {
 
 
+                        for (final QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            //DocumentReference reference = document.getDocumentReference("course");
+                            //String stringReference = reference.getPath();
 
-                                for (final QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                    //DocumentReference reference = document.getDocumentReference("course");
-                                    //String stringReference = reference.getPath();
+                            String stringRef = document.getString("course");
+                            if (courses.contains(stringRef)) {
+                                //Log.d(TAG, "Reference found!");
 
-                                    String stringRef = document.getString("course");
-                                    if (courses.contains(stringRef)) {
-                                        //Log.d(TAG, "Reference found!");
+                                //heavy operation
 
-                                        //heavy operation
+                                StudentDetails studentDetails = document.toObject(StudentDetails.class);
+                                Log.d(TAG, "Record found!" + studentDetails.toString());
+                                fullStudentDetailsList.add(studentDetails);
 
-                                        StudentDetails studentDetails = document.toObject(StudentDetails.class);
-                                        Log.d(TAG, "Record found!" + studentDetails.toString());
-                                        fullStudentDetailsList.add(studentDetails);
-
-                                    }
-                                }
-
+                            }
+                        }
 
 
                         //adapter init
@@ -201,21 +201,27 @@ public class AddAttendanceActivity extends AppCompatActivity {
     }
 
     public void updateSaveStatus() {
-        if (saveMenu != null)
+        /*if (saveMenu != null)
             if (anySelected) {
                 saveMenu.setVisible(true);
             } else {
                 saveMenu.setVisible(false);
-            }
+            }*/
+
+        if (anySelected){
+            studSaveBtn.setVisibility(View.VISIBLE);
+        }else {
+            studSaveBtn.setVisibility(View.GONE);
+        }
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.amenu, menu);
         saveMenu = menu.findItem(R.id.amenu_save);
-        updateSaveStatus();
+        //updateSaveStatus();
         return super.onCreateOptionsMenu(menu);
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -324,7 +330,7 @@ public class AddAttendanceActivity extends AppCompatActivity {
                 if (studentDetails != null) {
 
                     studentDetailsList = studentDetails;
-
+                    setToolTipText(studentDetails);
                     studChipgroup.removeAllViews();
 
                     for (StudentDetails stud : studentDetails) {
@@ -346,6 +352,15 @@ public class AddAttendanceActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void setToolTipText(List<StudentDetails> studentDetails) {
+        if (studentDetails.isEmpty()) {
+
+            studToolbar.setSubtitle(getString(R.string.for_studs_unable));
+        } else {
+            studToolbar.setSubtitle("Selected " + studentDetails.size() + " students");
+        }
     }
 
     private void addChipStudent(final StudentDetails model) {
@@ -378,5 +393,23 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
             constructQuery(qrParser);
         }
+    }
+
+    @OnClick(R.id.stud_save_btn)
+    public void onSaveBtnViewClicked() {
+
+        addStudentViewModel.getStudListMediatorLiveData().observe(this, new Observer<List<StudentDetails>>() {
+            @Override
+            public void onChanged(@Nullable List<StudentDetails> studentDetails) {
+                if (studentDetails != null) {
+                    if (studentDetails.isEmpty()) {
+                        saveStudents(studentDetails);
+                    }
+                }
+            }
+        });
+    }
+
+    private void saveStudents(List<StudentDetails> studentDetails) {
     }
 }
