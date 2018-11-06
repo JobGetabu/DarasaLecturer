@@ -1,5 +1,6 @@
 package com.job.darasalecturer.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -35,22 +36,34 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.adapter.ConfirmAttendanceAdapter;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.model.StudentDetails;
+import com.job.darasalecturer.service.AddAttendanceWorker;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.StudentViewHolder;
 import com.job.darasalecturer.viewmodel.AddStudentViewModel;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.job.darasalecturer.service.AddAttendanceWorker.KEY_STUD_LIST_ARG;
 import static com.job.darasalecturer.util.Constants.CURRENT_SEM_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.CURRENT_YEAR_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.STUDENTDETAILSCOL;
@@ -85,6 +98,7 @@ public class AddAttendanceActivity extends AppCompatActivity {
     private Query mQuery = null;
     private SharedPreferences mSharedPreferences;
     private QRParser qrParser;
+    private Gson gson;
 
     private AddStudentViewModel addStudentViewModel;
     private ConfirmAttendanceAdapter confirmAttendanceAdapter;
@@ -112,6 +126,7 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
         doSnack = new DoSnack(this, AddAttendanceActivity.this);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        gson = new Gson();
 
         //retrieve courses
         qrParser = getIntent().getParcelableExtra(ADDATTENDANCE_EXTRA);
@@ -208,9 +223,9 @@ public class AddAttendanceActivity extends AppCompatActivity {
                 saveMenu.setVisible(false);
             }*/
 
-        if (anySelected){
+        if (anySelected) {
             studSaveBtn.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             studSaveBtn.setVisibility(View.GONE);
         }
     }
@@ -397,19 +412,36 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
     @OnClick(R.id.stud_save_btn)
     public void onSaveBtnViewClicked() {
+        saveStudents(addStudentViewModel.getStudListMediatorLiveData().getValue());
 
-        addStudentViewModel.getStudListMediatorLiveData().observe(this, new Observer<List<StudentDetails>>() {
-            @Override
-            public void onChanged(@Nullable List<StudentDetails> studentDetails) {
-                if (studentDetails != null) {
-                    if (studentDetails.isEmpty()) {
-                        saveStudents(studentDetails);
-                    }
-                }
-            }
-        });
     }
 
     private void saveStudents(List<StudentDetails> studentDetails) {
+
+        Map<String, Object> studListMap = new HashMap<>();
+        studListMap.put("list", studentDetails);
+
+        Type listOfStudObject = new TypeToken<List<StudentDetails>>(){}.getType();
+        String s = gson.toJson(studentDetails, listOfStudObject);
+
+        // Create the Data object:
+        @SuppressLint("RestrictedApi")
+        Data myData = new Data.Builder()
+                .putString(KEY_STUD_LIST_ARG,s)
+                .build();
+
+        //set network required
+        Constraints myConstraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
+        // ...then create and enqueue a OneTimeWorkRequest that uses those arguments
+        OneTimeWorkRequest attendWork = new OneTimeWorkRequest.Builder(AddAttendanceWorker.class)
+                .setConstraints(myConstraints)
+                .setInputData(myData)
+                .build();
+
+        WorkManager.getInstance()
+                .enqueue(attendWork);
     }
 }

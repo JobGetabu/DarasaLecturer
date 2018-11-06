@@ -68,7 +68,7 @@ public class TransactionWorker extends Worker {
         }, lecteachtimeid,unitname, unitcode);
 
 
-        //using retry cause it doesn't wait for our callback
+        //using failure cause it doesn't wait for our callback
         return Result.FAILURE;
     }
 
