@@ -56,6 +56,7 @@ public class SettingsActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
     private List<LecTeach> mLecTeachList;
+    private ClassListFragment classListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,7 @@ public class SettingsActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
 
+        classListFragment = new ClassListFragment();
     }
 
     @OnClick(R.id.settings_manage_account)
@@ -130,7 +132,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     @OnClick(R.id.settings_remove_class)
     public void onRemoveClassViewClicked() {
-        loadClasses();
+        //loadClasses();
+
+        classListFragment.show(getSupportFragmentManager(),ClassListFragment.TAG);
     }
 
     private void loadClasses() {

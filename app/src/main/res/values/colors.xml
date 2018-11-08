@@ -18,4 +18,8 @@
     <color name="primarytranslucent">#50673BB7</color>
 
     <color name="colorhint">#a9aaac</color>
+    <color name="payGreen">#009688</color>
+    <color name="pay_bg">#E0E0E0</color>
+
+    <color name="dim">#8c000000</color>
 </resources>
