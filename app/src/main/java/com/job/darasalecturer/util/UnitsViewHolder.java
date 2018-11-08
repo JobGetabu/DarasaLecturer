@@ -71,8 +71,4 @@ public class UnitsViewHolder extends RecyclerView.ViewHolder {
         sincCourses.setText(model.getUnitcode());
 
     }
-
-    private void getCourses(String lecteachid) {
-    }
-
 }

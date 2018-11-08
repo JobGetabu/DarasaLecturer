@@ -179,6 +179,7 @@ public class StepXinfoFragment extends Fragment {
             pDialog.show();
 
             batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()){
