@@ -174,7 +174,7 @@ public class StepXinfoFragment extends Fragment {
             //load progress
             final SweetAlertDialog pDialog;
             pDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
-            pDialog.setCancelable(false);
+            pDialog.setCancelable(true);
             pDialog.setContentText("Saving class");
             pDialog.show();
 
