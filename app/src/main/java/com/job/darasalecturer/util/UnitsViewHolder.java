@@ -42,9 +42,18 @@ public class UnitsViewHolder extends RecyclerView.ViewHolder {
                 if (isChecked) {
                     unitsViewModel.setIsChecked(true);
                     unitsViewModel.setLecTeachMutableLiveData(lecTeach);
+
+                    //handling lists
+                    unitsViewModel.getLecTeachList().getValue().add(lecTeach);
+                    unitsViewModel.setLecTeachList( unitsViewModel.getLecTeachList().getValue());
+
                 } else {
                     unitsViewModel.setIsChecked(false);
                     unitsViewModel.setLecTeachMutableLiveData(null);
+
+                    //handling lists
+                    unitsViewModel.getLecTeachList().getValue().remove(lecTeach);
+                    unitsViewModel.setLecTeachList( unitsViewModel.getLecTeachList().getValue());
                 }
             }
         });
@@ -59,7 +68,7 @@ public class UnitsViewHolder extends RecyclerView.ViewHolder {
     public void setUpUi(LecTeach model) {
 
         sincUnitname.setText(model.getUnitname());
-        getCourses(/*lectechid*/"");
+        sincCourses.setText(model.getUnitcode());
 
     }
 

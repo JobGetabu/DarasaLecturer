@@ -3,9 +3,12 @@ package com.job.darasalecturer.ui;
 
 import android.app.Dialog;
 import android.app.Fragment;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.button.MaterialButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -13,9 +16,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -28,9 +31,11 @@ import com.job.darasalecturer.util.UnitsViewHolder;
 import com.job.darasalecturer.viewmodel.UnitsViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
@@ -43,13 +48,18 @@ public class ClassListFragment extends AppCompatDialogFragment {
 
     public static final String TAG = "classlist";
 
-    @BindView(R.id.fap_ll1)
-    LinearLayout fapLl1;
-    Unbinder unbinder;
     @BindView(R.id.frg_class_list)
     RecyclerView frgClassList;
     @BindView(R.id.frg_class_no_class)
     View noStudView;
+    @BindView(R.id.frg_class_selected)
+    TextView frgClassSelected;
+    @BindView(R.id.frg_class_delete)
+    MaterialButton frgClassDelete;
+    @BindView(R.id.frg_class_dismiss)
+    MaterialButton frgClassDismiss;
+
+    Unbinder unbinder;
 
     private FirebaseFirestore mFirestore;
     private FirestoreRecyclerAdapter adapter;
@@ -83,16 +93,36 @@ public class ClassListFragment extends AppCompatDialogFragment {
 
         //viewmodel
         unitsViewModel = ViewModelProviders.of(this).get(UnitsViewModel.class);
+
+        //observers
+        selectedUnitsObserver();
     }
 
+    private void selectedUnitsObserver() {
+        unitsViewModel.getLecTeachList()
+                .observe(getActivity(), new Observer<List<LecTeach>>() {
+                    @Override
+                    public void onChanged(@Nullable List<LecTeach> lecTeaches) {
+                        StringBuilder stringBuilder = new StringBuilder();
+                        String s = "Selected : ";
+                        stringBuilder.append(s);
+
+                        for (LecTeach lecTeach : lecTeaches) {
+                            stringBuilder.append(lecTeach.getUnitname() + ", ");
+                        }
+
+                        frgClassSelected.setText(stringBuilder.toString());
+                    }
+                });
+    }
 
 
     private void loadUpList() {
         initList();
 
         Query query = mFirestore.collection(LECTEACHCOL)
-                .orderBy("semester", Query.Direction.DESCENDING)
-                .orderBy("studyyear", Query.Direction.DESCENDING);
+                .orderBy("semester", Query.Direction.ASCENDING)
+                .orderBy("studyyear", Query.Direction.ASCENDING);
 
 
         FirestoreRecyclerOptions<LecTeach> options = new FirestoreRecyclerOptions.Builder<LecTeach>()
@@ -176,6 +206,20 @@ public class ClassListFragment extends AppCompatDialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick(R.id.frg_class_delete)
+    public void onFrgClassDeleteClicked() {
+        deleteUnits();
+    }
+
+    private void deleteUnits() {
+        dismiss();
+    }
+
+    @OnClick(R.id.frg_class_dismiss)
+    public void onFrgClassDismissClicked() {
+        dismiss();
     }
 
     public interface SubmitCallbackListener {

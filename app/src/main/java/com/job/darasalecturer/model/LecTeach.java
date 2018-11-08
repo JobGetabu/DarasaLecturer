@@ -9,6 +9,7 @@ import android.support.annotation.Keep;
 @Keep
 public class LecTeach {
     private String lecid;
+    private String lecteachid;
     private String unitcode;
     private String unitname;
     private String semester;
@@ -24,14 +25,16 @@ public class LecTeach {
     public LecTeach() {
     }
 
-    public LecTeach(String lecid, String unitcode, String unitname,
-                    String semester, String studyyear, Boolean combiner,
-                    String school, String department) {
+
+    public LecTeach(String lecid, String lecteachid, String unitcode, String unitname, String semester,
+                    String studyyear, String academicyear, Boolean combiner, String school, String department) {
         this.lecid = lecid;
+        this.lecteachid = lecteachid;
         this.unitcode = unitcode;
         this.unitname = unitname;
         this.semester = semester;
         this.studyyear = studyyear;
+        this.academicyear = academicyear;
         this.combiner = combiner;
         this.school = school;
         this.department = department;
@@ -107,6 +110,14 @@ public class LecTeach {
 
     public void setAcademicyear(String academicyear) {
         this.academicyear = academicyear;
+    }
+
+    public String getLecteachid() {
+        return lecteachid;
+    }
+
+    public void setLecteachid(String lecteachid) {
+        this.lecteachid = lecteachid;
     }
 
     @Override

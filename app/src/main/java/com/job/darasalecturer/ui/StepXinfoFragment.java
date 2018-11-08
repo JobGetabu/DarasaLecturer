@@ -126,6 +126,7 @@ public class StepXinfoFragment extends Fragment {
             String lecteachtimeid = mFirestore.collection(LECTEACHTIMECOL).document().getId();
 
             model.getLecTeachMediatorLiveData().getValue().setLecid(lecid);
+            model.getLecTeachMediatorLiveData().getValue().setLecteachid(lecteachid);
 
             model.getLecTeachTimeMediatorLiveData().getValue().setLecid(lecid);
             model.getLecTeachTimeMediatorLiveData().getValue().setLecteachid(lecteachid);

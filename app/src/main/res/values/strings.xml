@@ -77,6 +77,8 @@
     <string name="for_studs_unable">For Students unable to scan Qr</string>
     <string name="confirm_attendance">Confirm Attendance</string>
     <string name="you_set">You\'re all set</string>
+    <string name="delete">DELETE</string>
+    <string name="dismiss">DISMISS</string>
 
     <array name="addclass_steps">
         <item>Intro</item>
