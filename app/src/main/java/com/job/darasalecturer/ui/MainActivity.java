@@ -270,11 +270,11 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChanged() {
                 // Show/hide content if the query returns empty.
                 if (getItemCount() == 0) {
-                    mainList.setVisibility(View.GONE);
+                    mainList.setVisibility(View.INVISIBLE);
                     noClassView.setVisibility(View.VISIBLE);
                 } else {
                     mainList.setVisibility(View.VISIBLE);
-                    noClassView.setVisibility(View.GONE);
+                    noClassView.setVisibility(View.INVISIBLE);
                 }
             }
 
