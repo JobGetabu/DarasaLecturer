@@ -7,6 +7,7 @@ import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.abdeveloper.library.MultiSelectDialog;
 import com.abdeveloper.library.MultiSelectModel;
@@ -54,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
+    private List<LecTeach> mLecTeachList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,10 +155,10 @@ public class SettingsActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
 
-                                        List<LecTeach> lecTeachList = queryDocumentSnapshots.toObjects(LecTeach.class);
+                                        mLecTeachList = queryDocumentSnapshots.toObjects(LecTeach.class);
 
                                         int i=0;
-                                        for (LecTeach lecTeach : lecTeachList) {
+                                        for (LecTeach lecTeach : mLecTeachList) {
 
                                             listOfTeachs.add(new MultiSelectModel(i, lecTeach.getUnitname()));
                                             i++;
@@ -188,7 +190,8 @@ public class SettingsActivity extends AppCompatActivity {
                         //will return list of selected IDS
                         for (int i = 0; i < selectedIds.size(); i++) {
                             //Toast.makeText(getContext(), "Selected Ids : " + selectedIds.get(i) + "\n" + "Selected Names : " + selectedNames.get(i) + "\n" + "DataString : " + dataString, Toast.LENGTH_SHORT).show();
-
+                            Log.d(TAG, "onSelected: "+mLecTeachList.get(i).getUnitname()+" == "+selectedNames.get(i));
+                            Toast.makeText(SettingsActivity.this, "onSelected: "+mLecTeachList.get(i).getUnitname()+" == "+selectedNames.get(i), Toast.LENGTH_SHORT).show();
                         }
                     }
 
