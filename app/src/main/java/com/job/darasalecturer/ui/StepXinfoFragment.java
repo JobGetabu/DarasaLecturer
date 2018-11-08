@@ -2,6 +2,7 @@ package com.job.darasalecturer.ui;
 
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -93,7 +94,7 @@ public class StepXinfoFragment extends Fragment {
 
         model = ViewModelProviders.of(getActivity()).get(AddClassViewModel.class);
 
-        //TODO: Make a smart autofill for the fields previous values
+        //TODO ver 2: Make a smart autofill for the fields previous values
     }
 
     @OnClick(R.id.step_x_back)
@@ -176,6 +177,13 @@ public class StepXinfoFragment extends Fragment {
             pDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
             pDialog.setCancelable(true);
             pDialog.setContentText("Saving class");
+            pDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    dialog.dismiss();
+                    sendToMain();
+                }
+            });
             pDialog.show();
 
             batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
