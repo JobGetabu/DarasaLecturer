@@ -19,18 +19,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.LecTeach;
 import com.job.darasalecturer.util.UnitsViewHolder;
 import com.job.darasalecturer.viewmodel.UnitsViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -39,6 +43,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
+import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -214,7 +219,53 @@ public class ClassListFragment extends AppCompatDialogFragment {
     }
 
     private void deleteUnits() {
+
+        DefaultExecutorSupplier.getInstance().forMainThreadTasks()
+                .execute(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        List<LecTeach> list = unitsViewModel.getLecTeachList().getValue();
+
+                        for (final LecTeach teach : list) {
+
+                            mFirestore.collection(LECTEACHCOL).document(teach.getLecteachid()).delete()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                            mFirestore.collection(LECTEACHCOL).document(teach.getLecteachid())
+                                                    .collection("Courses").document("courses").delete();
+
+                                            //Delete the lecteachtime
+                                            deleteLecTeachTime(teach.getLecteachid());
+
+                                            dismiss();
+
+                                        }
+                                    });
+                        }
+                        Toast.makeText(ClassListFragment.this.getActivity(), "Deleting class", Toast.LENGTH_SHORT).show();
+                    }
+                });
         dismiss();
+    }
+
+    private void deleteLecTeachTime(final String lecteachid) {
+        mFirestore.collection(LECTEACHTIMECOL).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                        for (DocumentSnapshot snapshot : queryDocumentSnapshots){
+                            String snapshotid = snapshot.getString("lecteachid");
+                            if (snapshotid.equals(lecteachid)){
+                                snapshot.getId();
+                                mFirestore.collection(LECTEACHTIMECOL).document(snapshot.getId()).delete();
+                            }
+                        }
+                    }
+                });
     }
 
     @OnClick(R.id.frg_class_dismiss)
@@ -222,9 +273,4 @@ public class ClassListFragment extends AppCompatDialogFragment {
         dismiss();
     }
 
-    public interface SubmitCallbackListener {
-        void onSelected(ArrayList<Integer> var1, ArrayList<String> var2, String var3);
-
-        void onCancel();
-    }
 }
