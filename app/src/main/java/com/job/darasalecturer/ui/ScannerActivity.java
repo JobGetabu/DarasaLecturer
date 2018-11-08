@@ -283,6 +283,7 @@ public class ScannerActivity extends AppCompatActivity {
                 updatePinningStatus();
                 break;
             case R.id.smenu_save:
+                //passcode only works sdk > 19
                 showPasscodeFragment.show(getSupportFragmentManager(), ShowPasscodeFragment.TAG);
                 showPasscodeFragment.setOnSuccessFail(new ShowPasscodeFragment.OnSuccessFail() {
                     @Override
@@ -725,26 +726,30 @@ public class ScannerActivity extends AppCompatActivity {
 
                                         //now we have noOfStudents and noOfScans
 
-                                        double rating = noOfScans / noOfStudents * 5;
-                                        int perc = noOfScans / noOfStudents * 100;
+                                        double rating = 0;
+                                        int perc = 0;
+
+                                        try {
+                                             rating = noOfScans / noOfStudents * 5;
+                                             perc = noOfScans / noOfStudents * 100;
+                                        }catch (ArithmeticException e){ }
+                                        finally {
+                                            scanNumStudents.setText(String.valueOf(noOfStudents));
+                                            itemColRating.setRating(Float.parseFloat(String.valueOf(rating)));
+
+                                            if (perc < 30){
+                                                scanSatisfactionProgressBar.setProgress(perc);
+                                                scanSatisfactionProgressBar.setSecondaryProgress(0);
+
+                                            }else if(perc > 30){
+                                                scanSatisfactionProgressBar.setProgress(perc);
+                                                scanSatisfactionProgressBar.setSecondaryProgress(perc - 30);
+                                            }
 
 
-                                        scanNumStudents.setText(String.valueOf(noOfStudents));
-                                        itemColRating.setRating(Float.parseFloat(String.valueOf(rating)));
-
-                                        if (perc < 30){
-                                            scanSatisfactionProgressBar.setProgress(perc);
-                                            scanSatisfactionProgressBar.setSecondaryProgress(0);
-
-                                        }else if(perc > 30){
-                                            scanSatisfactionProgressBar.setProgress(perc);
-                                            scanSatisfactionProgressBar.setSecondaryProgress(perc - 30);
+                                            scanPercentageText.setText(String.valueOf(perc)+" %");
+                                            Log.d(TAG, "scans done is "+noOfScans);
                                         }
-
-
-                                        scanPercentageText.setText(String.valueOf(perc)+" %");
-                                        Log.d(TAG, "scans done is "+noOfScans);
-
                                     }
                                 }
                             });

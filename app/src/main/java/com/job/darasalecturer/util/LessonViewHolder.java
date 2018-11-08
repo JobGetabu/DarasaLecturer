@@ -137,13 +137,16 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
                         lsUnitname.setText(lecTeachTime.getUnitname());
                         lsVenue.setText(lecTeachTime.getVenue());
                         lessonTime(lecTeachTime.getTime());
-                        locationViewer(lecTeachTime);
+                        //locationViewer(lecTeachTime);
                         getCourses(lecTeachTime);
                     }
                 });
     }
 
     private void locationViewer(LecTeachTime lecTeachTime) {
+
+        //AppCompatResources.getDrawable(get,R.drawable.ic_location_on)
+
         if (lecTeachTime.getVenue().isEmpty()) {
 
             DrawableHelper

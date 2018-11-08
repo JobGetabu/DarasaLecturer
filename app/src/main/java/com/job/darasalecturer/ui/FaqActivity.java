@@ -2,6 +2,7 @@ package com.job.darasalecturer.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.Toolbar;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
@@ -32,7 +33,7 @@ public class FaqActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_back));
+        getSupportActionBar().setHomeAsUpIndicator(AppCompatResources.getDrawable(this,R.drawable.ic_back));
 
         //String prourl = getIntent().getStringExtra(PRODUCTURL);
         String url = "https://sling254.github.io/darasa-faq/";

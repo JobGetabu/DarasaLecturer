@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -14,6 +15,11 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
  * Created by Job on Tuesday : 7/24/2018.
  */
 public class DarasaLec extends MultiDexApplication {
+
+    //this works < 19
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     FirebaseAuth mAuth;
     FirebaseFirestore mFirestore;
