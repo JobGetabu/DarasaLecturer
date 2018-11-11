@@ -101,7 +101,7 @@ public class ShowPasscodeFragment extends DialogFragment {
                                     .setPasscodeType(PasscodeView.PasscodeViewType.TYPE_CHECK_PASSCODE)
                                     .setListener(new PasscodeView.PasscodeViewListener() {
                                         @Override
-                                        public void onFail() {
+                                        public void onFail(String wrongNumber) {
                                             onSuccessFail.onFail();
                                             dismiss();
                                         }
@@ -126,7 +126,7 @@ public class ShowPasscodeFragment extends DialogFragment {
                     .setPasscodeType(PasscodeView.PasscodeViewType.TYPE_CHECK_PASSCODE)
                     .setListener(new PasscodeView.PasscodeViewListener() {
                         @Override
-                        public void onFail() {
+                        public void onFail(String wrongNumber) {
 
 
                             onSuccessFail.onFail();

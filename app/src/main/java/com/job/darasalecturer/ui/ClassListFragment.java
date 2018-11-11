@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -67,6 +68,7 @@ public class ClassListFragment extends AppCompatDialogFragment {
     Unbinder unbinder;
 
     private FirebaseFirestore mFirestore;
+    private FirebaseAuth mAuth;
     private FirestoreRecyclerAdapter adapter;
     private UnitsViewModel unitsViewModel;
 
@@ -95,6 +97,7 @@ public class ClassListFragment extends AppCompatDialogFragment {
     private void init() {
         //firebase
         mFirestore = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         //viewmodel
         unitsViewModel = ViewModelProviders.of(this).get(UnitsViewModel.class);
@@ -125,7 +128,10 @@ public class ClassListFragment extends AppCompatDialogFragment {
     private void loadUpList() {
         initList();
 
+        String lecid = mAuth.getCurrentUser().getUid();
+
         Query query = mFirestore.collection(LECTEACHCOL)
+                .whereEqualTo("lecid",lecid)
                 .orderBy("semester", Query.Direction.ASCENDING)
                 .orderBy("studyyear", Query.Direction.ASCENDING);
 
@@ -193,6 +199,11 @@ public class ClassListFragment extends AppCompatDialogFragment {
 
     @Override
     public void onStart() {
+
+        if (mAuth.getCurrentUser() == null){
+            Log.e(TAG, "onStart: mAuth.getCurrentUser() = null");
+        }
+
         super.onStart();
         if (adapter != null) {
             adapter.startListening();

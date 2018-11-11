@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -48,6 +49,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.fabric.sdk.android.Fabric;
 
 import static com.job.darasalecturer.util.Constants.DKUTCOURSES;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         mFirestore = FirebaseFirestore.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
+        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -132,16 +134,18 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             }
-        };
-
-        mAuth.addAuthStateListener(mAuthListener);
+        });
 
         doSnack = new DoSnack(this, MainActivity.this);
+
+        //crashlytics
+        Fabric.with(this, new Crashlytics());
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override

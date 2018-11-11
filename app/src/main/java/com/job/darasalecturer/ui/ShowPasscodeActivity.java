@@ -52,7 +52,7 @@ public class ShowPasscodeActivity extends AppCompatActivity {
                        .setPasscodeType(PasscodeView.PasscodeViewType.TYPE_CHECK_PASSCODE)
                        .setListener(new PasscodeView.PasscodeViewListener() {
                            @Override
-                           public void onFail() {
+                           public void onFail(String wrongNumber) {
 
                                onBackPressed();
                                ScannerActivity.userpasscode = null;
