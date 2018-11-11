@@ -1,8 +1,11 @@
 package com.job.darasalecturer.model;
 
+import android.support.annotation.Keep;
+
 /**
  * Created by Job on Tuesday : 8/14/2018.
  */
+@Keep
 public class StudentDetails {
 
     private String devicetoken;

@@ -1,10 +1,13 @@
 package com.job.darasalecturer.model;
 
+import android.support.annotation.Keep;
+
 import java.util.Date;
 
 /**
  * Created by Job on Wednesday : 10/3/2018.
  */
+@Keep
 public class StudentScanClass {
     private String semester;
     private String year;

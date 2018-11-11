@@ -2,6 +2,7 @@ package com.job.darasalecturer.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -15,6 +16,8 @@ import java.util.Date;
 /**
  * Created by Job on Sunday : 8/12/2018.
  */
+
+@Keep
 public class QRParser implements Parcelable {
     private double latitude;
     private double longitude;

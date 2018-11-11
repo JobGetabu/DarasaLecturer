@@ -2,10 +2,12 @@ package com.job.darasalecturer.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 
 /**
  * Created by Job on Monday : 8/6/2018.
  */
+@Keep
 public class Course implements Parcelable {
     private String name;
 
