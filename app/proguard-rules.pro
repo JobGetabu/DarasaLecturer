@@ -19,3 +19,26 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Retain generated class which implement Unbinder.
+-keep public class * implements butterknife.Unbinder { public <init>(**, android.view.View); }
+
+# Prevent obfuscation of types which use ButterKnife annotations since the simple name
+# is used to reflectively look up the generated ViewBinding.
+-keep class butterknife.*
+-keepclasseswithmembernames class * { @butterknife.* <methods>; }
+-keepclasseswithmembernames class * { @butterknife.* <fields>; }
+
+-keep class cn.pedant.SweetAlert.Rotate3dAnimation {
+    public <init>(...);
+ }
+
+## Square Picasso specific rules ##
+ -dontwarn com.squareup.okhttp.**
+
+#next two lines for Error:Execution failed for task ‘app:transformClassesAndResourcesWithProguardForRelease
+-ignorewarnings
+
+-keep class * {
+    public private *;
+}
