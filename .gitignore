@@ -10,3 +10,9 @@
 /captures
 .externalNativeBuild
 /app/google-services.json
+libs/
+release/
+src/androidTest/
+src/main/res/layout-v26/
+src/main/res/xml/
+src/test/
