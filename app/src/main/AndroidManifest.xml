@@ -39,7 +39,7 @@
             tools:replace="android:value" />
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
-            android:value="AIzaSyDMu5NAQRU1j1xRbOGN3v85M-CN9FP5rys" />
+            android:value="AIzaSyCtgyk2oFG_ThGDCItnqz1gyp6YNE7Wq_s" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="bd67bf129c485e4f45930b61a67e4b8b08359675"
