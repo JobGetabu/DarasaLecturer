@@ -3,26 +3,18 @@ package com.job.darasalecturer.ui;
 import android.app.ActivityManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.location.Address;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,7 +60,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import androidx.work.Constraints;
@@ -80,14 +71,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import io.nlopez.smartlocation.OnLocationUpdatedListener;
-import io.nlopez.smartlocation.OnReverseGeocodingListener;
-import io.nlopez.smartlocation.SmartLocation;
-import io.nlopez.smartlocation.location.LocationProvider;
-import io.nlopez.smartlocation.location.config.LocationParams;
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
-import io.nlopez.smartlocation.location.providers.LocationManagerProvider;
-import io.nlopez.smartlocation.location.providers.MultiFallbackProvider;
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 import static android.widget.Toast.LENGTH_LONG;
@@ -202,18 +186,6 @@ public class ScannerActivity extends AppCompatActivity {
 
         // Keep the screen always on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        /*
-        // Check if the location services are enabled
-        checkLocationOn();
-        SmartLocation.with(this).location().state().locationServicesEnabled();
-        // Location permission not granted
-        if (ContextCompat.checkSelfPermission(ScannerActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(ScannerActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_ID);
-            return;
-        }
-        startLocation();
-        */
 
         showLoader(true);
         rotateloading.start();
@@ -452,107 +424,6 @@ public class ScannerActivity extends AppCompatActivity {
         });
     }
 
-    private void startLocation() {
-
-        pDialogLoc = new SweetAlertDialog(ScannerActivity.this, SweetAlertDialog.PROGRESS_TYPE);
-        pDialogLoc.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
-        pDialogLoc.setTitleText("Accessing Location" + "\n Just a moment...");
-        pDialogLoc.setCancelable(true);
-        pDialogLoc.show();
-        /*pDialogLoc.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                if (mLocation != null) {
-
-                } else {
-                    Toast.makeText(ScannerActivity.this, "Location not acquired", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            }
-        });*/
-
-        //register location change broadcast
-        registerReceiver(mGpsSwitchStateReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
-
-        LocationManagerProvider locationManagerProvider = new LocationManagerProvider();
-
-        LocationProvider fallbackProvider = new MultiFallbackProvider.Builder()
-                .withProvider(locationManagerProvider).withGooglePlayServicesProvider().build();
-
-        SmartLocation.with(this)
-                .location()
-                .config(LocationParams.NAVIGATION)
-                .oneFix()
-                .start(new OnLocationUpdatedListener() {
-                    @Override
-                    public void onLocationUpdated(Location location) {
-
-                        Log.d(TAG, "onLocationUpdated: " + location);
-                        showLocation(location);
-
-                        mLocation = location;
-                        //generateQR(location);
-
-                        pDialogLoc.dismiss();
-
-                        if (mLocation != null) {
-                            if (pDialogLoc.isShowing()) {
-                                pDialogLoc.dismiss();
-                            }
-                        }
-                    }
-                });
-
-    }
-
-    private void checkLocationOn() {
-
-        final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(R.string.location);  // GPS not found
-        builder.setMessage(R.string.permission_rationale_location); // Want to enable?
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ScannerActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-            }
-        });
-        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
-            }
-        });
-        AlertDialog dd = builder.create();
-
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            dd.show();
-            setUpLocationUi(false);
-
-        } else {
-            dd.dismiss();
-            setUpLocationUi(true);
-
-        }
-
-    }
-
-    /**
-     * Following broadcast receiver is to listen the Location button toggle state in Android.
-     */
-    private BroadcastReceiver mGpsSwitchStateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
-                // Make an action or refresh an already managed state.
-                checkLocationOn();
-            }
-        }
-    };
-
-
     private void generateQR() {
 
         String qrtext = qrParser.classToGson(gson, qrParser);
@@ -589,42 +460,6 @@ public class ScannerActivity extends AppCompatActivity {
         if (provider != null) {
             provider.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    private void showLocation(Location location) {
-        if (location != null) {
-            final String text = String.format("Latitude %.6f, Longitude %.6f",
-                    location.getLatitude(),
-                    location.getLongitude());
-
-            // We are going to get the address for the current position
-            SmartLocation.with(this).geocoding().reverse(location, new OnReverseGeocodingListener() {
-                @Override
-                public void onAddressResolved(Location original, List<Address> results) {
-                    if (results.size() > 0) {
-                        Address result = results.get(0);
-                        StringBuilder builder = new StringBuilder(text);
-                        builder.append("\n[Reverse Geocoding] ");
-                        List<String> addressElements = new ArrayList<>();
-                        for (int i = 0; i <= result.getMaxAddressLineIndex(); i++) {
-                            addressElements.add(result.getAddressLine(i));
-                        }
-                        builder.append(TextUtils.join(", ", addressElements));
-
-                        doSnack.showShortSnackbar(TextUtils.join(", ", addressElements));
-                    }
-                }
-            });
-        } else {
-
-            Log.d(TAG, "showLocation: Null location");
-        }
-    }
-
-    private void stopLocation() {
-        SmartLocation.with(this).location().stop();
-        SmartLocation.with(this).geocoding().stop();
-
     }
 
     @Override
