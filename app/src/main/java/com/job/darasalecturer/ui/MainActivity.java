@@ -183,6 +183,12 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    private void sendToAdvertiseClass() {
+        Intent adIntent = new Intent(MainActivity.this, AdvertiseActivity.class);
+        startActivity(adIntent);
+        //finish();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.hmenu, menu);
@@ -200,6 +206,9 @@ public class MainActivity extends AppCompatActivity {
                 sendToLogin();
                 break;
 
+            case R.id.hmenu_generate:
+                    sendToAdvertiseClass();
+                break;
         }
 
         return true;

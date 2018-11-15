@@ -28,6 +28,7 @@ public class Constants {
     //prefs
     public static final String CURRENT_SEM_PREF_NAME = "CURRENT_SEM_PREF_NAME";
     public static final String CURRENT_YEAR_PREF_NAME = "CURRENT_YEAR_PREF_NAME";
+    public static final String KEY_UUID = "key_uuid";
 
     //app permissions
     public static final String[] REQUIRED_PERMISSIONS =
