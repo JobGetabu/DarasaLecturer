@@ -6,4 +6,8 @@
         android:id="@+id/hmenu_logout"
         android:title="@string/logout" />
 
+    <item
+        android:id="@+id/hmenu_generate"
+        android:title="Advertise Class" />
+
 </menu>
