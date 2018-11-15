@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.nearby.Nearby;
@@ -47,8 +48,6 @@ public class AdvertiseActivity extends AppCompatActivity {
      * minutes in this sample.
      */
     private static final Strategy PUB_SUB_STRATEGY = new Strategy.Builder()
-            .setDistanceType(Strategy.DISTANCE_TYPE_DEFAULT)
-            .setDiscoveryMode(Strategy.DISTANCE_TYPE_DEFAULT)
             .setTtlSeconds(TTL_IN_SECONDS).build();
 
     private static final String TAG = "Advert";
@@ -62,6 +61,8 @@ public class AdvertiseActivity extends AppCompatActivity {
     Button adStop;
     @BindView(R.id.ad_status_pub)
     TextView adStatusPub;
+    @BindView(R.id.nearby_devices_list_view)
+    ListView nearbyDevicesListView;
 
     /**
      * Creates a UUID and saves it to {@link SharedPreferences}. The UUID is added to the published
@@ -110,25 +111,35 @@ public class AdvertiseActivity extends AppCompatActivity {
         // Build the message that is going to be published. This contains the device owner and a UUID.
         mPubMessage = DeviceMessage.newNearbyMessage(getUUID(mSharedPreferences));
 
-        mMessageListener = messageListener;
+        initMessageListener();
 
         final List<String> nearbyDevicesArrayList = new ArrayList<>();
         mNearbyDevicesArrayAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
                 nearbyDevicesArrayList);
-        final ListView nearbyDevicesListView = (ListView) findViewById(
-                R.id.nearby_devices_list_view);
-        if (nearbyDevicesListView != null) {
+
             nearbyDevicesListView.setAdapter(mNearbyDevicesArrayAdapter);
-        }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //Nearby.getMessagesClient(this).publish(mMessage);
+    private void initMessageListener() {
+        mMessageListener = new MessageListener() {
+            @Override
+            public void onFound(Message message) {
+                // Called when a new message is found.
+                //mNearbyDevicesArrayAdapter.add(DeviceMessage.fromNearbyMessage(message).getMessageBody());
+                mNearbyDevicesArrayAdapter.add(DeviceMessage.fromNearbyMessage(message).getMessageBody());
 
+                Toast.makeText(AdvertiseActivity.this, "" + message.toString(), Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onLost(Message message) {
+                // Called when a message is no longer detectable nearby.
+                //mNearbyDevicesArrayAdapter.remove(DeviceMessage.fromNearbyMessage(message).getMessageBody());
+                mNearbyDevicesArrayAdapter.remove(DeviceMessage.fromNearbyMessage(message).getMessageBody());
+                Toast.makeText(AdvertiseActivity.this, "" + message.toString(), Toast.LENGTH_SHORT).show();
+            }
+        };
     }
 
     @Override
@@ -138,23 +149,6 @@ public class AdvertiseActivity extends AppCompatActivity {
 
         super.onStop();
     }
-
-
-    MessageListener messageListener = new MessageListener() {
-        @Override
-        public void onFound(Message message) {
-            // Called when a new message is found.
-            mNearbyDevicesArrayAdapter.add(
-                    DeviceMessage.fromNearbyMessage(message).getMessageBody());
-        }
-
-        @Override
-        public void onLost(Message message) {
-            // Called when a message is no longer detectable nearby.
-            mNearbyDevicesArrayAdapter.remove(
-                    DeviceMessage.fromNearbyMessage(message).getMessageBody());
-        }
-    };
 
     private void subscribe() {
         Log.i(TAG, "Subscribing");
@@ -201,7 +195,7 @@ public class AdvertiseActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
 
                         Log.e(TAG, "onFailure: Could not subscribe, status =", e);
-                        adStatus.setText("Could not subscribe"+e.getLocalizedMessage());
+                        adStatus.setText("Could not subscribe" + e.getLocalizedMessage());
 
                         adButton.setVisibility(View.VISIBLE);
                         adStop.setVisibility(View.GONE);
@@ -238,7 +232,7 @@ public class AdvertiseActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e(TAG, "onFailure: Publish error", e);
-                        adStatusPub.setText("onFailure: Publish error"+e.getLocalizedMessage());
+                        adStatusPub.setText("onFailure: Publish error" + e.getLocalizedMessage());
                     }
                 })
                 .addOnCanceledListener(new OnCanceledListener() {
@@ -266,5 +260,11 @@ public class AdvertiseActivity extends AppCompatActivity {
 
         Nearby.getMessagesClient(this).unpublish(mPubMessage);
         Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
+
+        adStatusPub.setText("Publish Stopped");
+        adStatus.setText("Subscription Stopped");
+
+        adButton.setVisibility(View.VISIBLE);
+        adStop.setVisibility(View.GONE);
     }
 }

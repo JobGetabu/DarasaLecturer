@@ -27,6 +27,9 @@ android {
 
     buildTypes {
         buildTypes {
+            debug{
+
+            }
             release {
                 shrinkResources true
                 minifyEnabled true
@@ -108,7 +111,7 @@ dependencies {
     implementation 'com.github.abumoallim:Android-Multi-Select-Dialog:v1.9'
 
     //lottie
-    implementation "com.airbnb.android:lottie:$lottie_version"
+    //implementation "com.airbnb.android:lottie:$lottie_version"
 
     //work manager
     //implementation "android.arch.work:work-runtime:1.0.0-alpha10"

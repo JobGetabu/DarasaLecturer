@@ -2,14 +2,13 @@ package com.job.darasalecturer.util;
 import android.os.Build;
 
 import com.google.android.gms.nearby.messages.Message;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 
 import java.nio.charset.Charset;
 
 /**
  * Used to prepare the payload for a
- * {@link com.google.android.gms.nearby.messages.Message Nearby Message}. Adds a unique id
+ * {@link Message Nearby Message}. Adds a unique id
  * to the Message payload, which helps Nearby distinguish between multiple devices with
  * the same model name.
  */
@@ -18,7 +17,6 @@ public class DeviceMessage {
 
     private final String mUUID;
     private final String mMessageBody;
-    private FirebaseAuth mAuth;
 
     /**
      * Builds a new {@link Message} object using a unique identifier.
@@ -41,8 +39,8 @@ public class DeviceMessage {
 
     private DeviceMessage(String uuid) {
         mUUID = uuid;
-        mAuth = FirebaseAuth.getInstance();
-        mMessageBody = mAuth.getCurrentUser().getDisplayName()+" is a Lecturer with "+Build.MODEL;
+        //mMessageBody = Build.MODEL;
+        mMessageBody = "from "+Build.MODEL + " Testing sending a large data set  works like charm !";
 
         // TODO(developer): add other fields that must be included in the Nearby Message payload.
     }

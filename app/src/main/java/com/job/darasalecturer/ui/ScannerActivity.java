@@ -71,7 +71,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 import static android.widget.Toast.LENGTH_LONG;
@@ -143,7 +142,6 @@ public class ScannerActivity extends AppCompatActivity {
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
 
-    private LocationGooglePlayServicesProvider provider;
     private SweetAlertDialog pDialogLoc;
     private Location mLocation;
     private int locationcount = 1;
@@ -450,15 +448,6 @@ public class ScannerActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_PERMISSION_ID && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             //startLocation();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (provider != null) {
-            provider.onActivityResult(requestCode, resultCode, data);
         }
     }
 
