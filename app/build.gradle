@@ -64,6 +64,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:17.0.4'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.6'
 
+    //nearby messages
+    implementation 'com.google.android.gms:play-services-nearby:16.0.0'
+
     // ButterKnife (for code brevity)
     implementation "com.jakewharton:butterknife:$butterknife_version"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknife_version"

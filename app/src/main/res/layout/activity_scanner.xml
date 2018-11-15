@@ -41,32 +41,32 @@
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="@string/content_decription"
                 android:padding="8dp"
                 android:scaleType="fitXY"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_qrcode"
-                />
+                app:srcCompat="@drawable/ic_qrcode" />
 
             <ImageView
                 android:id="@+id/scan_loading_image"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="@string/content_decription"
                 android:padding="8dp"
                 android:scaleType="fitXY"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_qrcode"
-                />
+                app:srcCompat="@drawable/ic_qrcode" />
             <FrameLayout
                 android:id="@+id/scan_loading_view"
                 android:layout_width="200dp"
