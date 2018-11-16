@@ -1,4 +1,4 @@
-package com.job.darasalecturer.ui;
+package com.job.darasalecturer.ui.newlesson;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;

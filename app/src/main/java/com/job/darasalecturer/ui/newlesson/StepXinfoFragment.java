@@ -1,4 +1,4 @@
-package com.job.darasalecturer.ui;
+package com.job.darasalecturer.ui.newlesson;
 
 
 import android.arch.lifecycle.ViewModelProviders;
@@ -22,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.DoneClasses;
+import com.job.darasalecturer.ui.MainActivity;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
 
 import java.util.ArrayList;

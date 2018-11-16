@@ -68,7 +68,7 @@
             android:name=".ui.auth.AccountSetupActivity"
             android:parentActivityName=".ui.SettingsActivity" />
         <activity
-            android:name=".ui.AddClassActivity"
+            android:name=".ui.newlesson.AddClassActivity"
             android:parentActivityName=".ui.MainActivity"
             android:screenOrientation="portrait" />
         <activity
