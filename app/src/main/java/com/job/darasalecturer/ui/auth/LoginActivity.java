@@ -1,4 +1,4 @@
-package com.job.darasalecturer.ui;
+package com.job.darasalecturer.ui.auth;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -24,6 +24,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.ui.MainActivity;
 import com.job.darasalecturer.util.AppStatus;
 import com.job.darasalecturer.util.DoSnack;
 

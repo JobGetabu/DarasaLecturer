@@ -28,7 +28,7 @@
         </activity>
         <activity android:name=".ui.WelcomeActivity" />
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".ui.auth.LoginActivity"
             android:parentActivityName=".ui.WelcomeActivity" />
 
         <meta-data
@@ -62,10 +62,10 @@
             android:name=".ui.AddAttendanceActivity"
             android:parentActivityName=".ui.ScannerActivity" />
         <activity
-            android:name=".ui.SignupActivity"
+            android:name=".ui.auth.SignupActivity"
             android:parentActivityName=".ui.WelcomeActivity" />
         <activity
-            android:name=".ui.AccountSetupActivity"
+            android:name=".ui.auth.AccountSetupActivity"
             android:parentActivityName=".ui.SettingsActivity" />
         <activity
             android:name=".ui.AddClassActivity"

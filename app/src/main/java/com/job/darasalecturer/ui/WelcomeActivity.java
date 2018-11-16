@@ -6,6 +6,8 @@ import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
 
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.ui.auth.LoginActivity;
+import com.job.darasalecturer.ui.auth.SignupActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

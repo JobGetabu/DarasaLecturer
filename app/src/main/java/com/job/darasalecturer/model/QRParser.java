@@ -1,7 +1,5 @@
 package com.job.darasalecturer.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.Keep;
 
 import com.google.gson.Gson;
@@ -18,9 +16,7 @@ import java.util.Date;
  */
 
 @Keep
-public class QRParser implements Parcelable {
-    private double latitude;
-    private double longitude;
+public class QRParser   {
     private ArrayList<String> courses;
     private Date classtime;
     private String lecteachtimeid;
@@ -50,35 +46,9 @@ public class QRParser implements Parcelable {
         }
     }
 
-    public QRParser(double latitude, double longitude, ArrayList<String> courses, Date classtime,
-                    String lecteachtimeid, String unitname, String unitcode, Date date, String semester, String year) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.courses = courses;
-        this.classtime = classtime;
-        this.lecteachtimeid = lecteachtimeid;
-        this.unitname = unitname;
-        this.unitcode = unitcode;
-        this.date = date;
-        this.semester = semester;
-        this.year = year;
-    }
 
-    public double getLatitude() {
-        return latitude;
-    }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
 
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
 
     public ArrayList<String> getCourses() {
         return courses;
@@ -159,66 +129,5 @@ public class QRParser implements Parcelable {
         return null;
     }
 
-    @Override
-    public String toString() {
-        return "QRParser{" +
-                "latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", courses=" + courses +
-                ", classtime=" + classtime +
-                ", lecteachtimeid='" + lecteachtimeid + '\'' +
-                ", unitname='" + unitname + '\'' +
-                ", unitcode='" + unitcode + '\'' +
-                ", date=" + date +
-                ", semester='" + semester + '\'' +
-                ", year='" + year + '\'' +
-                '}';
-    }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeDouble(this.latitude);
-        dest.writeDouble(this.longitude);
-        dest.writeStringList(this.courses);
-        dest.writeLong(this.classtime != null ? this.classtime.getTime() : -1);
-        dest.writeString(this.lecteachtimeid);
-        dest.writeString(this.unitname);
-        dest.writeString(this.unitcode);
-        dest.writeLong(this.date != null ? this.date.getTime() : -1);
-        dest.writeString(this.semester);
-        dest.writeString(this.year);
-    }
-
-    protected QRParser(Parcel in) {
-        this.latitude = in.readDouble();
-        this.longitude = in.readDouble();
-        this.courses = in.createStringArrayList();
-        long tmpClasstime = in.readLong();
-        this.classtime = tmpClasstime == -1 ? null : new Date(tmpClasstime);
-        this.lecteachtimeid = in.readString();
-        this.unitname = in.readString();
-        this.unitcode = in.readString();
-        long tmpDate = in.readLong();
-        this.date = tmpDate == -1 ? null : new Date(tmpDate);
-        this.semester = in.readString();
-        this.year = in.readString();
-    }
-
-    public static final Creator<QRParser> CREATOR = new Creator<QRParser>() {
-        @Override
-        public QRParser createFromParcel(Parcel source) {
-            return new QRParser(source);
-        }
-
-        @Override
-        public QRParser[] newArray(int size) {
-            return new QRParser[size];
-        }
-    };
 }

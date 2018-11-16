@@ -1,4 +1,4 @@
-package com.job.darasalecturer.ui;
+package com.job.darasalecturer.ui.auth;
 
 import android.content.Intent;
 import android.graphics.Color;
