@@ -33,10 +33,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="42dp"
-
-                tools:listitem="@layout/single_yearcourse"
-
-                >
+                tools:listitem="@layout/single_yearcourse">
 
             </RelativeLayout>
         </LinearLayout>
@@ -54,7 +51,7 @@
 
         <!-- request button -->
         <TextView
-            android:id="@+id/step_venue_back"
+            android:id="@+id/step_ys_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -72,7 +69,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/step_venue_next"
+            android:id="@+id/step_ys_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
