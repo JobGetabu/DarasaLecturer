@@ -52,11 +52,11 @@
             android:name=".ui.SettingsActivity"
             android:parentActivityName=".ui.MainActivity" />
         <activity
-            android:name=".ui.PasscodeActivity"
+            android:name=".ui.auth.PasscodeActivity"
             android:parentActivityName=".ui.SettingsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.ShowPasscodeActivity"
+            android:name=".ui.auth.ShowPasscodeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.AddAttendanceActivity"

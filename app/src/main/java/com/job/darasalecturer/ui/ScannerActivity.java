@@ -47,6 +47,8 @@ import com.job.darasalecturer.R;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.service.TransactionWorker;
+import com.job.darasalecturer.ui.auth.PasscodeActivity;
+import com.job.darasalecturer.ui.auth.ShowPasscodeFragment;
 import com.job.darasalecturer.util.AppStatus;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.DrawableHelper;

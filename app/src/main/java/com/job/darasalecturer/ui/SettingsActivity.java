@@ -22,6 +22,7 @@ import com.job.darasalecturer.R;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.LecTeach;
 import com.job.darasalecturer.ui.auth.AccountSetupActivity;
+import com.job.darasalecturer.ui.auth.PasscodeActivity;
 import com.job.darasalecturer.ui.auth.WelcomeActivity;
 import com.job.darasalecturer.ui.newlesson.AddClassActivity;
 import com.job.darasalecturer.util.Constants;

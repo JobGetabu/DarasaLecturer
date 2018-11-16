@@ -1,4 +1,4 @@
-package com.job.darasalecturer.ui;
+package com.job.darasalecturer.ui.auth;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.view.View;
 
 import com.hanks.passcodeview.PasscodeView;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.ui.MainActivity;
+import com.job.darasalecturer.ui.ScannerActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
