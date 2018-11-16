@@ -87,6 +87,7 @@
         <item>Unit</item>
         <item>Venue</item>
         <item>Course(s)</item>
+        <item>Done</item>
     </array>
 
     <array name="days">
