@@ -37,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.LecTeachTime;
+import com.job.darasalecturer.ui.auth.WelcomeActivity;
 import com.job.darasalecturer.util.Constants;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.LessonViewHolder;
