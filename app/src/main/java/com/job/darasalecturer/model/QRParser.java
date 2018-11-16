@@ -1,5 +1,7 @@
 package com.job.darasalecturer.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Keep;
 
 import com.google.gson.Gson;
@@ -16,7 +18,7 @@ import java.util.Date;
  */
 
 @Keep
-public class QRParser   {
+public class QRParser implements Parcelable {
     private ArrayList<String> courses;
     private Date classtime;
     private String lecteachtimeid;
@@ -130,4 +132,45 @@ public class QRParser   {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringList(this.courses);
+        dest.writeLong(this.classtime != null ? this.classtime.getTime() : -1);
+        dest.writeString(this.lecteachtimeid);
+        dest.writeString(this.unitname);
+        dest.writeString(this.unitcode);
+        dest.writeLong(this.date != null ? this.date.getTime() : -1);
+        dest.writeString(this.semester);
+        dest.writeString(this.year);
+    }
+
+    protected QRParser(Parcel in) {
+        this.courses = in.createStringArrayList();
+        long tmpClasstime = in.readLong();
+        this.classtime = tmpClasstime == -1 ? null : new Date(tmpClasstime);
+        this.lecteachtimeid = in.readString();
+        this.unitname = in.readString();
+        this.unitcode = in.readString();
+        long tmpDate = in.readLong();
+        this.date = tmpDate == -1 ? null : new Date(tmpDate);
+        this.semester = in.readString();
+        this.year = in.readString();
+    }
+
+    public static final Parcelable.Creator<QRParser> CREATOR = new Parcelable.Creator<QRParser>() {
+        @Override
+        public QRParser createFromParcel(Parcel source) {
+            return new QRParser(source);
+        }
+
+        @Override
+        public QRParser[] newArray(int size) {
+            return new QRParser[size];
+        }
+    };
 }
