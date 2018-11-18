@@ -42,6 +42,7 @@ import com.google.gson.reflect.TypeToken;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.adapter.ConfirmAttendanceAdapter;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
+import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.model.StudentDetails;
 import com.job.darasalecturer.service.AddAttendanceWorker;
@@ -148,7 +149,7 @@ public class AddAttendanceActivity extends AppCompatActivity {
         String currentyear = mSharedPreferences.getString(CURRENT_YEAR_PREF_NAME, "2000");
 
 
-        final ArrayList<String> courses = qrParser.getCourses();
+        final ArrayList<CourseYear> courses = qrParser.getCourses();
 
 
         mQuery = mFirestore.collection(STUDENTDETAILSCOL)

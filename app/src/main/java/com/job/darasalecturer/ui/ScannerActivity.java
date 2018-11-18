@@ -45,6 +45,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
+import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.service.TransactionWorker;
 import com.job.darasalecturer.ui.auth.PasscodeActivity;
@@ -532,10 +533,12 @@ public class ScannerActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 
-                        final ArrayList<String> courses = qrParser.getCourses();
+                        final ArrayList<CourseYear> courses = qrParser.getCourses();
 
 
-                        for (String c : courses) {
+                        for (CourseYear cy : courses) {
+
+                            String c= cy.getCourse();
 
                             mFirestore.collection(STUDENTDETAILSCOL)
                                     .whereEqualTo("course", c)

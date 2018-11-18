@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.DoneClasses;
 import com.job.darasalecturer.ui.MainActivity;
@@ -106,6 +107,16 @@ public class StepXinfoFragment extends Fragment {
 
     }
 
+    private void writingToDb(){
+        DefaultExecutorSupplier.getInstance()
+                .forBackgroundTasks().submit(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                });
+    }
+
     @OnClick(R.id.step_x_finish)
     public void onStepXFinishClicked() {
         //finish
@@ -171,9 +182,15 @@ public class StepXinfoFragment extends Fragment {
             /*
             * Refactoring to set up {@link CourseYear map}*/
             Map<String, Object> cMap = new HashMap<>();
+
             int i = 1;
             for (CourseYear cy : model.getCourseYearList().getValue()){
-                cMap.put(String.valueOf(i),cy);
+                //creating a map for @ CourseYear
+                Map<String, Object> cyMap = new HashMap<>();
+                cyMap.put("name",cy.getCourse());
+                cyMap.put("year",cy.getYearofstudy());
+
+                cMap.put(String.valueOf(i),cyMap);
                 i++;
             }
 

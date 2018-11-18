@@ -8,6 +8,7 @@ import android.support.annotation.Keep;
  * Created by Job on Monday : 8/6/2018.
  */
 @Keep
+@Deprecated
 public class Course implements Parcelable {
     private String name;
 
