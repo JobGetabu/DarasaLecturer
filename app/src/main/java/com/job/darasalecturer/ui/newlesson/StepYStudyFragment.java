@@ -1,6 +1,7 @@
 package com.job.darasalecturer.ui.newlesson;
 
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.adapter.CourseYearAdapter;
@@ -38,8 +40,6 @@ public class StepYStudyFragment extends Fragment implements OnRecyclerItemClickL
     TextView stepYsBack;
     @BindView(R.id.step_ys_next)
     TextView stepYsNext;
-    @BindView(R.id.step_ys_selectedcourses)
-    TextView stepYsSelectedcourses;
     @BindView(R.id.step_ys_course_list)
     RecyclerView stepYsCourseList;
 
@@ -49,6 +49,7 @@ public class StepYStudyFragment extends Fragment implements OnRecyclerItemClickL
 
     private Boolean _areLecturesLoaded = false;
     private CourseYearAdapter mAdapter;
+    private List<CourseYear> mCourseYears;
 
     public StepYStudyFragment() {
         // Required empty public constructor
@@ -82,6 +83,20 @@ public class StepYStudyFragment extends Fragment implements OnRecyclerItemClickL
         mAdapter = new CourseYearAdapter(getActivity(), this);
         stepYsCourseList.setAdapter(mAdapter);
 
+        //observer
+        dataItemsObserver();
+    }
+
+    private void dataItemsObserver() {
+        model.getCourseYearList().observe(this, new Observer<List<CourseYear>>() {
+            @Override
+            public void onChanged(@Nullable final List<CourseYear> courseYears) {
+                if (mAdapter != null) {
+
+                    mCourseYears = courseYears;
+                }
+            }
+        });
     }
 
     @Override
@@ -89,14 +104,25 @@ public class StepYStudyFragment extends Fragment implements OnRecyclerItemClickL
         super.setUserVisibleHint(isVisibleToUser);
         //Code executes EVERY TIME user views the fragment
 
+        if (mAdapter != null) {
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.clear();
+                    mAdapter.setItems(mCourseYears);
+                }
+            });
+        }
+
 
         if (isVisibleToUser && !_areLecturesLoaded) {
             _areLecturesLoaded = true;
             // Code executes ONLY THE FIRST TIME fragment is viewed.
 
             // populate adapter with data when it is ready
-            List<CourseYear> courseYears = model.getCourseYearList().getValue();
-            mAdapter.setItems(courseYears);
+            mCourseYears = model.getCourseYearList().getValue();
+            mAdapter.setItems(mCourseYears);
         }
     }
 
@@ -130,5 +156,6 @@ public class StepYStudyFragment extends Fragment implements OnRecyclerItemClickL
     @Override
     public void onItemClick(int position) {
 
+        Toast.makeText(getContext(), "" + position, Toast.LENGTH_SHORT).show();
     }
 }
