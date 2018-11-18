@@ -9,8 +9,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,6 +22,7 @@ import android.widget.Toast;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.adapter.CourseYearAdapter;
 import com.job.darasalecturer.model.CourseYear;
+import com.job.darasalecturer.util.CourseYearViewHolder;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
 import com.leodroidcoder.genericadapter.OnRecyclerItemClickListener;
 
@@ -32,7 +36,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StepYStudyFragment extends Fragment implements OnRecyclerItemClickListener {
+public class StepYStudyFragment extends Fragment implements OnRecyclerItemClickListener, CourseYearViewHolder.ImageClickListener {
 
     public static final String TAG = "StepY";
 
@@ -80,7 +84,7 @@ public class StepYStudyFragment extends Fragment implements OnRecyclerItemClickL
         initRecycler();
 
         // instantiate the adapter and set it onto a RecyclerView
-        mAdapter = new CourseYearAdapter(getActivity(), this);
+        mAdapter = new CourseYearAdapter(getActivity(), this, this);
         stepYsCourseList.setAdapter(mAdapter);
 
         //observer
@@ -94,6 +98,10 @@ public class StepYStudyFragment extends Fragment implements OnRecyclerItemClickL
                 if (mAdapter != null) {
 
                     mCourseYears = courseYears;
+                    mAdapter.clear();
+                    mAdapter.setItems(courseYears);
+                    mAdapter.notifyDataSetChanged();
+
                 }
             }
         });
@@ -155,7 +163,36 @@ public class StepYStudyFragment extends Fragment implements OnRecyclerItemClickL
      */
     @Override
     public void onItemClick(int position) {
+        /*no enough info passed use {@link onImageClick}*/
+    }
 
-        Toast.makeText(getContext(), "" + position, Toast.LENGTH_SHORT).show();
+
+    @Override
+    public void onImageClick(final int position, OnRecyclerItemClickListener listener, View itemView) {
+
+        //Creating the instance of PopupMenu
+        final PopupMenu popup = new PopupMenu(getActivity(), itemView);
+        //Inflating the Popup using xml file
+        popup.getMenuInflater()
+                .inflate(R.menu.yrmenu, popup.getMenu());
+
+        popup.setGravity(Gravity.BOTTOM);
+
+        //registering popup with OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                Toast.makeText(
+                        getContext(),
+                        "You Clicked position: " + position + " => " + item.getTitle(),
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                mCourseYears.get(position).setYearofstudy(Double.parseDouble(item.getTitle().toString()));
+                model.setCourseYearList(mCourseYears);
+                return true;
+            }
+        });
+
+        popup.show(); //showing popup menu
     }
 }
