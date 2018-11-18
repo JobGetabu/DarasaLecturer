@@ -23,16 +23,6 @@
                 android:text="@string/select_studyyear_text"
                 android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/step_ys_selectedcourses"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/nunito_semibold"
-                android:layout_marginTop="8dp"
-                android:padding="16dp"
-                tools:text="Bs BBIT : Year 1"
-                android:textSize="18sp" />
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/step_ys_course_list"
                 android:layout_width="match_parent"
