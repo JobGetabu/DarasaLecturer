@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Source;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
 
 import java.util.ArrayList;
@@ -161,6 +162,13 @@ public class StepVenueFragment extends Fragment {
                             addChipCourse(selectedNames.get(i));
                         }
                         model.setCourseList(selectedNames);
+                        //init the courseYear
+                        model.setCourseYearList(new ArrayList<CourseYear>());
+                        for (String c : selectedNames) {
+                            CourseYear courseYear = new CourseYear(c, 1);
+                            Log.d(TAG, "courseYear: "+courseYear.toString());
+                            model.getCourseYearList().getValue().add(courseYear);
+                        }
 
                         stepVenueChipgroup.setVisibility(View.VISIBLE);
                     }
