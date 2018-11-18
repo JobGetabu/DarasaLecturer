@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.DoneClasses;
 import com.job.darasalecturer.ui.MainActivity;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
@@ -135,7 +136,10 @@ public class StepXinfoFragment extends Fragment {
             model.getLecTeachTimeMediatorLiveData().getValue().setLecteachtimeid(lecteachtimeid);
 
             ArrayList<String> courses = new ArrayList<>(model.getCourseList().getValue());
-            model.getLecTeachTimeMediatorLiveData().getValue().setCourses(courses);
+
+            ArrayList<CourseYear> cYList = new ArrayList<CourseYear>(model.getCourseYearList().getValue());
+
+            model.getLecTeachTimeMediatorLiveData().getValue().setCourses(cYList);
 
             if (model.getCourseList().getValue() != null && model.getCourseList().getValue().size() > 1){
                 model.getLecTeachMediatorLiveData().getValue().setCombiner(true);
@@ -164,10 +168,12 @@ public class StepXinfoFragment extends Fragment {
             DocumentReference courseRef =  mFirestore.collection(LECTEACHCOL).document(lecteachid)
                     .collection(LECTEACHCOURSESUBCOL).document("courses");
 
-            Map<String,String> cMap = new HashMap<>();
+            /*
+            * Refactoring to set up {@link CourseYear map}*/
+            Map<String, Object> cMap = new HashMap<>();
             int i = 1;
-            for (String course : model.getCourseList().getValue()){
-                cMap.put(String.valueOf(i),course);
+            for (CourseYear cy : model.getCourseYearList().getValue()){
+                cMap.put(String.valueOf(i),cy);
                 i++;
             }
 

@@ -19,7 +19,7 @@ import java.util.Date;
 
 @Keep
 public class QRParser implements Parcelable {
-    private ArrayList<String> courses;
+    private ArrayList<CourseYear> courses;
     private Date classtime;
     private String lecteachtimeid;
     private String unitname;
@@ -52,11 +52,11 @@ public class QRParser implements Parcelable {
 
 
 
-    public ArrayList<String> getCourses() {
+    public ArrayList<CourseYear> getCourses() {
         return courses;
     }
 
-    public void setCourses(ArrayList<String> courses) {
+    public void setCourses(ArrayList<CourseYear> courses) {
         this.courses = courses;
     }
 
@@ -139,7 +139,7 @@ public class QRParser implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringList(this.courses);
+        dest.writeTypedList(this.courses);
         dest.writeLong(this.classtime != null ? this.classtime.getTime() : -1);
         dest.writeString(this.lecteachtimeid);
         dest.writeString(this.unitname);
@@ -150,7 +150,7 @@ public class QRParser implements Parcelable {
     }
 
     protected QRParser(Parcel in) {
-        this.courses = in.createStringArrayList();
+        this.courses = in.createTypedArrayList(CourseYear.CREATOR);
         long tmpClasstime = in.readLong();
         this.classtime = tmpClasstime == -1 ? null : new Date(tmpClasstime);
         this.lecteachtimeid = in.readString();
@@ -162,7 +162,7 @@ public class QRParser implements Parcelable {
         this.year = in.readString();
     }
 
-    public static final Parcelable.Creator<QRParser> CREATOR = new Parcelable.Creator<QRParser>() {
+    public static final Creator<QRParser> CREATOR = new Creator<QRParser>() {
         @Override
         public QRParser createFromParcel(Parcel source) {
             return new QRParser(source);
