@@ -53,6 +53,8 @@ public class DarasaLec extends MultiDexApplication {
 
         mAuth.addAuthStateListener(mAuthListener);
 
+        //crashlytics
+        //Fabric.with(this, new Crashlytics());
     }
 
     @Override

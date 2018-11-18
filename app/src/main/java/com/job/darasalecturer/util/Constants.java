@@ -25,6 +25,8 @@ public class Constants {
     public static final String DKUTCOURSES = "DkutCourses";
     public static final String DATE_SCAN_FORMAT = "yyyy-MM-dd";
 
+    public static final String FRAG_MODEL_ARG = "FRAG_MODEL_ARG";
+
     //prefs
     public static final String CURRENT_SEM_PREF_NAME = "CURRENT_SEM_PREF_NAME";
     public static final String CURRENT_YEAR_PREF_NAME = "CURRENT_YEAR_PREF_NAME";

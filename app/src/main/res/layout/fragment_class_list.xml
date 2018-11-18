@@ -69,7 +69,7 @@
     <include
         android:id="@+id/frg_class_no_class"
         layout="@layout/noclass_layout_dialogue"
-        android:visibility="gone"
+        android:visibility="invisible"
         tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -79,7 +79,7 @@
     <string name="you_set">You\'re all set</string>
     <string name="delete">DELETE</string>
     <string name="dismiss">DISMISS</string>
-    <string name="select_studyyear_text">Select the year of study for the course(s) that you teach</string>
+    <string name="select_studyyear_text">Select the year of study for the\n course(s) that you teach</string>
     <string name="course">Course</string>
 
     <array name="addclass_steps">
