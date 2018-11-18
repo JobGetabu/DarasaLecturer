@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -50,7 +49,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.fabric.sdk.android.Fabric;
 
 import static com.job.darasalecturer.util.Constants.DKUTCOURSES;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
@@ -138,9 +136,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         doSnack = new DoSnack(this, MainActivity.this);
-
-        //crashlytics
-        Fabric.with(this, new Crashlytics());
     }
 
     @Override
