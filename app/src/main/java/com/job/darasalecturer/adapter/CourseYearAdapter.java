@@ -14,16 +14,20 @@ import com.leodroidcoder.genericadapter.OnRecyclerItemClickListener;
 /**
  * Created by Job on Friday : 11/16/2018.
  */
-public class CourseYearAdapter extends GenericRecyclerViewAdapter<CourseYear, OnRecyclerItemClickListener, CourseYearViewHolder> {
+public class CourseYearAdapter extends GenericRecyclerViewAdapter<CourseYear, OnRecyclerItemClickListener, CourseYearViewHolder>  {
 
+    private CourseYearViewHolder.ImageClickListener imageClickListener;
 
-    public CourseYearAdapter(Context context, OnRecyclerItemClickListener listener) {
+    public CourseYearAdapter(Context context, OnRecyclerItemClickListener listener,CourseYearViewHolder.ImageClickListener imageClickListener) {
         super(context, listener);
+
+        this.imageClickListener = imageClickListener;
     }
 
     @Override
     public CourseYearViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_yearcourse, parent, false);
-        return new CourseYearViewHolder(v,getListener());
+        return new CourseYearViewHolder(v,getListener(), imageClickListener);
     }
+
 }
