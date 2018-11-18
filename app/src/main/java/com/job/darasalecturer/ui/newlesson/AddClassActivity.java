@@ -38,11 +38,12 @@ public class AddClassActivity extends AppCompatActivity {
         pagerAdapter.addFragments(new StepInitFragment());
         pagerAdapter.addFragments(new StepUnitFragment());
         pagerAdapter.addFragments(new StepVenueFragment());
+        pagerAdapter.addFragments(new StepYStudyFragment());
         pagerAdapter.addFragments(new StepXinfoFragment());
 
         addClassNoswipepager.setAdapter(pagerAdapter);
         addClassNoswipepager.setPagingEnabled(false);
-        addClassNoswipepager.setOffscreenPageLimit(3);
+        addClassNoswipepager.setOffscreenPageLimit(pagerAdapter.getCount());
 
 
         addClassStepView.getState()
