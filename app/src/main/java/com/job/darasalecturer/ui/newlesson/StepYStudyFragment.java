@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.adapter.CourseYearAdapter;
@@ -181,11 +180,6 @@ public class StepYStudyFragment extends Fragment implements OnRecyclerItemClickL
         //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                Toast.makeText(
-                        getContext(),
-                        "You Clicked position: " + position + " => " + item.getTitle(),
-                        Toast.LENGTH_SHORT
-                ).show();
 
                 mCourseYears.get(position).setYearofstudy(Double.parseDouble(item.getTitle().toString()));
                 model.setCourseYearList(mCourseYears);

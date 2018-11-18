@@ -3,6 +3,8 @@ package com.job.darasalecturer.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.firestore.Exclude;
+
 /**
  * Created by Job on Friday : 11/16/2018.
  */
@@ -30,6 +32,7 @@ public class CourseYear implements Parcelable {
         return yearofstudy;
     }
 
+    @Exclude
     public int getYearofstudyInt(){
         return (int) yearofstudy;
     }
