@@ -101,7 +101,7 @@ public class StepXinfoFragment extends Fragment {
     @OnClick(R.id.step_x_back)
     public void onStepXBackClicked() {
 
-        model.setCurrentStep(2);
+        model.setCurrentStep(3);
 
     }
 
