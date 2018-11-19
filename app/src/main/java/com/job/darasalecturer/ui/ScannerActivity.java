@@ -51,6 +51,7 @@ import com.job.darasalecturer.service.TransactionWorker;
 import com.job.darasalecturer.ui.auth.PasscodeActivity;
 import com.job.darasalecturer.ui.auth.ShowPasscodeFragment;
 import com.job.darasalecturer.util.AppStatus;
+import com.job.darasalecturer.util.CoursesProvider;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.DrawableHelper;
 import com.job.darasalecturer.viewmodel.ScannerViewModel;
@@ -605,12 +606,9 @@ public class ScannerActivity extends AppCompatActivity {
 
                             Map<String, Object> mapdata = task.getResult().getData();
 
-                            if (mapdata != null) {
+                            for (CourseYear courseYear : CoursesProvider.jsonWorker(task.getResult().getData())) {
 
-                                for (Map.Entry<String, Object> entry : mapdata.entrySet()) {
-
-                                    stringBuilder.append(", " + entry.getValue().toString());
-                                }
+                                stringBuilder.append(", " + courseYear.getCourse());
                             }
 
                             scanUnitDetails.setText(stringBuilder.toString());
