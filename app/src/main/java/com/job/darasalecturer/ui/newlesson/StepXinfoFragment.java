@@ -183,14 +183,14 @@ public class StepXinfoFragment extends Fragment {
             * Refactoring to set up {@link CourseYear map}*/
             Map<String, Object> cMap = new HashMap<>();
 
-            int i = 1;
+            int i = 0;
             for (CourseYear cy : model.getCourseYearList().getValue()){
-                //creating a map for @ CourseYear
+                //creating a map for {@link CourseYear}
                 Map<String, Object> cyMap = new HashMap<>();
-                cyMap.put("name",cy.getCourse());
-                cyMap.put("year",cy.getYearofstudy());
+                cyMap.put("course",cy.getCourse());
+                cyMap.put("yearofstudy",cy.getYearofstudy());
 
-                cMap.put(String.valueOf(i),cyMap);
+                cMap.put(String.valueOf(i), cyMap);
                 i++;
             }
 
