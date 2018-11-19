@@ -139,7 +139,7 @@ public class QRParser implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(this.courses);
+        dest.writeList(this.courses);
         dest.writeLong(this.classtime != null ? this.classtime.getTime() : -1);
         dest.writeString(this.lecteachtimeid);
         dest.writeString(this.unitname);
@@ -150,7 +150,8 @@ public class QRParser implements Parcelable {
     }
 
     protected QRParser(Parcel in) {
-        this.courses = in.createTypedArrayList(CourseYear.CREATOR);
+        this.courses = new ArrayList<CourseYear>();
+        in.readList(this.courses, CourseYear.class.getClassLoader());
         long tmpClasstime = in.readLong();
         this.classtime = tmpClasstime == -1 ? null : new Date(tmpClasstime);
         this.lecteachtimeid = in.readString();
