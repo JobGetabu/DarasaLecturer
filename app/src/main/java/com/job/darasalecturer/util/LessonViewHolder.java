@@ -10,23 +10,25 @@ import android.support.design.button.MaterialButton;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
+import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.LecTeachTime;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.ui.ScannerActivity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -82,7 +84,7 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void init(Context mContext, FirebaseFirestore mFirestore,FirebaseAuth mAuth,LecTeachTime lecTeachTime) {
+    public void init(Context mContext, FirebaseFirestore mFirestore, FirebaseAuth mAuth, LecTeachTime lecTeachTime) {
         this.mContext = mContext;
         this.mFirestore = mFirestore;
         this.mAuth = mAuth;
@@ -112,8 +114,8 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(mContext);
         // Check prefs and pass to qrparser
-        qrParser.setSemester(sharedPreferences.getString(CURRENT_SEM_PREF_NAME,"0"));
-        qrParser.setYear(sharedPreferences.getString(CURRENT_YEAR_PREF_NAME,"2000"));
+        qrParser.setSemester(sharedPreferences.getString(CURRENT_SEM_PREF_NAME, "0"));
+        qrParser.setYear(sharedPreferences.getString(CURRENT_YEAR_PREF_NAME, "2000"));
 
     }
 
@@ -170,28 +172,40 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         mFirestore.collection(LECTEACHCOL).document(lecTeachTime.getLecteachid()).collection(LECTEACHCOURSESUBCOL)
                 .document("courses")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
+                .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forMainThreadTasks(),
+                        new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(final DocumentSnapshot docSnapshot) {
 
-                            Map<String, Object> mapdata = task.getResult().getData();
+                                jsonWorker(docSnapshot.getData());
 
-                            if (mapdata != null) {
-                                lsChipgroup.removeAllViews();
-                                for (Map.Entry<String, Object> entry : mapdata.entrySet()) {
-                                    //System.out.println(entry.getKey() + "/" + entry.getValue());
-                                    addCourses(entry.getValue().toString());
+                                for (CourseYear courseYear : jsonWorker(docSnapshot.getData())) {
+
+                                    addCourses(courseYear);
                                 }
                             }
-                        }
-                    }
-                });
+                        });
     }
 
-    private void addCourses(String course) {
+    private ArrayList<CourseYear> jsonWorker(Map<String, Object> courseObject) {
+
+        ArrayList<CourseYear> courseYears = new ArrayList<>();
+        for (int i = 0; i < courseObject.size(); i++) {
+            Map<String, Object> zero = (Map<String, Object>) courseObject.get(String.valueOf(i));
+            String course = (String) zero.get("course");
+            long yearofstudy = (long) zero.get("yearofstudy");
+
+            CourseYear cc = new CourseYear(course, (int) yearofstudy);
+            courseYears.add(cc);
+            Log.d(TAG, "jsonWorker: " + String.valueOf(cc));
+        }
+
+        return courseYears;
+    }
+
+    private void addCourses(CourseYear course) {
         Chip chip = new Chip(mContext);
-        chip.setChipText(course);
+        chip.setChipText(course.getCourse());
         //chip.setCloseIconEnabled(true);
         //chip.setCloseIconResource(R.drawable.your_icon);
         //chip.setChipIconResource(R.drawable.your_icon);
@@ -217,8 +231,8 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void sendToQr(QRParser qrParser) {
-        Intent qrintent = new Intent(mContext,ScannerActivity.class);
-        qrintent.putExtra(QRPARSEREXTRA,qrParser);
+        Intent qrintent = new Intent(mContext, ScannerActivity.class);
+        qrintent.putExtra(QRPARSEREXTRA, qrParser);
         qrintent.putExtra(VENUEEXTRA, lecTeachTime.getVenue());
         qrintent.putExtra(LECTEACHIDEXTRA, lecTeachTime.getLecteachid());
         mContext.startActivity(qrintent);
