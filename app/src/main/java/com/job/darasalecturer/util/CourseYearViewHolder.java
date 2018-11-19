@@ -49,7 +49,7 @@ public class CourseYearViewHolder extends BaseViewHolder<CourseYear, OnRecyclerI
     public void onBind(CourseYear item) {
 
         textInputCourse.getEditText().setText(item.getCourse());
-        yrText.setText("Year of Study: "+ item.getYearofstudyInt());
+        yrText.setText("Year of Study: "+ item.getYearofstudy());
 
     }
 
