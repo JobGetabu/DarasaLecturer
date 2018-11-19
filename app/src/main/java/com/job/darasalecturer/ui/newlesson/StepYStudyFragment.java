@@ -181,7 +181,7 @@ public class StepYStudyFragment extends Fragment implements OnRecyclerItemClickL
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
 
-                mCourseYears.get(position).setYearofstudy(Double.parseDouble(item.getTitle().toString()));
+                mCourseYears.get(position).setYearofstudy(Integer.parseInt(item.getTitle().toString()));
                 model.setCourseYearList(mCourseYears);
                 return true;
             }
