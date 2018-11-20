@@ -9,6 +9,7 @@ import android.support.annotation.Keep;
 public class DoneClasses {
 
     private String lecteachtimeid;
+    private String lecteachid;
     private String unitname;
     private String unitcode;
     private double number;
@@ -16,14 +17,9 @@ public class DoneClasses {
     public DoneClasses() {
     }
 
-    public DoneClasses(String lecteachtimeid, String unitname, String unitcode, double number) {
+    public DoneClasses(String lecteachtimeid, String lecteachid, String unitname, String unitcode, double number) {
         this.lecteachtimeid = lecteachtimeid;
-        this.unitname = unitname;
-        this.unitcode = unitcode;
-        this.number = number;
-    }
-
-    public DoneClasses(String unitname, String unitcode, double number) {
+        this.lecteachid = lecteachid;
         this.unitname = unitname;
         this.unitcode = unitcode;
         this.number = number;
@@ -59,6 +55,14 @@ public class DoneClasses {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public String getLecteachid() {
+        return lecteachid;
+    }
+
+    public void setLecteachid(String lecteachid) {
+        this.lecteachid = lecteachid;
     }
 
     @Override

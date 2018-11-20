@@ -32,7 +32,8 @@ public class TransactionWorker extends Worker {
 
     // Define the parameter keys:
 
-    public static final String KEY_QR_LECTTID_ARG = "X";
+    public static final String KEY_QR_LECTTEACHID_ARG = "W";
+    public static final String KEY_QR_LECTEACHTIMEID_ARG = "X";
     public static final String KEY_QR_UNITNAME_ARG = "Y";
     public static final String KEY_QR_UNITCODE_ARG = "Z";
 
@@ -53,7 +54,8 @@ public class TransactionWorker extends Worker {
         }
 
         // Fetch the arguments (and specify default values):
-        final String lecteachtimeid = getInputData().getString(KEY_QR_LECTTID_ARG);
+        final String lecteachtimeid = getInputData().getString(KEY_QR_LECTEACHTIMEID_ARG);
+        final String lecteachid = getInputData().getString(KEY_QR_LECTTEACHID_ARG);
         String unitname = getInputData().getString(KEY_QR_UNITNAME_ARG);
         String unitcode = getInputData().getString(KEY_QR_UNITCODE_ARG);
 
@@ -72,20 +74,20 @@ public class TransactionWorker extends Worker {
         return Result.FAILURE;
     }
 
-    private void doTheTransaction(final MyResultCallback resultCallback, final String lecteachtimeid, final String unitname, String unitcode) {
+    private void doTheTransaction(final MyResultCallback resultCallback, final String lecteachid, final String unitname, String unitcode) {
 
         Map<String, Object> doneClassMAp = new HashMap<>();
-        doneClassMAp.put("lecteachtimeid", lecteachtimeid);
+        doneClassMAp.put("lecteachid", lecteachid);
         doneClassMAp.put("unitname", unitname);
         doneClassMAp.put("unitcode", unitcode);
 
-        mFirestore.collection(DONECLASSES).document(lecteachtimeid)
+        mFirestore.collection(DONECLASSES).document(lecteachid)
                 .update(doneClassMAp)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
 
-                        final DocumentReference cdDocRef = mFirestore.collection(DONECLASSES).document(lecteachtimeid);
+                        final DocumentReference cdDocRef = mFirestore.collection(DONECLASSES).document(lecteachid);
                         mFirestore.runTransaction(new Transaction.Function<Void>() {
                             @Override
                             public Void apply(Transaction transaction) throws FirebaseFirestoreException {
