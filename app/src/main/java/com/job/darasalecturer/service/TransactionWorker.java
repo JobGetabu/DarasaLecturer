@@ -67,21 +67,22 @@ public class TransactionWorker extends Worker {
 
                 return result;
             }
-        }, lecteachid,unitname, unitcode);
+        }, lecteachid,lecteachtimeid,unitname, unitcode);
 
 
         //using failure cause it doesn't wait for our callback
         return Result.FAILURE;
     }
 
-    private void doTheTransaction(final MyResultCallback resultCallback, final String lecteachid, final String unitname, String unitcode) {
+    private void doTheTransaction(final MyResultCallback resultCallback, final String lecteachid, final String lecteachtimeid, final String unitname, String unitcode) {
 
         Map<String, Object> doneClassMAp = new HashMap<>();
+        doneClassMAp.put("lecteachtimeid",lecteachtimeid);
         doneClassMAp.put("lecteachid", lecteachid);
         doneClassMAp.put("unitname", unitname);
         doneClassMAp.put("unitcode", unitcode);
 
-        mFirestore.collection(DONECLASSES).document(lecteachid)
+        mFirestore.collection(DONECLASSES).document(lecteachtimeid)
                 .update(doneClassMAp)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
