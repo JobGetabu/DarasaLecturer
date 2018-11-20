@@ -22,6 +22,7 @@ public class QRParser implements Parcelable {
     private ArrayList<CourseYear> courses;
     private Date classtime;
     private String lecteachtimeid;
+    private String lecteachid;
     private String unitname;
     private String unitcode;
     private Date date;
@@ -48,9 +49,18 @@ public class QRParser implements Parcelable {
         }
     }
 
-
-
-
+    public QRParser(ArrayList<CourseYear> courses, Date classtime, String lecteachtimeid,
+                    String lecteachid, String unitname, String unitcode, Date date, String semester, String year) {
+        this.courses = courses;
+        this.classtime = classtime;
+        this.lecteachtimeid = lecteachtimeid;
+        this.lecteachid = lecteachid;
+        this.unitname = unitname;
+        this.unitcode = unitcode;
+        this.date = date;
+        this.semester = semester;
+        this.year = year;
+    }
 
     public ArrayList<CourseYear> getCourses() {
         return courses;
@@ -116,6 +126,13 @@ public class QRParser implements Parcelable {
         this.year = year;
     }
 
+    public String getLecteachid() {
+        return lecteachid;
+    }
+
+    public void setLecteachid(String lecteachid) {
+        this.lecteachid = lecteachid;
+    }
 
     private String lessonTimeInString(Date timestamp) {
         //Timestamp timestamp = model.getTimestamp();
@@ -131,6 +148,21 @@ public class QRParser implements Parcelable {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "QRParser{" +
+                "courses=" + courses +
+                ", classtime=" + classtime +
+                ", lecteachtimeid='" + lecteachtimeid + '\'' +
+                ", lecteachid='" + lecteachid + '\'' +
+                ", unitname='" + unitname + '\'' +
+                ", unitcode='" + unitcode + '\'' +
+                ", date=" + date +
+                ", semester='" + semester + '\'' +
+                ", year='" + year + '\'' +
+                '}';
+    }
+
 
     @Override
     public int describeContents() {
@@ -139,9 +171,10 @@ public class QRParser implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(this.courses);
+        dest.writeTypedList(this.courses);
         dest.writeLong(this.classtime != null ? this.classtime.getTime() : -1);
         dest.writeString(this.lecteachtimeid);
+        dest.writeString(this.lecteachid);
         dest.writeString(this.unitname);
         dest.writeString(this.unitcode);
         dest.writeLong(this.date != null ? this.date.getTime() : -1);
@@ -150,11 +183,11 @@ public class QRParser implements Parcelable {
     }
 
     protected QRParser(Parcel in) {
-        this.courses = new ArrayList<CourseYear>();
-        in.readList(this.courses, CourseYear.class.getClassLoader());
+        this.courses = in.createTypedArrayList(CourseYear.CREATOR);
         long tmpClasstime = in.readLong();
         this.classtime = tmpClasstime == -1 ? null : new Date(tmpClasstime);
         this.lecteachtimeid = in.readString();
+        this.lecteachid = in.readString();
         this.unitname = in.readString();
         this.unitcode = in.readString();
         long tmpDate = in.readLong();
