@@ -699,6 +699,7 @@ public class ScannerActivity extends AppCompatActivity {
                 } else {
 
                     Map<String, Object> doneClassMAp = new HashMap<>();
+                    doneClassMAp.put("lecteachid",qrParser.getLecteachid());
                     doneClassMAp.put("lecteachtimeid", qrParser.getLecteachtimeid());
                     doneClassMAp.put("unitname", qrParser.getUnitname());
                     doneClassMAp.put("unitcode", qrParser.getUnitcode());
