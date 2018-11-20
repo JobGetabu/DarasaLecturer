@@ -45,6 +45,7 @@ import butterknife.Unbinder;
 
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
+import static com.job.darasalecturer.util.Constants.TIMETTCOL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -250,6 +251,7 @@ public class ClassListFragment extends AppCompatDialogFragment {
 
                                             //Delete the lecteachtime
                                             deleteLecTeachTime(teach.getLecteachid());
+                                            deleteTimetables(teach.getLecteachid());
 
                                             dismiss();
 
@@ -271,6 +273,24 @@ public class ClassListFragment extends AppCompatDialogFragment {
                         for (DocumentSnapshot snapshot : queryDocumentSnapshots){
                             String snapshotid = snapshot.getString("lecteachid");
                             if (snapshotid.equals(lecteachid)){
+                                snapshot.getId();
+                                mFirestore.collection(LECTEACHTIMECOL).document(snapshot.getId()).delete();
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void deleteTimetables(final String lecteachid) {
+        mFirestore.collection(TIMETTCOL).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                        for (DocumentSnapshot snapshot : queryDocumentSnapshots){
+                            String snapshotfield = snapshot.getString("lecteachid");
+                            if (snapshotfield.equals(lecteachid)){
+
                                 snapshot.getId();
                                 mFirestore.collection(LECTEACHTIMECOL).document(snapshot.getId()).delete();
                             }
