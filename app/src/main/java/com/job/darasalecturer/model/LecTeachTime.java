@@ -12,6 +12,9 @@ import java.util.Date;
  * Created by Job on Tuesday : 7/24/2018.
  */
 
+/*
+* We will have only one course and selected year of study
+* */
 @Keep
 public class LecTeachTime implements Parcelable {
     private String lecid;
@@ -29,9 +32,8 @@ public class LecTeachTime implements Parcelable {
     public LecTeachTime() {
     }
 
-    public LecTeachTime(String lecid, String lecteachid, String day,
-                        Date time, String unitcode, String unitname,
-                        String semester, String studyyear, String venue, String lecteachtimeid) {
+    public LecTeachTime(String lecid, String lecteachid, String day, Date time, String unitcode,
+                        String unitname, String semester, String studyyear, String venue, String lecteachtimeid, ArrayList<CourseYear> courses) {
         this.lecid = lecid;
         this.lecteachid = lecteachid;
         this.day = day;
@@ -42,6 +44,7 @@ public class LecTeachTime implements Parcelable {
         this.studyyear = studyyear;
         this.venue = venue;
         this.lecteachtimeid = lecteachtimeid;
+        this.courses = courses;
     }
 
     public String getLecid() {
@@ -124,14 +127,6 @@ public class LecTeachTime implements Parcelable {
         this.studyyear = studyyear;
     }
 
-    public ArrayList<CourseYear> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(ArrayList<CourseYear> courses) {
-        this.courses = courses;
-    }
-
     @Override
     public String toString() {
         return "LecTeachTime{" +
@@ -147,6 +142,14 @@ public class LecTeachTime implements Parcelable {
                 ", lecteachtimeid='" + lecteachtimeid + '\'' +
                 ", courses=" + courses +
                 '}';
+    }
+
+    public ArrayList<CourseYear> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(ArrayList<CourseYear> courses) {
+        this.courses = courses;
     }
 
 
@@ -167,7 +170,7 @@ public class LecTeachTime implements Parcelable {
         dest.writeString(this.studyyear);
         dest.writeString(this.venue);
         dest.writeString(this.lecteachtimeid);
-        dest.writeList(this.courses);
+        dest.writeTypedList(this.courses);
     }
 
     protected LecTeachTime(Parcel in) {
@@ -182,8 +185,7 @@ public class LecTeachTime implements Parcelable {
         this.studyyear = in.readString();
         this.venue = in.readString();
         this.lecteachtimeid = in.readString();
-        this.courses = new ArrayList<CourseYear>();
-        in.readList(this.courses, CourseYear.class.getClassLoader());
+        this.courses = in.createTypedArrayList(CourseYear.CREATOR);
     }
 
     public static final Creator<LecTeachTime> CREATOR = new Creator<LecTeachTime>() {
