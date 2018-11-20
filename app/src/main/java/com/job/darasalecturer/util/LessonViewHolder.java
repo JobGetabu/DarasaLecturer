@@ -178,6 +178,7 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
                             @Override
                             public void onSuccess(final DocumentSnapshot docSnapshot) {
 
+                                lsChipgroup.removeAllViews();
                                 for (CourseYear courseYear : CoursesProvider.jsonWorker(docSnapshot.getData())) {
 
                                     addCourses(courseYear);
