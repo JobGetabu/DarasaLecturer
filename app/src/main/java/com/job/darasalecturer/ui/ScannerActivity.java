@@ -78,7 +78,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 import static android.widget.Toast.LENGTH_LONG;
-import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_LECTTID_ARG;
+import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_LECTEACHTIMEID_ARG;
+import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_LECTTEACHID_ARG;
 import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITCODE_ARG;
 import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITNAME_ARG;
 import static com.job.darasalecturer.ui.AddAttendanceActivity.ADDATTENDANCE_EXTRA;
@@ -526,7 +527,6 @@ public class ScannerActivity extends AppCompatActivity {
         });
     }
 
-
     private void getNumberOfStudents(final int noOfScans) {
 
         DefaultExecutorSupplier.getInstance().forMainThreadTasks()
@@ -737,7 +737,8 @@ public class ScannerActivity extends AppCompatActivity {
 
         // Create the Data object:
         Data myData = new Data.Builder()
-                .putString(KEY_QR_LECTTID_ARG, qrParser.getLecteachtimeid())
+                .putString(KEY_QR_LECTEACHTIMEID_ARG, qrParser.getLecteachtimeid())
+                .putString(KEY_QR_LECTTEACHID_ARG,qrParser.getLecteachid())
                 .putString(KEY_QR_UNITNAME_ARG, qrParser.getUnitname())
                 .putString(KEY_QR_UNITCODE_ARG, qrParser.getUnitcode())
                 .build();

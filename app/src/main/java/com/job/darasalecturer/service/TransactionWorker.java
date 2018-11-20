@@ -67,7 +67,7 @@ public class TransactionWorker extends Worker {
 
                 return result;
             }
-        }, lecteachtimeid,unitname, unitcode);
+        }, lecteachid,unitname, unitcode);
 
 
         //using failure cause it doesn't wait for our callback
