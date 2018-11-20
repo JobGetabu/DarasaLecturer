@@ -24,6 +24,8 @@ import com.job.darasalecturer.R;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.DoneClasses;
+import com.job.darasalecturer.model.LecTeachTime;
+import com.job.darasalecturer.model.Timetable;
 import com.job.darasalecturer.ui.MainActivity;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
 
@@ -41,6 +43,7 @@ import static com.job.darasalecturer.util.Constants.DONECLASSES;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOURSESUBCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
+import static com.job.darasalecturer.util.Constants.TIMETTCOL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -161,6 +164,19 @@ public class StepXinfoFragment extends Fragment {
                 model.getLecTeachMediatorLiveData().getValue().setCombiner(false);
             }
 
+            ///region * Ver 2: Add Timetable model*/
+            Timetable timetable = new Timetable();
+            LecTeachTime lecTT=  model.getLecTeachTimeMediatorLiveData().getValue();
+            timetable.setCurrentyear(lecTT.getStudyyear());
+            timetable.setDay(lecTT.getDay());
+            timetable.setLecid(lecTT.getLecid());
+            timetable.setLecteachid(lecTT.getLecteachid());
+            timetable.setLecteachtimeid(lecTT.getLecteachtimeid());
+            timetable.setTime(lecTT.getTime());
+            timetable.setSemester(lecTT.getSemester());
+            //endregion
+
+
             //set up DoneClasses db
             DoneClasses doneClasses = new DoneClasses();
 
@@ -189,8 +205,19 @@ public class StepXinfoFragment extends Fragment {
                 Map<String, Object> cyMap = new HashMap<>();
                 cyMap.put("course",cy.getCourse());
                 cyMap.put("yearofstudy",cy.getYearofstudy());
-
+                //set subcollection Courses
                 cMap.put(String.valueOf(i), cyMap);
+
+                //region Set up timetables per course
+                String lKey = mFirestore.collection(DONECLASSES).document().getId();
+                Timetable timetable1 = timetable;
+                timetable1.setCourse(cy.getCourse());
+                timetable1.setYearofstudy(String.valueOf(cy.getYearofstudy()));
+                timetable.setTimetableid(lKey);
+                DocumentReference timeTableRef =  mFirestore.collection(TIMETTCOL).document(lKey);
+                batch.set(timeTableRef, timetable1);
+                //endregion
+
                 i++;
             }
 
