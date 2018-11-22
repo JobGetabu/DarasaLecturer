@@ -292,7 +292,7 @@ public class ClassListFragment extends AppCompatDialogFragment {
                             if (snapshotfield.equals(lecteachid)){
 
                                 snapshot.getId();
-                                mFirestore.collection(LECTEACHTIMECOL).document(snapshot.getId()).delete();
+                                mFirestore.collection(TIMETTCOL).document(snapshot.getId()).delete();
                             }
                         }
                     }
