@@ -22,4 +22,8 @@
     <color name="pay_bg">#E0E0E0</color>
 
     <color name="dim">#8c000000</color>
+    <color name="greenb">#4D7BF3</color>
+    <color name="greenb2">#6F26FA</color>
+    <color name="greenb3">#1CB2D7</color>
+    <color name="white">#FFFFFF</color>
 </resources>

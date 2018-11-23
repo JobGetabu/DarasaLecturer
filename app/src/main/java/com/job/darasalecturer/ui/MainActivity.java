@@ -180,7 +180,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendToAdvertiseClass() {
-        Intent adIntent = new Intent(MainActivity.this, AdvertiseActivity.class);
+       // Intent adIntent = new Intent(MainActivity.this, AdvertiseActivity.class);
+        Intent adIntent = new Intent(MainActivity.this, AdvertClassActivity.class);
         startActivity(adIntent);
         //finish();
     }
