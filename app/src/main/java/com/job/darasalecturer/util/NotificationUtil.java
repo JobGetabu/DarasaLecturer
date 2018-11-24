@@ -73,6 +73,7 @@ public class NotificationUtil {
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(),
                 R.mipmap.ic_launcher);
 
+
         //NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
 
@@ -82,6 +83,7 @@ public class NotificationUtil {
                 .setContentTitle(title)
                 .setContentText(message)
                 .setLargeIcon(largeIcon)
+                .setSmallIcon(R.drawable.ic_classroom)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                 .setAutoCancel(true);
     }
