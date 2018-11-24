@@ -4,10 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/scan_blue"
+    android:fitsSystemWindows="true"
+    android:id="@+id/ad_bck"
+    tools:context=".ui.AdvertClassActivity"
+    >
 
     <android.support.design.card.MaterialCardView
-        android:id="@+id/card_top"
+        android:id="@+id/ad_card_top"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -31,7 +36,7 @@
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/nunito_bold"
                 android:padding="4dp"
-                android:text="Unit title"
+                android:text="@string/unit_name"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="20sp"
@@ -45,9 +50,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
                 android:fontFamily="@font/nunito"
-                android:text="Unit code"
+                android:text="@string/unit_code"
                 android:textAlignment="center"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -97,7 +101,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:text="Start scanning for students in the class"
+                android:text="@string/start_scanning_for_students_txt"
                 android:textAlignment="center"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -116,19 +120,32 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toBottomOf="@+id/card_top"
-        tools:visibility="gone" />
+        app:layout_constraintTop_toBottomOf="@+id/ad_card_top"
+        tools:visibility="visible"
+        />
 
     <include
-        layout="@layout/ad_list_single"
+        layout="@layout/ad_students_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ad_card_top"
+        tools:visibility="gone"
+        android:visibility="gone"
+        />
 
-        app:layout_constraintTop_toBottomOf="@+id/card_top" />
+    <include
+        layout="@layout/ad_scan_network"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone"
+        android:visibility="gone"
+        />
 
 </android.support.constraint.ConstraintLayout>
