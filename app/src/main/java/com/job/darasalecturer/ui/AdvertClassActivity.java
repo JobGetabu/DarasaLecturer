@@ -430,6 +430,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
                 break;
             case 4: //stop scanning
+                STATE = "STOPPED";
                 Nearby.getMessagesClient(this).unpublish(mPubMessage);
                 Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
                 adStartScanBtn.setEnabled(true);
@@ -469,7 +470,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 builder.setCancelable(false);
                 builder.setTitle(R.string.title_scan);
                 builder.setCancelable(true);
-                builder.setIcon(DoSnack.setDrawable(this, R.drawable.ic_launcher));
+                builder.setIcon(DoSnack.setDrawable(this, R.drawable.ic_classroom));
                 builder.setMessage(getString(R.string.title_scan_txt));
                 builder.setPositiveButton(getString(R.string.title_scan_quite), new DialogInterface.OnClickListener() {
                     @Override
@@ -489,7 +490,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 builder.setCancelable(false);
                 builder.setTitle(R.string.title_scan);
                 builder.setCancelable(true);
-                builder.setIcon(DoSnack.setDrawable(this, R.drawable.ic_launcher));
+                builder.setIcon(DoSnack.setDrawable(this, R.drawable.ic_classroom));
                 builder.setMessage(getString(R.string.title_scan_txt));
                 builder.setPositiveButton(getString(R.string.title_scan_quite), new DialogInterface.OnClickListener() {
                     @Override
