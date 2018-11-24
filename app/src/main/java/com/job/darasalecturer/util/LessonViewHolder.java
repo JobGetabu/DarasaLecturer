@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -81,6 +82,14 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
 
         //LayoutInflater.from(mContext).inflate(R.layout.single_lesson, null);
+
+        lsBtn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(mContext, "Long Click Detected", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
 
     }
 
