@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -75,6 +74,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     MaterialButton adNetworkRetry;
     @BindView(R.id.ad_fab)
     FloatingActionButton adFab;
+    @BindView(R.id.ad_students_bubbles)
+    ConstraintLayout adStudentsBubbles;
 
 
     //endregion
@@ -119,11 +120,22 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adStartScanBtn.refreshDrawableState();
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
         adStartScanMain.setVisibility(View.VISIBLE);
-        adNetworkMain.setVisibility(View.GONE);
         adCardTop.setVisibility(View.VISIBLE);
+        adNetworkMain.setVisibility(View.GONE);
         adListStudentsMain.setVisibility(View.GONE);
+        adStudentsBubbles.setVisibility(View.GONE);
 
         initMenuFragment();
+    }
+
+    private void initStudentList() {
+        adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
+        adStartScanMain.setVisibility(View.GONE);
+        adNetworkMain.setVisibility(View.GONE);
+        adStudentsBubbles.setVisibility(View.GONE);
+
+        adCardTop.setVisibility(View.VISIBLE);
+        adListStudentsMain.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.ad_start_scan_btn)
@@ -225,12 +237,27 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         stopscan.setResource(R.drawable.ic_stopsign);
         //stopscan.setColor(R.color.colorAccent);
 
+        //temporary test for soe layouts
+        MenuObject aa = new MenuObject("Show list of students");
+        aa.setResource(R.drawable.ic_menu);
+
+        MenuObject bb = new MenuObject("Show offline");
+        bb.setResource(R.drawable.ic_menu);
+
+        MenuObject cc = new MenuObject("Show bubbles");
+        cc.setResource(R.drawable.ic_menu);
+
 
         menuObjects.add(close);
         menuObjects.add(createqr);
         menuObjects.add(saveclass);
         menuObjects.add(addstudent);
         menuObjects.add(stopscan);
+
+
+        menuObjects.add(aa);
+        menuObjects.add(bb);
+        menuObjects.add(cc);
         return menuObjects;
     }
 
@@ -254,10 +281,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     @Override
     public void onMenuItemClick(View view, int position) {
-
-        Toast.makeText(this, "Clicked on position: " + position, Toast.LENGTH_SHORT).show();
-
-        switch (position){
+        switch (position) {
             case 0: //close
                 break;
             case 1: //create qr
@@ -268,6 +292,12 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 break;
             case 4: //stop scanning
                 init();
+                break;
+            case 5: //test Show list of students
+                break;
+            case 6: //test Show offline
+                break;
+            case 7: //test Show bubbles
                 break;
         }
     }
