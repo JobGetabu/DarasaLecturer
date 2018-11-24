@@ -112,15 +112,23 @@
         layout="@layout/ad_scanning"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card_top"
 
+        app:layout_constraintTop_toBottomOf="@+id/card_top"
+        tools:visibility="gone" />
+
+    <include
+        layout="@layout/ad_list_single"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:visibility="visible"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/card_top" />
+
 </android.support.constraint.ConstraintLayout>

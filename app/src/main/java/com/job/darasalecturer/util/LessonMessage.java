@@ -3,6 +3,7 @@ package com.job.darasalecturer.util;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.gson.Gson;
 import com.job.darasalecturer.model.QRParser;
+import com.job.darasalecturer.model.StudentMessage;
 
 import java.nio.charset.Charset;
 
@@ -22,13 +23,15 @@ public class LessonMessage {
     private final String lecFirstName;
     private final String lecSecondName;
     private final QRParser qrParser;
+    private final StudentMessage studentMessage;
 
     /**
      * Builds a new {@link Message} object using a unique identifier.
      * static : prevents creation of new instances over the network
      */
-    public static Message newNearbyMessage(String instanceId,String lecFirstName,String lecSecondName,QRParser qrParser) {
-        LessonMessage deviceMessage = new LessonMessage(instanceId,lecFirstName, lecSecondName, qrParser);
+    public static Message newNearbyMessage(String instanceId,String lecFirstName,
+                                           String lecSecondName,QRParser qrParser,StudentMessage studentMessage) {
+        LessonMessage deviceMessage = new LessonMessage(instanceId,lecFirstName, lecSecondName, qrParser,studentMessage);
         return new Message(gson.toJson(deviceMessage).getBytes(Charset.forName("UTF-8")));
     }
 
@@ -43,11 +46,16 @@ public class LessonMessage {
                 LessonMessage.class);
     }
 
-    private LessonMessage(String uuid,String lecFirstName,String lecSecondName,QRParser qrParser){
+    private LessonMessage(String uuid,String lecFirstName,String lecSecondName,QRParser qrParser,StudentMessage studentMessage){
         this.mUUID = uuid;
         this.lecFirstName = lecFirstName;
         this.lecSecondName = lecSecondName;
         this.qrParser = qrParser;
+        this.studentMessage = studentMessage;
+    }
+
+    public StudentMessage getStudentMessage() {
+        return studentMessage;
     }
 
     public QRParser getQrParser() {

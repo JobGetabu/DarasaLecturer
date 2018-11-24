@@ -13,6 +13,7 @@ import butterknife.ButterKnife;
 
 public class AdvertClassActivity extends AppCompatActivity {
 
+    //region binding views
     @BindView(R.id.card_top)
     MaterialCardView cardTop;
     @BindView(R.id.ad_unit_name)
@@ -23,6 +24,9 @@ public class AdvertClassActivity extends AppCompatActivity {
     ChipGroup adCourseChipgrp;
     @BindView(R.id.ad_status_txt)
     TextView adStatusTxt;
+
+
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
