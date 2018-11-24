@@ -116,6 +116,9 @@ dependencies {
     //generic adapter
     implementation "com.leodroidcoder:generic-adapter:1.0.1"
 
+    //context menu
+    implementation 'com.github.Yalantis:Context-Menu.Android:1.0.8'
+
     //work manager
     //implementation "android.arch.work:work-runtime:1.0.0-alpha10"
     implementation("android.arch.work:work-runtime:1.0.0-alpha10") {
