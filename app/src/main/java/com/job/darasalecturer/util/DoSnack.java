@@ -2,8 +2,12 @@ package com.job.darasalecturer.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.google.android.gms.tasks.Task;
@@ -147,5 +151,13 @@ public class DoSnack {
                 .setTitleText("Oops...")
                 .setContentText("Something went wrong!")
                 .show();*/
+    }
+
+    public static int setColor(Context context, @ColorRes int color){
+        return ContextCompat.getColor(context, color);
+    }
+
+    public static Drawable setDrawable(Context context, @DrawableRes int drawable){
+        return ContextCompat.getDrawable(context, drawable);
     }
 }

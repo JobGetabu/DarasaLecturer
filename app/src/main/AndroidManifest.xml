@@ -77,8 +77,10 @@
         <activity
             android:name=".ui.FaqActivity"
             android:parentActivityName=".ui.SettingsActivity" />
-        <activity android:name=".ui.AdvertiseActivity"></activity>
-        <activity android:name=".ui.AdvertClassActivity" />
+        <activity android:name=".ui.AdvertiseActivity"/>
+        <activity android:name=".ui.AdvertClassActivity"
+
+            />
     </application>
 
 </manifest>
