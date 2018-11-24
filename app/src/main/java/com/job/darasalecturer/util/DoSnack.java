@@ -38,7 +38,9 @@ public class DoSnack {
      * @param mainTextStringId The id for the string resource for the Snackbar text.
      * @param actionStringId   The text of the action item.
      * @param listener         The listener associated with the Snackbar action.
+     * @deprecated (use the static method)
      */
+    @Deprecated
     public void showSnackbar(final int mainTextStringId, final int actionStringId,
                              android.view.View.OnClickListener listener) {
         Snackbar.make(
@@ -48,6 +50,10 @@ public class DoSnack {
                 .setAction(activity.getString(actionStringId), listener).show();
     }
 
+    /**
+     * @deprecated (use the static method)
+     * */
+    @Deprecated
     public void showSnackbar(final String mainTextStringId, final String actionStringId,
                              View.OnClickListener listener) {
         Snackbar.make(
@@ -57,7 +63,28 @@ public class DoSnack {
                 .setAction(actionStringId, listener).show();
     }
 
+    public static void showSnackbar(Activity activity, final String mainTextStringId, final String actionStringId,
+                             View.OnClickListener listener) {
+        Snackbar.make(
+                activity.findViewById(android.R.id.content),
+                mainTextStringId,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(actionStringId, listener).show();
+    }
+
+    /**
+     * @deprecated (use the static method)
+     * */
+    @Deprecated
     public void showSnackbar(final String mainTextStringId) {
+        Snackbar.make(
+                activity.findViewById(android.R.id.content),
+                mainTextStringId,
+                Snackbar.LENGTH_INDEFINITE)
+                .show();
+    }
+
+    public static void showSnackbar(Activity activity,final String mainTextStringId) {
         Snackbar.make(
                 activity.findViewById(android.R.id.content),
                 mainTextStringId,
@@ -74,6 +101,10 @@ public class DoSnack {
                 .setAction(actionStringId, listener).show();
     }
 
+    /**
+     * @deprecated (use the static method)
+     * */
+    @Deprecated
     public void showShortSnackbar(final String mainTextStringId) {
         Snackbar.make(
                 activity.findViewById(android.R.id.content),
@@ -82,7 +113,15 @@ public class DoSnack {
                 .show();
     }
 
-    public void UserAuthToastExceptions(@NonNull Task<AuthResult> authtask) {
+    public static void showShortSnackbar(Activity activity,final String mainTextStringId) {
+        Snackbar.make(
+                activity.findViewById(android.R.id.content),
+                mainTextStringId,
+                Snackbar.LENGTH_LONG)
+                .show();
+    }
+
+    public static void UserAuthToastExceptions(Activity activity,@NonNull Task<AuthResult> authtask) {
         String error = "";
         try {
             throw authtask.getException();
@@ -97,12 +136,20 @@ public class DoSnack {
             e.printStackTrace();
         }
         //Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
-        errorPrompt("Oops...", error);
+        errorPrompt(activity,"Oops...", error);
+    }
+
+    public static void errorPrompt(Activity activity,String title, String message) {
+
+        new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
+                .setTitleText(title)
+                .setContentText(message)
+                .show();
     }
 
     public void errorPrompt(String title, String message) {
 
-        new SweetAlertDialog(activity, SweetAlertDialog.ERROR_TYPE)
+        new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
                 .setTitleText(title)
                 .setContentText(message)
                 .show();

@@ -147,7 +147,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             } else {
                                 pDialog.dismiss();
-                                doSnack.UserAuthToastExceptions(authtask);
+                                doSnack.UserAuthToastExceptions(LoginActivity.this,authtask);
                                 loginForgotpass.setVisibility(View.VISIBLE);
                             }
                         }
