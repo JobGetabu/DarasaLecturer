@@ -232,83 +232,79 @@ public class ClassListFragment extends AppCompatDialogFragment {
 
     private void deleteUnits() {
 
-        DefaultExecutorSupplier.getInstance().forMainThreadTasks()
-                .execute(new Runnable() {
-                    @Override
-                    public void run() {
+        List<LecTeach> list = unitsViewModel.getLecTeachList().getValue();
 
-                        List<LecTeach> list = unitsViewModel.getLecTeachList().getValue();
+        for (final LecTeach teach : list) {
 
-                        for (final LecTeach teach : list) {
+            mFirestore.collection(LECTEACHCOL).document(teach.getLecteachid()).delete()
+                    .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forBackgroundTasks(),
+                            new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
 
-                            mFirestore.collection(LECTEACHCOL).document(teach.getLecteachid()).delete()
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
+                                    mFirestore.collection(LECTEACHCOL).document(teach.getLecteachid())
+                                            .collection("Courses").document("courses").delete();
 
-                                            mFirestore.collection(LECTEACHCOL).document(teach.getLecteachid())
-                                                    .collection("Courses").document("courses").delete();
+                                    //Delete the lecteachtime
+                                    deleteLecTeachTime(teach.getLecteachid());
+                                    deleteTimetables(teach.getLecteachid());
+                                    deleteDoneClasses(teach.getLecteachid());
 
-                                            //Delete the lecteachtime
-                                            deleteLecTeachTime(teach.getLecteachid());
-                                            deleteTimetables(teach.getLecteachid());
-                                            deleteDoneClasse(teach.getLecteachid());
+                                    dismiss();
 
-                                            dismiss();
-
-                                        }
-                                    });
-                        }
-                        Toast.makeText(ClassListFragment.this.getActivity(), "Deleting class", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                                }
+                            });
+        }
+        Toast.makeText(ClassListFragment.this.getActivity(), "Deleting class", Toast.LENGTH_SHORT).show();
         dismiss();
     }
 
     private void deleteLecTeachTime(final String lecteachid) {
         mFirestore.collection(LECTEACHTIMECOL).get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forBackgroundTasks(),
+                        new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                        for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-                            String snapshotid = snapshot.getString("lecteachid");
-                            if (snapshotid.equals(lecteachid)) {
-                                snapshot.getId();
-                                mFirestore.collection(LECTEACHTIMECOL).document(snapshot.getId()).delete();
+                                for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                    String snapshotid = snapshot.getString("lecteachid");
+                                    if (snapshotid.equals(lecteachid)) {
+                                        snapshot.getId();
+                                        mFirestore.collection(LECTEACHTIMECOL).document(snapshot.getId()).delete();
+                                    }
+                                }
                             }
-                        }
-                    }
-                });
+                        });
     }
 
     private void deleteTimetables(final String lecteachid) {
         mFirestore.collection(TIMETTCOL).get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forBackgroundTasks(),
+                        new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                        for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
-                            String snapshotfield = snapshot.getString("lecteachid");
-                            if (snapshotfield.equals(lecteachid)) {
+                                for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                    String snapshotfield = snapshot.getString("lecteachid");
+                                    if (snapshotfield.equals(lecteachid)) {
 
-                                snapshot.getId();
-                                mFirestore.collection(TIMETTCOL).document(snapshot.getId()).delete();
+                                        snapshot.getId();
+                                        mFirestore.collection(TIMETTCOL).document(snapshot.getId()).delete();
+                                    }
+                                }
                             }
-                        }
-                    }
-                });
+                        });
     }
 
-    private void deleteDoneClasse(final String lecteachid) {
+    private void deleteDoneClasses(final String lecteachid) {
         mFirestore.collection(DONECLASSES).document(lecteachid).get()
                 .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forBackgroundTasks(),
                         new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        mFirestore.collection(DONECLASSES).document(documentSnapshot.getId()).delete();
-                    }
-                });
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                mFirestore.collection(DONECLASSES).document(documentSnapshot.getId()).delete();
+                            }
+                        });
     }
 
     @OnClick(R.id.frg_class_dismiss)
