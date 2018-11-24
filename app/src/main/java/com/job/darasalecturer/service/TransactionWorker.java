@@ -82,7 +82,7 @@ public class TransactionWorker extends Worker {
         doneClassMAp.put("unitname", unitname);
         doneClassMAp.put("unitcode", unitcode);
 
-        mFirestore.collection(DONECLASSES).document(lecteachtimeid)
+        mFirestore.collection(DONECLASSES).document(lecteachid)
                 .update(doneClassMAp)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
