@@ -231,14 +231,6 @@ public class AddAttendanceActivity extends AppCompatActivity {
         }
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.amenu, menu);
-        saveMenu = menu.findItem(R.id.amenu_save);
-        //updateSaveStatus();
-        return super.onCreateOptionsMenu(menu);
-    }*/
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
@@ -336,7 +328,6 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
         ObservableSnapshotArray dataItems = adapter.getSnapshots();
 
-
     }
 
     private void studentListObserver() {
@@ -351,8 +342,6 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
                     for (StudentDetails stud : studentDetails) {
                         addChipStudent(stud);
-
-
                     }
 
                     if (studentDetails.isEmpty()) {

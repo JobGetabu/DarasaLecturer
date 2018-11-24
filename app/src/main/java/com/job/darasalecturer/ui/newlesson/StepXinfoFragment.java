@@ -189,7 +189,7 @@ public class StepXinfoFragment extends Fragment {
             batch.set(lecteachRef, model.getLecTeachMediatorLiveData().getValue());
             DocumentReference lecteachtimeRef =  mFirestore.collection(LECTEACHTIMECOL).document(lecteachtimeid);
             batch.set(lecteachtimeRef, model.getLecTeachTimeMediatorLiveData().getValue());
-            DocumentReference doneClassRef =  mFirestore.collection(DONECLASSES).document(lecteachtimeid);
+            DocumentReference doneClassRef =  mFirestore.collection(DONECLASSES).document(lecteachid);
             batch.set(doneClassRef, doneClasses);
 
 

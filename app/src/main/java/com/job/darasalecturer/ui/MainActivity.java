@@ -347,6 +347,7 @@ public class MainActivity extends AppCompatActivity {
                 showDateOfClasses(myCalendar);
 
                 classListQuery(myCalendar);
+                adapter.notifyDataSetChanged();
             }
         };
 
