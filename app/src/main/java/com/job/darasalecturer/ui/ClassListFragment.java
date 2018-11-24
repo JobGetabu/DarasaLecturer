@@ -43,6 +43,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.job.darasalecturer.util.Constants.DONECLASSES;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasalecturer.util.Constants.TIMETTCOL;
@@ -132,7 +133,7 @@ public class ClassListFragment extends AppCompatDialogFragment {
         String lecid = mAuth.getCurrentUser().getUid();
 
         Query query = mFirestore.collection(LECTEACHCOL)
-                .whereEqualTo("lecid",lecid)
+                .whereEqualTo("lecid", lecid)
                 .orderBy("semester", Query.Direction.ASCENDING)
                 .orderBy("studyyear", Query.Direction.ASCENDING);
 
@@ -157,7 +158,6 @@ public class ClassListFragment extends AppCompatDialogFragment {
 
                 holder.init(getActivity(), model, unitsViewModel);
                 holder.setUpUi(model);
-
             }
 
 
@@ -201,7 +201,7 @@ public class ClassListFragment extends AppCompatDialogFragment {
     @Override
     public void onStart() {
 
-        if (mAuth.getCurrentUser() == null){
+        if (mAuth.getCurrentUser() == null) {
             Log.e(TAG, "onStart: mAuth.getCurrentUser() = null");
         }
 
@@ -252,6 +252,7 @@ public class ClassListFragment extends AppCompatDialogFragment {
                                             //Delete the lecteachtime
                                             deleteLecTeachTime(teach.getLecteachid());
                                             deleteTimetables(teach.getLecteachid());
+                                            deleteDoneClasse(teach.getLecteachid());
 
                                             dismiss();
 
@@ -270,9 +271,9 @@ public class ClassListFragment extends AppCompatDialogFragment {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                        for (DocumentSnapshot snapshot : queryDocumentSnapshots){
+                        for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
                             String snapshotid = snapshot.getString("lecteachid");
-                            if (snapshotid.equals(lecteachid)){
+                            if (snapshotid.equals(lecteachid)) {
                                 snapshot.getId();
                                 mFirestore.collection(LECTEACHTIMECOL).document(snapshot.getId()).delete();
                             }
@@ -287,14 +288,25 @@ public class ClassListFragment extends AppCompatDialogFragment {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                        for (DocumentSnapshot snapshot : queryDocumentSnapshots){
+                        for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
                             String snapshotfield = snapshot.getString("lecteachid");
-                            if (snapshotfield.equals(lecteachid)){
+                            if (snapshotfield.equals(lecteachid)) {
 
                                 snapshot.getId();
                                 mFirestore.collection(TIMETTCOL).document(snapshot.getId()).delete();
                             }
                         }
+                    }
+                });
+    }
+
+    private void deleteDoneClasse(final String lecteachid) {
+        mFirestore.collection(DONECLASSES).document(lecteachid).get()
+                .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forBackgroundTasks(),
+                        new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        mFirestore.collection(DONECLASSES).document(documentSnapshot.getId()).delete();
                     }
                 });
     }
