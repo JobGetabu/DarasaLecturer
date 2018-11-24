@@ -34,6 +34,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.job.darasalecturer.util.Constants.FIRST_NAME_PREF_NAME;
+import static com.job.darasalecturer.util.Constants.LAST_NAME_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.LECUSERCOL;
 
 public class AccountSetupActivity extends AppCompatActivity {
@@ -123,6 +125,8 @@ public class AccountSetupActivity extends AppCompatActivity {
             lecMap.put("lastname", lname);
             lecMap.put("school", school);
             lecMap.put("department", dept);
+
+            setPrefs(fname, lname);
 
             // Set the value of 'Users'
             DocumentReference usersRef = mFirestore.collection(LECUSERCOL).document(mAuth.getCurrentUser().getUid());
@@ -216,7 +220,9 @@ public class AccountSetupActivity extends AppCompatActivity {
         });
     }
 
-    private void setPrefs(){
-
+    private void setPrefs(String fName,String lName){
+        editor.putString(FIRST_NAME_PREF_NAME,fName);
+        editor.putString(LAST_NAME_PREF_NAME,lName);
+        editor.apply();
     }
 }

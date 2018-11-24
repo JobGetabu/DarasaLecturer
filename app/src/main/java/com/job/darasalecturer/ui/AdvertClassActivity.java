@@ -56,6 +56,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.job.darasalecturer.util.Constants.FIRST_NAME_PREF_NAME;
+import static com.job.darasalecturer.util.Constants.LAST_NAME_PREF_NAME;
+
 public class AdvertClassActivity extends AppCompatActivity implements OnMenuItemClickListener {
 
     //region CONSTANTS
@@ -179,8 +182,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
 
         // Build the message that is going to be published. This contains the device owner and a UUID.
-        String lecFirstName = "";
-        String lecSecondName = "";
+        String lecFirstName = mSharedPreferences.getString(FIRST_NAME_PREF_NAME,"");
+        String lecSecondName = mSharedPreferences.getString(LAST_NAME_PREF_NAME,"");
         mPubMessage = LessonMessage.newNearbyMessage(DoSnack.getUUID(mSharedPreferences),
                 lecFirstName, lecSecondName, qrParser, null);
 
