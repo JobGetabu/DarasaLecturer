@@ -2,12 +2,14 @@ package com.job.darasalecturer.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.google.android.gms.tasks.Task;
@@ -16,7 +18,11 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
+import java.util.UUID;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
+
+import static com.job.darasalecturer.util.Constants.KEY_UUID;
 
 
 /**
@@ -206,5 +212,19 @@ public class DoSnack {
 
     public static Drawable setDrawable(Context context, @DrawableRes int drawable){
         return ContextCompat.getDrawable(context, drawable);
+    }
+
+    /**
+     * Creates a UUID and saves it to {@link SharedPreferences}. The UUID is added to the published
+     * message to avoid it being undelivered due to de-duplication. See {@link DeviceMessage} for
+     * details.
+     */
+    public static String getUUID(SharedPreferences sharedPreferences) {
+        String uuid = sharedPreferences.getString(KEY_UUID, "");
+        if (TextUtils.isEmpty(uuid)) {
+            uuid = UUID.randomUUID().toString();
+            sharedPreferences.edit().putString(KEY_UUID, uuid).apply();
+        }
+        return uuid;
     }
 }

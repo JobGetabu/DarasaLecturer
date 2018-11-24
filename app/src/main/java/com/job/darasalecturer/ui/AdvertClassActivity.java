@@ -1,19 +1,37 @@
 package com.job.darasalecturer.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
-import android.support.design.card.MaterialCardView;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
+import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.messages.Message;
+import com.google.android.gms.nearby.messages.MessageListener;
+import com.google.android.gms.nearby.messages.PublishCallback;
+import com.google.android.gms.nearby.messages.PublishOptions;
+import com.google.android.gms.nearby.messages.Strategy;
+import com.google.android.gms.nearby.messages.SubscribeCallback;
+import com.google.android.gms.nearby.messages.SubscribeOptions;
+import com.google.android.gms.tasks.OnCanceledListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
@@ -22,7 +40,9 @@ import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.util.AppStatus;
+import com.job.darasalecturer.util.DeviceMessage;
 import com.job.darasalecturer.util.DoSnack;
+import com.job.darasalecturer.util.LessonMessage;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
@@ -43,13 +63,20 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     public static final String QRPARSEREXTRA = "QRPARSEREXTRA";
     public static final String VENUEEXTRA = "VENUEEXTRA";
     public static final String LECTEACHIDEXTRA = "LECTEACHIDEXTRA";
+    private static final int TTL_IN_SECONDS = 30 * 60; // Three minutes.
 
+    /**
+     * Sets the time in seconds for a published message or a subscription to live. Set to 30 min
+     *
+     */
+    private static final Strategy PUB_SUB_STRATEGY = new Strategy.Builder()
+            .setTtlSeconds(TTL_IN_SECONDS).build();
 
     //endregion
 
     //region binding views
     @BindView(R.id.ad_card_top)
-    MaterialCardView adCardTop;
+    CardView adCardTop;
     @BindView(R.id.ad_unit_name)
     TextView adUnitName;
     @BindView(R.id.ad_unit_code)
@@ -80,8 +107,29 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     //endregion
 
+    //region NEARBY VARS
+
+    /**
+     * The {@link Message} object used to broadcast information about the device to nearby devices.
+     */
+    private Message mPubMessage;
+
+    /**
+     * A {@link MessageListener} for processing messages from nearby devices.
+     */
+    private MessageListener mMessageListener;
+
+    /**
+     * Adapter for working with messages from nearby publishers.
+     */
+    private ArrayAdapter<String> mNearbyDevicesArrayAdapter;
+
+
+    //endregion
+
     private QRParser qrParser;
     private Gson gson;
+    private SharedPreferences mSharedPreferences;
 
     //firebase
     private FirebaseFirestore mFirestore;
@@ -100,6 +148,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         //endregion
 
+        initMenuFragment();
+
         //region INIT GLOBAL VARS
         //firebase
         mAuth = FirebaseAuth.getInstance();
@@ -110,14 +160,27 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         gson = new Gson();
         setUpUi(qrParser);
 
+        mSharedPreferences = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE);
+
+
         //endregion
 
+
+        // Build the message that is going to be published. This contains the device owner and a UUID.
+        String lecFirstName = "";
+        String lecSecondName = "";
+        mPubMessage = LessonMessage.newNearbyMessage(DoSnack.getUUID(mSharedPreferences),
+                lecFirstName, lecSecondName, qrParser, null);
+
+        initMessageListener();
     }
 
-    private void init() {
+    //region UI SETUP
+
+
+
+    private void initUI() {
         adStartScanAnimationView.setVisibility(View.GONE);
-        adStartScanBtn.setBackground(DoSnack.setDrawable(this, R.drawable.round_off_btn_bg));
-        adStartScanBtn.refreshDrawableState();
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
         adStartScanMain.setVisibility(View.VISIBLE);
         adCardTop.setVisibility(View.VISIBLE);
@@ -125,10 +188,15 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adListStudentsMain.setVisibility(View.GONE);
         adStudentsBubbles.setVisibility(View.GONE);
 
-        initMenuFragment();
+        adStartScanBtn.setBackground(DoSnack.setDrawable(this, R.drawable.round_off_btn_bg));
+        adStatusTxt.setText(R.string.start_scanning_for_students_txt);
+        adStartScanBtn.setText(R.string.start_scan);
+        adStartScanBtn.setTextSize(16);
+        adStartScanBtn.setPadding(40, 40, 40, 40);
+
     }
 
-    private void initStudentList() {
+    private void initStudentListUI() {
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
         adStartScanMain.setVisibility(View.GONE);
         adNetworkMain.setVisibility(View.GONE);
@@ -138,27 +206,50 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adListStudentsMain.setVisibility(View.VISIBLE);
     }
 
-    @OnClick(R.id.ad_start_scan_btn)
-    public void onStartScanClicked() {
-        //region UI SETUP
+    private void initNetworkLostUI() {
+        adMain.setBackgroundColor(DoSnack.setColor(this, R.color.white));
+        adStartScanMain.setVisibility(View.GONE);
+        adStudentsBubbles.setVisibility(View.GONE);
+        adListStudentsMain.setVisibility(View.GONE);
+
+        adCardTop.setVisibility(View.VISIBLE);
+        adCardTop.setCardBackgroundColor(DoSnack.setColor(this,R.color.contentDividerLine));
+        adStatusTxt.setText(R.string.netlost_scanning_for_students_txt);
+        adNetworkMain.setVisibility(View.VISIBLE);
+    }
+
+    private void initScanningUI(){
+        adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
+
+        adNetworkMain.setVisibility(View.GONE);
+        adStudentsBubbles.setVisibility(View.GONE);
+        adListStudentsMain.setVisibility(View.GONE);
+
+        adStartScanMain.setVisibility(View.VISIBLE);
         adStartScanAnimationView.setVisibility(View.VISIBLE);
+
         adStartScanBtn.setBackground(DoSnack.setDrawable(this, R.drawable.round_btn_bg));
         adStartScanBtn.setText(R.string.scan_class);
+        adStatusTxt.setText(R.string.scanning_for_students_txt);
         adStartScanBtn.setTextSize(16);
         adStartScanBtn.setPadding(20, 40, 20, 40);
+        adStartScanBtn.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+        adStartScanBtn.setEnabled(false);
+    }
 
-        //endregion
+    //endregion
+
+    @OnClick(R.id.ad_start_scan_btn)
+    public void onStartScanClicked() {
+        initScanningUI();
 
         if (AppStatus.getInstance(this).isOnline()) {
 
-        } else {
-            //region UI SETUP
-            adMain.setBackgroundColor(DoSnack.setColor(this, R.color.white));
-            adStartScanMain.setVisibility(View.GONE);
-            adNetworkMain.setVisibility(View.VISIBLE);
-            adCardTop.setVisibility(View.GONE);
+            subscribe();
+            publish();
 
-            //endregion
+        } else {
+            initNetworkLostUI();
         }
     }
 
@@ -171,7 +262,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             addCourses(s);
         }
 
-        init();
+        initUI();
     }
 
     private void addCourses(CourseYear course) {
@@ -190,6 +281,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     @OnClick(R.id.ad_network_retry)
     public void onNetRetryClicked() {
+        adStartScanBtn.setEnabled(true);
         recreate();
         //init();
     }
@@ -291,11 +383,14 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             case 3: //add offline students
                 break;
             case 4: //stop scanning
-                init();
+                adStartScanBtn.setEnabled(true);
+                initUI();
                 break;
             case 5: //test Show list of students
+                initStudentListUI();
                 break;
             case 6: //test Show offline
+                initNetworkLostUI();
                 break;
             case 7: //test Show bubbles
                 break;
@@ -319,4 +414,121 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             finish();
         }
     }
+
+    //region SETTING UP NEARBY MECHANICS
+    private void initMessageListener() {
+        mMessageListener = new MessageListener() {
+            @Override
+            public void onFound(Message message) {
+                // Called when a new message is found.
+                mNearbyDevicesArrayAdapter.add(DeviceMessage.fromNearbyMessage(message).getMessageBody());
+
+                Toast.makeText(AdvertClassActivity.this, "new device " + message.toString(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onLost(Message message) {
+                // Called when a message is no longer detectable nearby.
+                //mNearbyDevicesArrayAdapter.remove(DeviceMessage.fromNearbyMessage(message).getMessageBody());
+                Toast.makeText(AdvertClassActivity.this, "device lost " + message.toString(), Toast.LENGTH_SHORT).show();
+            }
+        };
+    }
+
+    @Override
+    public void onStop() {
+        Nearby.getMessagesClient(this).unpublish(mPubMessage);
+        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
+
+        super.onStop();
+    }
+
+    private void subscribe() {
+        Log.i(TAG, "Subscribing");
+        mNearbyDevicesArrayAdapter.clear();
+        SubscribeOptions options = new SubscribeOptions.Builder()
+                .setStrategy(PUB_SUB_STRATEGY)
+                .setCallback(new SubscribeCallback() {
+                    @Override
+                    public void onExpired() {
+                        super.onExpired();
+                        Log.i(TAG, "No longer subscribing");
+
+                    }
+                }).build();
+
+        Nearby.getMessagesClient(this).subscribe(mMessageListener, options)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        Log.i(TAG, "Subscribed successfully.");
+
+                    }
+                })
+                .addOnCanceledListener(new OnCanceledListener() {
+                    @Override
+                    public void onCanceled() {
+
+                        Log.w(TAG, "onCanceled: cancelled");
+                        Toast.makeText(AdvertClassActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        Log.e(TAG, "onFailure: Could not subscribe, status =", e);
+                    }
+                });
+    }
+
+    /**
+     * Publishes a message to nearby devices and updates the UI if the publication either fails or
+     * TTLs.
+     */
+    private void publish() {
+        Log.i(TAG, "Publishing");
+        PublishOptions options = new PublishOptions.Builder()
+                .setStrategy(PUB_SUB_STRATEGY)
+                .setCallback(new PublishCallback() {
+                    @Override
+                    public void onExpired() {
+                        super.onExpired();
+                        Log.i(TAG, "No longer publishing");
+                        initUI();
+                    }
+                }).build();
+
+        Nearby.getMessagesClient(this).publish(mPubMessage, options)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Published successfully.");
+                        //initScanningUI();
+                        initStudentListUI();
+                        adStatusTxt.setText(R.string.checking_for_students_txt);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "onFailure: Publish error", e);
+                        DoSnack.showShortSnackbar(AdvertClassActivity.this,e.getLocalizedMessage());
+                        initNetworkLostUI();
+
+                    }
+                })
+                .addOnCanceledListener(new OnCanceledListener() {
+                    @Override
+                    public void onCanceled() {
+
+                        Log.w(TAG, "onCanceled: cancelled");
+                        DoSnack.showShortSnackbar(AdvertClassActivity.this,"Publish Cancelled");
+                    }
+                });
+    }
+
+
+    //endregion
 }
