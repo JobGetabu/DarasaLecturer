@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +39,6 @@ import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.util.AppStatus;
-import com.job.darasalecturer.util.DeviceMessage;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.LessonMessage;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
@@ -122,7 +120,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     /**
      * Adapter for working with messages from nearby publishers.
      */
-    private ArrayAdapter<String> mNearbyDevicesArrayAdapter;
+    //private ArrayAdapter<String> mNearbyDevicesArrayAdapter;
 
 
     //endregion
@@ -383,8 +381,12 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             case 3: //add offline students
                 break;
             case 4: //stop scanning
+                Nearby.getMessagesClient(this).unpublish(mPubMessage);
+                Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
                 adStartScanBtn.setEnabled(true);
                 initUI();
+
+
                 break;
             case 5: //test Show list of students
                 initStudentListUI();
@@ -421,7 +423,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             @Override
             public void onFound(Message message) {
                 // Called when a new message is found.
-                mNearbyDevicesArrayAdapter.add(DeviceMessage.fromNearbyMessage(message).getMessageBody());
+                //mNearbyDevicesArrayAdapter.add(DeviceMessage.fromNearbyMessage(message).getMessageBody());
 
                 Toast.makeText(AdvertClassActivity.this, "new device " + message.toString(), Toast.LENGTH_SHORT).show();
             }
@@ -445,7 +447,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     private void subscribe() {
         Log.i(TAG, "Subscribing");
-        mNearbyDevicesArrayAdapter.clear();
         SubscribeOptions options = new SubscribeOptions.Builder()
                 .setStrategy(PUB_SUB_STRATEGY)
                 .setCallback(new SubscribeCallback() {
@@ -531,4 +532,5 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
 
     //endregion
+
 }
