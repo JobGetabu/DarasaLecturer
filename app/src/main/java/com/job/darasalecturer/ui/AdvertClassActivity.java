@@ -1,6 +1,7 @@
 package com.job.darasalecturer.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.design.button.MaterialButton;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -65,7 +67,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     /**
      * Sets the time in seconds for a published message or a subscription to live. Set to 30 min
-     *
      */
     private static final Strategy PUB_SUB_STRATEGY = new Strategy.Builder()
             .setTtlSeconds(TTL_IN_SECONDS).build();
@@ -107,6 +108,13 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     //region NEARBY VARS
 
+    /**
+     * show state of the app
+     * {@<code>SCANNING </code>}  app is still scanning
+     * {@<code>FRESH </code>}     app is not scanned
+     * {@<code>STOPPED </code>}   app is stopped scanning
+     */
+    private String STATE = "FRESH"; //SCANNING | FRESH | STOPPED
     /**
      * The {@link Message} object used to broadcast information about the device to nearby devices.
      */
@@ -176,7 +184,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     //region UI SETUP
 
 
-
     private void initUI() {
         adStartScanAnimationView.setVisibility(View.GONE);
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
@@ -192,6 +199,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adStartScanBtn.setTextSize(16);
         adStartScanBtn.setPadding(40, 40, 40, 40);
 
+        STATE = "FRESH";
     }
 
     private void initStudentListUI() {
@@ -211,12 +219,14 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adListStudentsMain.setVisibility(View.GONE);
 
         adCardTop.setVisibility(View.VISIBLE);
-        adCardTop.setCardBackgroundColor(DoSnack.setColor(this,R.color.contentDividerLine));
+        adCardTop.setCardBackgroundColor(DoSnack.setColor(this, R.color.contentDividerLine));
         adStatusTxt.setText(R.string.netlost_scanning_for_students_txt);
         adNetworkMain.setVisibility(View.VISIBLE);
+
+        STATE = "STOPPED";
     }
 
-    private void initScanningUI(){
+    private void initScanningUI() {
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
 
         adNetworkMain.setVisibility(View.GONE);
@@ -233,6 +243,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adStartScanBtn.setPadding(20, 40, 20, 40);
         adStartScanBtn.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         adStartScanBtn.setEnabled(false);
+
+        STATE = "SCANNING";
     }
 
     //endregion
@@ -280,7 +292,16 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     @OnClick(R.id.ad_network_retry)
     public void onNetRetryClicked() {
         adStartScanBtn.setEnabled(true);
-        recreate();
+
+        if (AppStatus.getInstance(this).isOnline()) {
+            initScanningUI();
+            subscribe();
+            publish();
+
+        } else {
+
+            DoSnack.showShortSnackbar(this,getString(R.string.youre_offline));
+        }
         //init();
     }
 
@@ -413,7 +434,50 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         if (mMenuDialogFragment != null && mMenuDialogFragment.isAdded()) {
             mMenuDialogFragment.dismiss();
         } else {
-            finish();
+
+            if (STATE.equals("SCANNING")) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setCancelable(false);
+                builder.setTitle(R.string.title_scan);
+                builder.setCancelable(true);
+                builder.setIcon(DoSnack.setDrawable(this, R.drawable.ic_launcher));
+                builder.setMessage(getString(R.string.title_scan_txt));
+                builder.setPositiveButton(getString(R.string.title_scan_quite), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+
+            if (STATE.equals("STOPPED")) {
+
+                //assuming some students scanned the classes
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setCancelable(false);
+                builder.setTitle(R.string.title_scan);
+                builder.setCancelable(true);
+                builder.setIcon(DoSnack.setDrawable(this, R.drawable.ic_launcher));
+                builder.setMessage(getString(R.string.title_scan_txt));
+                builder.setPositiveButton(getString(R.string.title_scan_quite), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+
+            if (STATE.equals("FRESH")) {
+
+                finish();
+            }
         }
     }
 
@@ -515,7 +579,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e(TAG, "onFailure: Publish error", e);
-                        DoSnack.showShortSnackbar(AdvertClassActivity.this,e.getLocalizedMessage());
+                        DoSnack.showShortSnackbar(AdvertClassActivity.this, e.getLocalizedMessage());
                         initNetworkLostUI();
 
                     }
@@ -525,7 +589,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     public void onCanceled() {
 
                         Log.w(TAG, "onCanceled: cancelled");
-                        DoSnack.showShortSnackbar(AdvertClassActivity.this,"Publish Cancelled");
+                        DoSnack.showShortSnackbar(AdvertClassActivity.this, "Publish Cancelled");
                     }
                 });
     }

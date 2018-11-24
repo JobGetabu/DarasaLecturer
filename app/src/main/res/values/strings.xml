@@ -86,6 +86,14 @@
     <string name="this_create_qr_txt">This will create a <b>QR CODE</b> for students \nthat attend this lesson to scan</string>
     <string name="create_qr">Create QR</string>
     <string name="generate_qr">Generate QR</string>
+    <string name="title_scan">Still Scanning</string>
+    <string name="title_scan_txt">You\'re still scanning for students in the class room</string>
+    <string name="title_scan_quite">Quite this class</string>
+
+    <string name="fin_scan">Still Scanning</string>
+    <string name="fin_scan_txt">You\'re still scanning for students in the class room</string>
+    <string name="fin_scan_quite">Quite this class</string>
+
     <string name="start_scanning_for_students_txt">Tap Start Scan to\nStart scanning for students inside the classroom</string>
     <string name="netlost_scanning_for_students_txt">Tap Retry to\nscan for students inside the classroom</string>
     <string name="scanning_for_students_txt">Scanning for students inside the classroom</string>
