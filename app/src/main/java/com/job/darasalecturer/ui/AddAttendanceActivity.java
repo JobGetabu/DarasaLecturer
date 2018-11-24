@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
@@ -127,7 +126,7 @@ public class AddAttendanceActivity extends AppCompatActivity {
         addStudentViewModel = ViewModelProviders.of(this).get(AddStudentViewModel.class);
 
         doSnack = new DoSnack(this, AddAttendanceActivity.this);
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPreferences = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE);
         gson = new Gson();
 
         //retrieve courses

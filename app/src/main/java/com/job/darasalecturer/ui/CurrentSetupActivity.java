@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -159,8 +158,7 @@ public class CurrentSetupActivity extends AppCompatActivity {
     }
 
     private void setSemYearPref(String sem, String syr) {
-        SharedPreferences.Editor sharedPreferencesEditor = PreferenceManager.getDefaultSharedPreferences(
-                this).edit();
+        SharedPreferences.Editor sharedPreferencesEditor = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE).edit();
 
         sharedPreferencesEditor.putString(CURRENT_SEM_PREF_NAME, sem);
         sharedPreferencesEditor.putString(CURRENT_YEAR_PREF_NAME, syr);

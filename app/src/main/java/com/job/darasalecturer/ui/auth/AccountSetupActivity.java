@@ -3,6 +3,7 @@ package com.job.darasalecturer.ui.auth;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -51,7 +52,8 @@ public class AccountSetupActivity extends AppCompatActivity {
     TextView setupBtn;
 
     private DoSnack doSnack;
-
+    private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor editor;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
 
@@ -74,6 +76,8 @@ public class AccountSetupActivity extends AppCompatActivity {
         mFirestore = FirebaseFirestore.getInstance();
 
         doSnack = new DoSnack(this, AccountSetupActivity.this);
+        mSharedPreferences = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE);
+        editor = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE).edit();
 
         // View model
         AccountSetupViewModel.Factory factory = new AccountSetupViewModel.Factory(
@@ -210,5 +214,9 @@ public class AccountSetupActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void setPrefs(){
+
     }
 }
