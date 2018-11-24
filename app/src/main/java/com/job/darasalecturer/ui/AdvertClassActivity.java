@@ -41,6 +41,7 @@ import com.job.darasalecturer.R;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.QRParser;
+import com.job.darasalecturer.service.TransactionWorker;
 import com.job.darasalecturer.util.AppStatus;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.LessonMessage;
@@ -52,10 +53,20 @@ import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_LECTEACHTIMEID_ARG;
+import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_LECTTEACHID_ARG;
+import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITCODE_ARG;
+import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITNAME_ARG;
 import static com.job.darasalecturer.util.Constants.FIRST_NAME_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.LAST_NAME_PREF_NAME;
 
@@ -408,6 +419,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 sendToQr();
                 break;
             case 2: //save class
+                saveAndEndClass();
                 break;
             case 3: //add offline students
                 break;
@@ -616,4 +628,59 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         startActivity(qrintent);
         finish();
     }
+
+    //region SAVING THE CLASS
+
+    private void saveAndEndClass() {
+
+
+        final SweetAlertDialog pDialog;
+        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.setCancelable(true);
+        pDialog.setCanceledOnTouchOutside(false);
+        pDialog.setContentText("Saving class attendance");
+        pDialog.show();
+
+        scheduleTransactionWork();
+
+        pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sDialog) {
+                sDialog.dismissWithAnimation();
+                finish();
+            }
+        });
+
+    }
+
+    private void scheduleTransactionWork() {
+
+        // Create the Data object:
+        Data myData = new Data.Builder()
+                .putString(KEY_QR_LECTEACHTIMEID_ARG, qrParser.getLecteachtimeid())
+                .putString(KEY_QR_LECTTEACHID_ARG,qrParser.getLecteachid())
+                .putString(KEY_QR_UNITNAME_ARG, qrParser.getUnitname())
+                .putString(KEY_QR_UNITCODE_ARG, qrParser.getUnitcode())
+                .build();
+
+        //set network required
+        Constraints myConstraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
+        // ...then create and enqueue a OneTimeWorkRequest that uses those arguments
+        OneTimeWorkRequest transWork = new OneTimeWorkRequest.Builder(TransactionWorker.class)
+                .setConstraints(myConstraints)
+                .setInputData(myData)
+                .build();
+
+        WorkManager.getInstance()
+                .enqueue(transWork);
+
+
+    }
+
+
+    //endregion
 }
