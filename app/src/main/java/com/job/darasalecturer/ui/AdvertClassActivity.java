@@ -67,6 +67,7 @@ import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_LECTEACHTI
 import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_LECTTEACHID_ARG;
 import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITCODE_ARG;
 import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITNAME_ARG;
+import static com.job.darasalecturer.ui.AddAttendanceActivity.ADDATTENDANCE_EXTRA;
 import static com.job.darasalecturer.util.Constants.FIRST_NAME_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.LAST_NAME_PREF_NAME;
 
@@ -422,6 +423,11 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 saveAndEndClass();
                 break;
             case 3: //add offline students
+
+                silentSavingClass();
+                Toast.makeText(this, "Saved the class", Toast.LENGTH_SHORT).show();
+                toAddAttendanceActivity();
+
                 break;
             case 4: //stop scanning
                 Nearby.getMessagesClient(this).unpublish(mPubMessage);
@@ -681,6 +687,15 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     }
 
+    private void silentSavingClass(){
+        scheduleTransactionWork();
+    }
 
     //endregion
+
+    private void toAddAttendanceActivity() {
+        Intent addAttendIntent = new Intent(this, AddAttendanceActivity.class);
+        addAttendIntent.putExtra(ADDATTENDANCE_EXTRA, qrParser);
+        startActivity(addAttendIntent);
+    }
 }
