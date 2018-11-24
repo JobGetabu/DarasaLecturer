@@ -1,6 +1,7 @@
 package com.job.darasalecturer.util;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -9,12 +10,12 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +26,7 @@ import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.LecTeachTime;
 import com.job.darasalecturer.model.QRParser;
+import com.job.darasalecturer.ui.AdvertClassActivity;
 import com.job.darasalecturer.ui.ScannerActivity;
 
 import java.text.DateFormat;
@@ -86,8 +88,30 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         lsBtn.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(mContext, "Long Click Detected", Toast.LENGTH_SHORT).show();
-                return false;
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setCancelable(false);
+                builder.setTitle(R.string.generate_qr);
+                builder.setCancelable(true);
+                builder.setIcon(DoSnack.setDrawable(mContext, R.drawable.ic_qrcode));
+                builder.setMessage(mContext.getString(R.string.this_create_qr_txt));
+                builder.setPositiveButton(mContext.getString(R.string.create_qr), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendToQr();
+                    }
+                });
+
+                builder.setNegativeButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+                return true;
             }
         });
 
@@ -117,7 +141,7 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         qrParser.setUnitname(lecTeachTime.getUnitname());
         getSemYearPref(qrParser);
 
-        sendToQr(qrParser);
+        sendToAdvert(qrParser);
     }
 
     private void getSemYearPref(QRParser qrParser) {
@@ -239,8 +263,26 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void sendToQr(QRParser qrParser) {
+    private void sendToQr() {
+        QRParser qrParser = new QRParser();
+        qrParser.setDate(Calendar.getInstance().getTime());
+        qrParser.setClasstime(lecTeachTime.getTime());
+        qrParser.setLecteachid(lecTeachTime.getLecteachid());
+        qrParser.setCourses(lecTeachTime.getCourses());
+        qrParser.setLecteachtimeid(lecTeachTime.getLecteachtimeid());
+        qrParser.setUnitcode(lecTeachTime.getUnitcode());
+        qrParser.setUnitname(lecTeachTime.getUnitname());
+        getSemYearPref(qrParser);
+
         Intent qrintent = new Intent(mContext, ScannerActivity.class);
+        qrintent.putExtra(QRPARSEREXTRA, qrParser);
+        qrintent.putExtra(VENUEEXTRA, lecTeachTime.getVenue());
+        qrintent.putExtra(LECTEACHIDEXTRA, lecTeachTime.getLecteachid());
+        mContext.startActivity(qrintent);
+    }
+
+    private void sendToAdvert(QRParser qrParser) {
+        Intent qrintent = new Intent(mContext, AdvertClassActivity.class);
         qrintent.putExtra(QRPARSEREXTRA, qrParser);
         qrintent.putExtra(VENUEEXTRA, lecTeachTime.getVenue());
         qrintent.putExtra(LECTEACHIDEXTRA, lecTeachTime.getLecteachid());
