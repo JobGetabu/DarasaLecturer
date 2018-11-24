@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -232,6 +233,7 @@ public class StepXinfoFragment extends Fragment {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     dialog.dismiss();
+                    Toast.makeText(getContext(), "Saved Successfully", Toast.LENGTH_SHORT).show();
                     sendToMain();
                 }
             });
