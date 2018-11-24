@@ -2,6 +2,7 @@ package com.job.darasalecturer.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -136,6 +137,9 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     private QRParser qrParser;
     private Gson gson;
     private SharedPreferences mSharedPreferences;
+    private String venue;
+    private String lecteachid;
+
 
     //firebase
     private FirebaseFirestore mFirestore;
@@ -163,6 +167,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
         //get qrparser
         qrParser = getIntent().getParcelableExtra(QRPARSEREXTRA);
+        venue = getIntent().getStringExtra(VENUEEXTRA);
+        lecteachid = getIntent().getStringExtra(LECTEACHIDEXTRA);
         gson = new Gson();
         setUpUi(qrParser);
 
@@ -396,6 +402,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             case 0: //close
                 break;
             case 1: //create qr
+                sendToQr();
                 break;
             case 2: //save class
                 break;
@@ -597,4 +604,13 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     //endregion
 
+    private void sendToQr() {
+
+        Intent qrintent = new Intent(this, ScannerActivity.class);
+        qrintent.putExtra(QRPARSEREXTRA, qrParser);
+        qrintent.putExtra(VENUEEXTRA, venue);
+        qrintent.putExtra(LECTEACHIDEXTRA, lecteachid);
+        startActivity(qrintent);
+        finish();
+    }
 }
