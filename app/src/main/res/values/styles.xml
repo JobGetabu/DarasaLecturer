@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -38,9 +38,22 @@
         <item name="android:fontFamily">@font/nunito</item>
     </style>
 
+    <style name="ScanningButton">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:text">@string/scan_class</item>
+        <item name="android:fontFamily">@font/nunito_semibold</item>
+    </style>
+
+  <!--  activity themes-->
     <style name="TransparentBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:windowActionBarOverlay">true</item>
         <item name="windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="AppTheme.TransparentTheme" parent="AppTheme">
+        <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
     </style>
 
     <style name="MyProgressBarTwo" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">

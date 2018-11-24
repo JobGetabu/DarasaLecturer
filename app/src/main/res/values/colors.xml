@@ -26,4 +26,11 @@
     <color name="greenb2">#6F26FA</color>
     <color name="greenb3">#1CB2D7</color>
     <color name="white">#FFFFFF</color>
+
+    <color name="scan_blue">#2D7086</color>
+    <color name="scan_blue_1">#228794</color>
+    <color name="scan_blue_2">#52BFBD</color>
+    <color name="scan_blue_3">#63D3CC</color>
+
+    <color name="scan_orange">#FF8A16</color>
 </resources>

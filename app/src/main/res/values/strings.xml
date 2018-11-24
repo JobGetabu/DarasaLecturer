@@ -81,6 +81,8 @@
     <string name="dismiss">DISMISS</string>
     <string name="select_studyyear_text">Click the year of study for the\n course(s) that you teach to change</string>
     <string name="course">Course</string>
+    <string name="start_scan">Start\nScan</string>
+    <string name="scan_class">scanning\nClass</string>
 
     <array name="addclass_steps">
         <item>Intro</item>
