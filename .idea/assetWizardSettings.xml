@@ -30,8 +30,8 @@
                           <map>
                             <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_add" />
-                            <entry key="sourceFile" value="C:\Users\getab\Desktop\Projects\ProjectDarasa\Design\ic_add.svg" />
+                            <entry key="outputName" value="ic_delete" />
+                            <entry key="sourceFile" value="C:\Users\getab\Desktop\Projects\ProjectDarasa\Design\ic_delete.svg" />
                           </map>
                         </option>
                       </PersistentState>

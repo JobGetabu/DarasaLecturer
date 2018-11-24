@@ -2,14 +2,17 @@ package com.job.darasalecturer.ui;
 
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.button.MaterialButton;
 import android.support.design.card.MaterialCardView;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,12 +23,19 @@ import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.util.AppStatus;
 import com.job.darasalecturer.util.DoSnack;
+import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
+import com.yalantis.contextmenu.lib.MenuObject;
+import com.yalantis.contextmenu.lib.MenuParams;
+import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AdvertClassActivity extends AppCompatActivity {
+public class AdvertClassActivity extends AppCompatActivity implements OnMenuItemClickListener {
 
     //region CONSTANTS
 
@@ -54,12 +64,16 @@ public class AdvertClassActivity extends AppCompatActivity {
     LottieAnimationView adStartScanAnimationView;
     @BindView(R.id.ad_start_scan_bck)
     ConstraintLayout adStartScanMain;
-    @BindView(R.id.ad_list_single)
-    ConstraintLayout adListSingleMain;
+    @BindView(R.id.ad_list_students)
+    ConstraintLayout adListStudentsMain;
     @BindView(R.id.ad_network_bck)
     ConstraintLayout adNetworkMain;
     @BindView(R.id.ad_bck)
     ConstraintLayout adMain;
+    @BindView(R.id.ad_network_retry)
+    MaterialButton adNetworkRetry;
+    @BindView(R.id.ad_fab)
+    FloatingActionButton adFab;
 
 
     //endregion
@@ -71,6 +85,8 @@ public class AdvertClassActivity extends AppCompatActivity {
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
 
+    private ContextMenuDialogFragment mMenuDialogFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +97,6 @@ public class AdvertClassActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         //endregion
-        init();
 
         //region INIT GLOBAL VARS
         //firebase
@@ -100,6 +115,14 @@ public class AdvertClassActivity extends AppCompatActivity {
     private void init() {
         adStartScanAnimationView.setVisibility(View.GONE);
         adStartScanBtn.setBackground(DoSnack.setDrawable(this, R.drawable.round_off_btn_bg));
+        adStartScanBtn.refreshDrawableState();
+        adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
+        adStartScanMain.setVisibility(View.VISIBLE);
+        adNetworkMain.setVisibility(View.GONE);
+        adCardTop.setVisibility(View.VISIBLE);
+        adListStudentsMain.setVisibility(View.GONE);
+
+        initMenuFragment();
     }
 
     @OnClick(R.id.ad_start_scan_btn)
@@ -131,10 +154,11 @@ public class AdvertClassActivity extends AppCompatActivity {
         adUnitName.setText(qrParser.getUnitname());
         adUnitCode.setText(qrParser.getUnitcode());
         adCourseChipgrp.removeAllViews();
-        for (CourseYear s: qrParser.getCourses()){
+        for (CourseYear s : qrParser.getCourses()) {
             addCourses(s);
         }
 
+        init();
     }
 
     private void addCourses(CourseYear course) {
@@ -149,5 +173,98 @@ public class AdvertClassActivity extends AppCompatActivity {
         chip.setChipEndPadding(4f);
 
         adCourseChipgrp.addView(chip);
+    }
+
+    @OnClick(R.id.ad_network_retry)
+    public void onNetRetryClicked() {
+        recreate();
+        //init();
+    }
+
+    //region ContextMenuDialogFragment Menu
+
+    private List<MenuObject> getMenuObjects() {
+        // You can use any [resource, bitmap, drawable, color] as image:
+        // item.setResource(...)
+        // item.setBitmap(...)
+        // item.setDrawable(...)
+        // item.setColor(...)
+        // You can set image ScaleType:
+        // item.setScaleType(ScaleType.FIT_XY)
+        // You can use any [resource, drawable, color] as background:
+        // item.setBgResource(...)
+        // item.setBgDrawable(...)
+        // item.setBgColor(...)
+        // You can use any [color] as text color:
+        // item.setTextColor(...)
+        // You can set any [color] as divider color:
+        // item.setDividerColor(...)
+
+        List<MenuObject> menuObjects = new ArrayList<>();
+
+        MenuObject close = new MenuObject();
+        close.setResource(R.drawable.ic_delete);
+        //close.setColor(R.color.colorAccent);
+        //close.setBgColor(R.color.white);
+
+        MenuObject createqr = new MenuObject("Create QR code");
+        createqr.setResource(R.drawable.ic_qrcode_small);
+        //createqr.setColor(R.color.colorAccent);
+
+        MenuObject saveclass = new MenuObject("Save Class");
+        saveclass.setResource(R.drawable.ic_save);
+        //saveclass.setColor(R.color.colorAccent);
+
+        MenuObject addstudent = new MenuObject("Add offline Students");
+        //BitmapDrawable bd = new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.icn_3));
+        addstudent.setResource(R.drawable.ic_classroom);
+        //addstudent.setColor(R.color.colorAccent);
+
+        MenuObject stopscan = new MenuObject("Stop scanning");
+        stopscan.setResource(R.drawable.ic_stopsign);
+        //stopscan.setColor(R.color.colorAccent);
+
+
+        menuObjects.add(close);
+        menuObjects.add(createqr);
+        menuObjects.add(saveclass);
+        menuObjects.add(addstudent);
+        menuObjects.add(stopscan);
+        return menuObjects;
+    }
+
+    private void initMenuFragment() {
+        MenuParams menuParams = new MenuParams();
+        menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
+        menuParams.setMenuObjects(getMenuObjects());
+        menuParams.setFitsSystemWindow(true);
+        menuParams.setClosableOutside(true);
+        mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
+        mMenuDialogFragment.setItemClickListener(this);
+        //mMenuDialogFragment.setItemLongClickListener(this);
+    }
+
+    @Override
+    public void onMenuItemClick(View view, int position) {
+
+        Toast.makeText(this, "Clicked on position: " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.ad_fab)
+    public void onFabClicked() {
+        if (getSupportFragmentManager().findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
+            mMenuDialogFragment.show(getSupportFragmentManager(), ContextMenuDialogFragment.TAG);
+        }
+    }
+
+    //endregion
+
+    @Override
+    public void onBackPressed() {
+        if (mMenuDialogFragment != null && mMenuDialogFragment.isAdded()) {
+            mMenuDialogFragment.dismiss();
+        } else {
+            finish();
+        }
     }
 }
