@@ -23,7 +23,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:title="Create QR"
+            app:title="Create Network"
             app:titleTextColor="@android:color/white" />
     </android.support.design.widget.AppBarLayout>
 
