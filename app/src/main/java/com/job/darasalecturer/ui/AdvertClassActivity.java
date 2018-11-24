@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.util.AppStatus;
@@ -234,20 +235,41 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     }
 
     private void initMenuFragment() {
-        MenuParams menuParams = new MenuParams();
-        menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
-        menuParams.setMenuObjects(getMenuObjects());
-        menuParams.setFitsSystemWindow(true);
-        menuParams.setClosableOutside(true);
-        mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
-        mMenuDialogFragment.setItemClickListener(this);
-        //mMenuDialogFragment.setItemLongClickListener(this);
+        DefaultExecutorSupplier.getInstance().forMainThreadTasks()
+                .execute(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        MenuParams menuParams = new MenuParams();
+                        menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
+                        menuParams.setMenuObjects(getMenuObjects());
+                        menuParams.setFitsSystemWindow(true);
+                        menuParams.setClosableOutside(true);
+                        mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
+                        mMenuDialogFragment.setItemClickListener(AdvertClassActivity.this);
+                        //mMenuDialogFragment.setItemLongClickListener(this);
+                    }
+                });
     }
 
     @Override
     public void onMenuItemClick(View view, int position) {
 
         Toast.makeText(this, "Clicked on position: " + position, Toast.LENGTH_SHORT).show();
+
+        switch (position){
+            case 0: //close
+                break;
+            case 1: //create qr
+                break;
+            case 2: //save class
+                break;
+            case 3: //add offline students
+                break;
+            case 4: //stop scanning
+                init();
+                break;
+        }
     }
 
     @OnClick(R.id.ad_fab)
