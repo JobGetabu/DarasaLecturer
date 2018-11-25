@@ -5,12 +5,18 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 /**
  * Created by Job on Friday : 8/3/2018.
  */
 
 
 public class AppStatus {
+
+    public static final String TAG = "AppStatus";
 
     static Context context;
     /**
@@ -31,6 +37,10 @@ public class AppStatus {
         return instance;
     }
 
+    /*
+    * This only checks for status of WIFI and Mobile
+    * Internet could be off!
+    * */
     public boolean isOnline() {
         try {
             connectivityManager = (ConnectivityManager) context
@@ -42,9 +52,32 @@ public class AppStatus {
             return connected;
 
         } catch (Exception e) {
-            System.out.println("CheckConnectivity Exception: " + e.getMessage());
-            Log.v("connectivity", e.toString());
+            Log.e(TAG, e.getMessage());
+            Log.v(TAG, e.toString());
         }
         return connected;
+    }
+
+    public boolean isNetworkAvailable () {
+        if (isOnline()) {
+            try {
+                HttpURLConnection urlc = (HttpURLConnection)
+                        (new URL("http://clients3.google.com/generate_204")
+                                .openConnection());
+                urlc.setRequestProperty("User-Agent", "Android");
+                urlc.setRequestProperty("Connection", "close");
+                urlc.setConnectTimeout(1500);
+                urlc.connect();
+                Log.d(TAG, "isNetworkAvailable: "+(urlc.getResponseCode() == 204 && urlc.getContentLength() == 0));
+
+                return (urlc.getResponseCode() == 204 &&
+                        urlc.getContentLength() == 0);
+            } catch (IOException e) {
+                Log.e(TAG, "Error checking internet connection", e);
+            }
+        } else {
+            Log.d(TAG, "No network available!");
+        }
+        return false;
     }
 }
