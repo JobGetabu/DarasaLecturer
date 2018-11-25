@@ -114,6 +114,13 @@ public class AddAttendanceWorker extends Worker {
             scanClass.setStudentid(s.getStudentid());
             scanClass.setStudentscanid(key);
             scanClass.setQuerydate(today);
+            //web fields set
+            scanClass.setCourse(s.getCourse());
+            scanClass.setStudname(s.getFirstname()+" "+s.getLastname());
+            scanClass.setYearofstudy(s.getYearofstudy());
+            scanClass.setRegno(s.getRegnumber());
+            scanClass.setUnitcode(qrParser.getUnitcode());
+            scanClass.setUnitname(qrParser.getUnitname());
 
             // Set the value of student-scan
             DocumentReference scanRef =  mFirestore.collection(STUDENTSCANCLASSCOL).document(key);
