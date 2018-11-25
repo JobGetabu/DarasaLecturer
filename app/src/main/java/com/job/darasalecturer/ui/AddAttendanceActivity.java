@@ -176,7 +176,6 @@ public class AddAttendanceActivity extends AppCompatActivity implements OnRecycl
 
                             //list filled
                             //adapter init
-
                             addStudentsAdapter.setItems(fullStudentDetailsList);
                             addStudentsAdapter.notifyDataSetChanged();
 
@@ -362,14 +361,8 @@ public class AddAttendanceActivity extends AppCompatActivity implements OnRecycl
 
         if (resultCode == Activity.RESULT_OK) {
             //handled by on resume.
+            loadData();
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        loadData();
     }
 
     @OnClick(R.id.stud_save_btn)
