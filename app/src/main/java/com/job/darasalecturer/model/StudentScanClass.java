@@ -17,6 +17,13 @@ public class StudentScanClass {
     private Date date;
     private String studentscanid;
     private String querydate;
+    //req web fields
+    private String studname;
+    private String regno;
+    private String unitname;
+    private String unitcode;
+    private String course;
+    private String yearofstudy;
 
     public StudentScanClass() {
     }
@@ -95,5 +102,53 @@ public class StudentScanClass {
 
     public void setQuerydate(String querydate) {
         this.querydate = querydate;
+    }
+
+    public String getStudname() {
+        return studname;
+    }
+
+    public void setStudname(String studname) {
+        this.studname = studname;
+    }
+
+    public String getRegno() {
+        return regno;
+    }
+
+    public void setRegno(String regno) {
+        this.regno = regno;
+    }
+
+    public String getUnitname() {
+        return unitname;
+    }
+
+    public void setUnitname(String unitname) {
+        this.unitname = unitname;
+    }
+
+    public String getUnitcode() {
+        return unitcode;
+    }
+
+    public void setUnitcode(String unitcode) {
+        this.unitcode = unitcode;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public String getYearofstudy() {
+        return yearofstudy;
+    }
+
+    public void setYearofstudy(String yearofstudy) {
+        this.yearofstudy = yearofstudy;
     }
 }
