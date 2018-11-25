@@ -274,12 +274,13 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     public void onStartScanClicked() {
         initScanningUI();
 
-        if (AppStatus.getInstance(this).isOnline()) {
+        if (AppStatus.getInstance(this).isNetworkAvailable()) {
 
             subscribe();
             publish();
 
         } else {
+            STATE = "STOPPED";
             initNetworkLostUI();
         }
     }

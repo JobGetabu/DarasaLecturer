@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -17,6 +19,7 @@ import java.net.URL;
 public class AppStatus {
 
     public static final String TAG = "AppStatus";
+    private Boolean networking = false;
 
     static Context context;
     /**
@@ -38,9 +41,9 @@ public class AppStatus {
     }
 
     /*
-    * This only checks for status of WIFI and Mobile
-    * Internet could be off!
-    * */
+     * This only checks for status of WIFI and Mobile
+     * Internet could be off!
+     * */
     public boolean isOnline() {
         try {
             connectivityManager = (ConnectivityManager) context
@@ -58,23 +61,34 @@ public class AppStatus {
         return connected;
     }
 
-    public boolean isNetworkAvailable () {
+    public boolean isNetworkAvailable() {
         if (isOnline()) {
-            try {
-                HttpURLConnection urlc = (HttpURLConnection)
-                        (new URL("http://clients3.google.com/generate_204")
-                                .openConnection());
-                urlc.setRequestProperty("User-Agent", "Android");
-                urlc.setRequestProperty("Connection", "close");
-                urlc.setConnectTimeout(1500);
-                urlc.connect();
-                Log.d(TAG, "isNetworkAvailable: "+(urlc.getResponseCode() == 204 && urlc.getContentLength() == 0));
 
-                return (urlc.getResponseCode() == 204 &&
-                        urlc.getContentLength() == 0);
-            } catch (IOException e) {
-                Log.e(TAG, "Error checking internet connection", e);
-            }
+            DefaultExecutorSupplier.getInstance().forBackgroundTasks()
+                    .execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                HttpURLConnection urlc = (HttpURLConnection)
+                                        (new URL("http://clients3.google.com/generate_204")
+                                                .openConnection());
+
+                                urlc.setRequestProperty("User-Agent", "Android");
+                                urlc.setRequestProperty("Connection", "close");
+                                urlc.setConnectTimeout(1500);
+                                urlc.connect();
+                                Log.d(TAG, "isNetworkAvailable: " + (urlc.getResponseCode() == 204 && urlc.getContentLength() == 0));
+
+                                networking = (urlc.getResponseCode() == 204 &&
+                                        urlc.getContentLength() == 0);
+                            } catch (IOException e) {
+                                Log.e(TAG, "Error checking internet connection", e);
+                            }
+                        }
+                    });
+
+            return networking;
+
         } else {
             Log.d(TAG, "No network available!");
         }
