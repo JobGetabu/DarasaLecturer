@@ -1,12 +1,10 @@
 package com.job.darasalecturer.util;
 
-import android.arch.lifecycle.LifecycleOwner;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.hbb20.GThumb;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.StudentDetails;
@@ -35,21 +33,18 @@ public class StudentVH extends BaseViewHolder<StudentDetails, OnRecyclerItemClic
     @BindView(R.id.attn_main)
     ConstraintLayout attnMain;
 
-    private LifecycleOwner mActivity;
-    private FirebaseFirestore mFirestore;
     private StudentDetails model;
     private AddStudentViewModel addStudentViewModel;
 
-    public StudentVH(@NonNull View itemView) {
+    public StudentVH(@NonNull View itemView, final AddStudentViewModel addStudentViewModel) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-
+        this.addStudentViewModel = addStudentViewModel;
         //LayoutInflater.from(mContext).inflate(R.layout.single_attendance, null);
 
         attnCheckBox.setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
-
                 if (isChecked) {
 
                     addStudentViewModel.getStudentDetailsList().add(model);
@@ -65,15 +60,8 @@ public class StudentVH extends BaseViewHolder<StudentDetails, OnRecyclerItemClic
 
     @Override
     public void onBind(StudentDetails item) {
+        this.model = item;
         setUpUi(item);
-    }
-
-    public void init(LifecycleOwner mActivity, FirebaseFirestore mFirestore,
-                     StudentDetails model, AddStudentViewModel addStudentViewModel) {
-        this.mActivity = mActivity;
-        this.mFirestore = mFirestore;
-        this.model = model;
-        this.addStudentViewModel = addStudentViewModel;
     }
 
     public void setUpUi(StudentDetails model) {
