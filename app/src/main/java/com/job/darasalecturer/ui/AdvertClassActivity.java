@@ -426,7 +426,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
                 toAddAttendanceActivity();
                 Toast.makeText(this, "Saved the class", Toast.LENGTH_SHORT).show();
-                //silentSavingClass();
+                silentSavingClass();
 
                 break;
             case 4: //stop scanning

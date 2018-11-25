@@ -40,6 +40,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.adapter.AddStudentsAdapter;
+import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.model.StudentDetails;
@@ -146,10 +147,15 @@ public class AddAttendanceActivity extends AppCompatActivity implements OnRecycl
         final String currentyear = mSharedPreferences.getString(CURRENT_YEAR_PREF_NAME, "2000");
 
         final ArrayList<CourseYear> courseYears = qrParser.getCourses();
+        //refresh list b4 foreach loop
+        addStudentsAdapter.clear();
+        fullStudentDetailsList.clear();
+        studList.setVisibility(View.GONE);
+        noStudView.setVisibility(View.VISIBLE);
+
 
         for (final CourseYear courseYear : courseYears) {
 
-            //DefaultExecutorSupplier.getInstance().forMainThreadTasks()
             mFirestore.collection(STUDENTDETAILSCOL)
                     .whereEqualTo("currentyear", currentyear)
                     .whereEqualTo("currentsemester", currentsemester)
@@ -157,7 +163,8 @@ public class AddAttendanceActivity extends AppCompatActivity implements OnRecycl
                     .whereEqualTo("yearofstudy", String.valueOf(courseYear.getYearofstudy()))
                     .orderBy("regnumber", Query.Direction.ASCENDING)
                     .get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forMainThreadTasks()
+                            ,new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
@@ -169,7 +176,7 @@ public class AddAttendanceActivity extends AppCompatActivity implements OnRecycl
 
                             //list filled
                             //adapter init
-                            addStudentsAdapter.clear();
+
                             addStudentsAdapter.setItems(fullStudentDetailsList);
                             addStudentsAdapter.notifyDataSetChanged();
 
@@ -180,17 +187,17 @@ public class AddAttendanceActivity extends AppCompatActivity implements OnRecycl
                                 studList.setVisibility(View.VISIBLE);
                                 noStudView.setVisibility(View.GONE);
                             }
+
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    studList.setVisibility(View.VISIBLE);
-                    noStudView.setVisibility(View.GONE);
+                    studList.setVisibility(View.GONE);
+                    noStudView.setVisibility(View.VISIBLE);
                     Log.d(TAG, "onError: ", e);
                     DoSnack.showShortSnackbar(AddAttendanceActivity.this,"Error: check logs for info.");
                 }
             });
-
         }
     }
 
