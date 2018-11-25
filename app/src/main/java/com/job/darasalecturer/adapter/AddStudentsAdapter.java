@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.StudentDetails;
 import com.job.darasalecturer.util.StudentVH;
+import com.job.darasalecturer.viewmodel.AddStudentViewModel;
 import com.leodroidcoder.genericadapter.GenericRecyclerViewAdapter;
 import com.leodroidcoder.genericadapter.OnRecyclerItemClickListener;
 
@@ -16,8 +17,11 @@ import com.leodroidcoder.genericadapter.OnRecyclerItemClickListener;
  */
 public class AddStudentsAdapter extends GenericRecyclerViewAdapter<StudentDetails, OnRecyclerItemClickListener, StudentVH> {
 
-    public AddStudentsAdapter(Context context, OnRecyclerItemClickListener listener) {
+    private AddStudentViewModel addStudentViewModel;
+
+    public AddStudentsAdapter(Context context, OnRecyclerItemClickListener listener,AddStudentViewModel addStudentViewModel) {
         super(context, listener);
+        this.addStudentViewModel = addStudentViewModel;
     }
 
     @Override
@@ -25,6 +29,7 @@ public class AddStudentsAdapter extends GenericRecyclerViewAdapter<StudentDetail
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.single_attendance, parent, false);
 
-        return new StudentVH(view);
+        return new StudentVH(view,addStudentViewModel);
     }
+
 }

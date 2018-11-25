@@ -424,9 +424,9 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 break;
             case 3: //add offline students
 
-                silentSavingClass();
-                Toast.makeText(this, "Saved the class", Toast.LENGTH_SHORT).show();
                 toAddAttendanceActivity();
+                Toast.makeText(this, "Saved the class", Toast.LENGTH_SHORT).show();
+                //silentSavingClass();
 
                 break;
             case 4: //stop scanning
@@ -696,7 +696,9 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     private void toAddAttendanceActivity() {
         Intent addAttendIntent = new Intent(this, AddAttendanceActivity.class);
+        addAttendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         addAttendIntent.putExtra(ADDATTENDANCE_EXTRA, qrParser);
         startActivity(addAttendIntent);
+        finish();
     }
 }

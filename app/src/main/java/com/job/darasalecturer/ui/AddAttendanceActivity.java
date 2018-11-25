@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.firebase.ui.firestore.ObservableSnapshotArray;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,8 +39,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.job.darasalecturer.R;
-import com.job.darasalecturer.adapter.ConfirmAttendanceAdapter;
-import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
+import com.job.darasalecturer.adapter.AddStudentsAdapter;
 import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.QRParser;
 import com.job.darasalecturer.model.StudentDetails;
@@ -48,6 +47,7 @@ import com.job.darasalecturer.service.AddAttendanceWorker;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.StudentViewHolder;
 import com.job.darasalecturer.viewmodel.AddStudentViewModel;
+import com.leodroidcoder.genericadapter.OnRecyclerItemClickListener;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ import static com.job.darasalecturer.util.Constants.CURRENT_SEM_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.CURRENT_YEAR_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.STUDENTDETAILSCOL;
 
-public class AddAttendanceActivity extends AppCompatActivity {
+public class AddAttendanceActivity extends AppCompatActivity implements OnRecyclerItemClickListener {
 
     private static final String TAG = "AddStudent";
 
@@ -96,13 +96,13 @@ public class AddAttendanceActivity extends AppCompatActivity {
     private MenuItem saveMenu;
     private boolean anySelected;
     private DoSnack doSnack;
-    private Query mQuery = null;
     private SharedPreferences mSharedPreferences;
     private QRParser qrParser;
     private Gson gson;
 
     private AddStudentViewModel addStudentViewModel;
-    private ConfirmAttendanceAdapter confirmAttendanceAdapter;
+    AddStudentsAdapter addStudentsAdapter;
+
     private List<StudentDetails> studentDetailsList = new ArrayList<>();
     private List<StudentDetails> fullStudentDetailsList = new ArrayList<>();
 
@@ -116,7 +116,7 @@ public class AddAttendanceActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(AppCompatResources.getDrawable(this,R.drawable.ic_back));
+        getSupportActionBar().setHomeAsUpIndicator(AppCompatResources.getDrawable(this, R.drawable.ic_back));
 
         //firebase
         mAuth = FirebaseAuth.getInstance();
@@ -126,103 +126,75 @@ public class AddAttendanceActivity extends AppCompatActivity {
         addStudentViewModel = ViewModelProviders.of(this).get(AddStudentViewModel.class);
 
         doSnack = new DoSnack(this, AddAttendanceActivity.this);
-        mSharedPreferences = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(getApplicationContext().getPackageName(), MODE_PRIVATE);
+        addStudentsAdapter = new AddStudentsAdapter(this, this, addStudentViewModel);
         gson = new Gson();
 
         //retrieve courses
         qrParser = getIntent().getParcelableExtra(ADDATTENDANCE_EXTRA);
-        constructQuery(qrParser);
+        initList();
+        loadData();
 
+        Log.d(TAG, "onCreate: "+qrParser.toString());
         //init observers
         studentListObserver();
         //setup our list
-        initList();
     }
 
-    private void constructQuery(QRParser qrParser) {
+    private void loadData() {
+        final String currentsemester = mSharedPreferences.getString(CURRENT_SEM_PREF_NAME, "0");
+        final String currentyear = mSharedPreferences.getString(CURRENT_YEAR_PREF_NAME, "2000");
 
-        Log.d(TAG, "sem: " + qrParser.getSemester() + " year:" + qrParser.getYear());
+        final ArrayList<CourseYear> courseYears = qrParser.getCourses();
 
+        for (final CourseYear courseYear : courseYears) {
 
-        String currentsemester = mSharedPreferences.getString(CURRENT_SEM_PREF_NAME, "0");
-        String currentyear = mSharedPreferences.getString(CURRENT_YEAR_PREF_NAME, "2000");
-
-
-        final ArrayList<CourseYear> courses = qrParser.getCourses();
-
-
-        mQuery = mFirestore.collection(STUDENTDETAILSCOL)
-                .whereEqualTo("currentyear", currentyear)
-                .whereEqualTo("currentsemester", currentsemester)
-                .orderBy("regnumber", Query.Direction.ASCENDING);
-
-        /*for (String c : courses) {
-            mQuery.whereEqualTo("course", c);
-
-        }*/
-
-        /*
-         * Another approach in creating query to support complexity need
-         * */
-
-        mFirestore.collection(STUDENTDETAILSCOL)
-                .whereEqualTo("currentyear", currentyear)
-                .whereEqualTo("currentsemester", currentsemester)
-                .orderBy("regnumber", Query.Direction.ASCENDING)
-                .get()
-                .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forMainThreadTasks(), new OnSuccessListener<QuerySnapshot>() {
-
-                    @Override
-                    public void onSuccess(final QuerySnapshot queryDocumentSnapshots) {
-
-
-                        for (final QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            //DocumentReference reference = document.getDocumentReference("course");
-                            //String stringReference = reference.getPath();
-
-                            String stringRef = document.getString("course");
-                            if (courses.contains(stringRef)) {
-                                //Log.d(TAG, "Reference found!");
-
+            //DefaultExecutorSupplier.getInstance().forMainThreadTasks()
+            mFirestore.collection(STUDENTDETAILSCOL)
+                    .whereEqualTo("currentyear", currentyear)
+                    .whereEqualTo("currentsemester", currentsemester)
+                    .whereEqualTo("course", courseYear.getCourse())
+                    .whereEqualTo("yearofstudy", String.valueOf(courseYear.getYearofstudy()))
+                    .orderBy("regnumber", Query.Direction.ASCENDING)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                                 //heavy operation
-
-                                StudentDetails studentDetails = document.toObject(StudentDetails.class);
+                                StudentDetails studentDetails = doc.toObject(StudentDetails.class);
                                 Log.d(TAG, "Record found!" + studentDetails.toString());
                                 fullStudentDetailsList.add(studentDetails);
+                            }
 
+                            //list filled
+                            //adapter init
+                            addStudentsAdapter.clear();
+                            addStudentsAdapter.setItems(fullStudentDetailsList);
+                            addStudentsAdapter.notifyDataSetChanged();
+
+                            if (addStudentsAdapter.getItemCount() == 0) {
+                                studList.setVisibility(View.GONE);
+                                noStudView.setVisibility(View.VISIBLE);
+                            } else {
+                                studList.setVisibility(View.VISIBLE);
+                                noStudView.setVisibility(View.GONE);
                             }
                         }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    studList.setVisibility(View.VISIBLE);
+                    noStudView.setVisibility(View.GONE);
+                    Log.d(TAG, "onError: ", e);
+                    DoSnack.showShortSnackbar(AddAttendanceActivity.this,"Error: check logs for info.");
+                }
+            });
 
-
-                        //adapter init
-                        confirmAttendanceAdapter = new ConfirmAttendanceAdapter(fullStudentDetailsList,
-                                AddAttendanceActivity.this, mFirestore, addStudentViewModel);
-
-                        studList.setAdapter(confirmAttendanceAdapter);
-                        confirmAttendanceAdapter.notifyDataSetChanged();
-
-                        if (confirmAttendanceAdapter.getItemCount() == 0) {
-                            studList.setVisibility(View.GONE);
-                            noStudView.setVisibility(View.VISIBLE);
-                        } else {
-                            studList.setVisibility(View.VISIBLE);
-                            noStudView.setVisibility(View.GONE);
-                        }
-                    }
-                });
-
-
-        //setUpList(mQuery);
-
+        }
     }
 
     public void updateSaveStatus() {
-        /*if (saveMenu != null)
-            if (anySelected) {
-                saveMenu.setVisible(true);
-            } else {
-                saveMenu.setVisible(false);
-            }*/
 
         if (anySelected) {
             studSaveBtn.setVisibility(View.VISIBLE);
@@ -247,18 +219,8 @@ public class AddAttendanceActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        if (adapter != null) {
-            adapter.startListening();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (adapter != null) {
-            adapter.stopListening();
+        if (qrParser == null) {
+            finish();
         }
     }
 
@@ -268,12 +230,11 @@ public class AddAttendanceActivity extends AppCompatActivity {
         studList.setLayoutManager(linearLayoutManager);
         studList.setHasFixedSize(true);
         studList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        studList.setAdapter(addStudentsAdapter);
     }
 
+    @Deprecated
     private void setUpList(Query query) {
-
-        initList();
-
         FirestoreRecyclerOptions<StudentDetails> options = new FirestoreRecyclerOptions.Builder<StudentDetails>()
                 .setQuery(query, StudentDetails.class)
                 .build();
@@ -325,8 +286,6 @@ public class AddAttendanceActivity extends AppCompatActivity {
         adapter.startListening();
         adapter.notifyDataSetChanged();
         studList.setAdapter(adapter);
-
-        ObservableSnapshotArray dataItems = adapter.getSnapshots();
 
     }
 
@@ -395,9 +354,15 @@ public class AddAttendanceActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK) {
-
-            constructQuery(qrParser);
+            //handled by on resume.
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        loadData();
     }
 
     @OnClick(R.id.stud_save_btn)
@@ -426,16 +391,18 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
     private void saveStudents(List<StudentDetails> studentDetails) {
 
-        Type qrObject = new TypeToken<QRParser>(){}.getType();
-        String qrString = gson.toJson(qrParser,qrObject);
+        Type qrObject = new TypeToken<QRParser>() {
+        }.getType();
+        String qrString = gson.toJson(qrParser, qrObject);
 
-        Type listOfStudObject = new TypeToken<List<StudentDetails>>(){}.getType();
+        Type listOfStudObject = new TypeToken<List<StudentDetails>>() {
+        }.getType();
         String students = gson.toJson(studentDetails, listOfStudObject);
 
         // Create the Data object:
         Data myData = new Data.Builder()
-                .putString(KEY_STUD_LIST_ARG,students)
-                .putString(KEY_QR_OBJ_ARG,qrString)
+                .putString(KEY_STUD_LIST_ARG, students)
+                .putString(KEY_QR_OBJ_ARG, qrString)
                 .build();
 
         //set network required
@@ -451,5 +418,10 @@ public class AddAttendanceActivity extends AppCompatActivity {
 
         WorkManager.getInstance()
                 .enqueue(attendWork);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
     }
 }
