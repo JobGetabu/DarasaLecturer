@@ -21,14 +21,14 @@ public class StudentDetails {
     private String school;
     private String currentsemester;
     private String currentyear;
-    private String currentacademicyear;
+    private String yearofstudy;
 
     public StudentDetails() {
     }
 
     public StudentDetails(String devicetoken, String studentid, String firstname, String lastname, String regnumber, String photourl,
                           String course,
-                          String department, String school, String currentsemester, String currentyear, String currentacademicyear) {
+                          String department, String school, String currentsemester, String currentyear, String yearofstudy) {
         this.devicetoken = devicetoken;
         this.studentid = studentid;
         this.firstname = firstname;
@@ -40,7 +40,7 @@ public class StudentDetails {
         this.school = school;
         this.currentsemester = currentsemester;
         this.currentyear = currentyear;
-        this.currentacademicyear = currentacademicyear;
+        this.yearofstudy = yearofstudy;
     }
 
     public String getStudentid() {
@@ -131,12 +131,12 @@ public class StudentDetails {
         this.currentyear = currentyear;
     }
 
-    public String getCurrentacademicyear() {
-        return currentacademicyear;
+    public String getYearofstudy() {
+        return yearofstudy;
     }
 
-    public void setCurrentacademicyear(String currentacademicyear) {
-        this.currentacademicyear = currentacademicyear;
+    public void setYearofstudy(String yearofstudy) {
+        this.yearofstudy = yearofstudy;
     }
 
     @Override
@@ -153,7 +153,7 @@ public class StudentDetails {
                 ", school='" + school + '\'' +
                 ", currentsemester='" + currentsemester + '\'' +
                 ", currentyear='" + currentyear + '\'' +
-                ", currentacademicyear='" + currentacademicyear + '\'' +
+                ", yearofstudy='" + yearofstudy + '\'' +
                 '}';
     }
 }
