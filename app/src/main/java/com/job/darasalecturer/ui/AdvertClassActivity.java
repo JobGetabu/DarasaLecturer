@@ -42,6 +42,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
+import com.job.darasalecturer.BuildConfig;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.adapter.ScanStudentAdapter;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
@@ -187,7 +188,10 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         setContentView(R.layout.activity_advert_class);
         ButterKnife.bind(this);
 
-        adFab.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_add)); //ic_add_small
+        if (BuildConfig.VERSION_CODE < 21) {
+
+            adFab.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.ic_add_small)); //ic_add_small
+        }
 
         //region Keep the screen always on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -310,8 +314,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adPopMain.setVisibility(View.VISIBLE);
 
         //this where we place logic for success
-        //4 seconds
-        new CountDownTimer(3000, 100) {
+        //6 seconds
+        new CountDownTimer(6000, 100) {
 
             public void onTick(long millisUntilFinished) {
                 //ticking
@@ -608,12 +612,12 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
                 //make sure is student message
                 LessonMessage lessonMessage = LessonMessage.fromNearbyMessage(message);
-                if (lessonMessage.getQrParser() == null && lessonMessage.getStudentMessage() != null){
+                if (lessonMessage.getQrParser() == null && lessonMessage.getStudentMessage() != null) {
 
                     studentMessages.add(lessonMessage.getStudentMessage());
                     scanStudentAdapter.clear();
                     scanStudentAdapter.setItems(studentMessages);
-                    adStudTxt.setText(scanStudentAdapter.getItemCount()+" Students Found");
+                    adStudTxt.setText(scanStudentAdapter.getItemCount() + " Students Found");
                     scanStudentAdapter.notifyDataSetChanged();
                 }
             }
@@ -623,7 +627,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 // Called when a message is no longer detectable nearby.
                 //mNearbyDevicesArrayAdapter.remove(DeviceMessage.fromNearbyMessage(message).getMessageBody());
                 LessonMessage lessonMessage = LessonMessage.fromNearbyMessage(message);
-                if (lessonMessage.getQrParser() == null && lessonMessage.getStudentMessage() != null){
+                if (lessonMessage.getQrParser() == null && lessonMessage.getStudentMessage() != null) {
 
                     Log.d(TAG, "onLost: Student device lost");
                 }
@@ -806,7 +810,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     //region LISTING SCAN STUDENTS
 
-    private void loadList(){
+    private void loadList() {
 
         LinearLayoutManager linearLayoutManager = new
                 LinearLayoutManager(this.getApplicationContext(), LinearLayoutManager.VERTICAL, false);
@@ -815,7 +819,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adStudList.setHasFixedSize(true);
 
         studentMessages = new ArrayList<>();
-        scanStudentAdapter = new ScanStudentAdapter(this,this);
+        scanStudentAdapter = new ScanStudentAdapter(this, this);
         adStudList.setAdapter(scanStudentAdapter);
     }
 

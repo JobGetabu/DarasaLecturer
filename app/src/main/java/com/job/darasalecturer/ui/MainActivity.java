@@ -203,8 +203,9 @@ public class MainActivity extends AppCompatActivity {
                 sendToLogin();
                 break;
 
-            case R.id.hmenu_generate:
-                    sendToAdvertiseClass();
+            case R.id.hmenu_sendmessage:
+                    messageClassPicker();
+                    //sendToAdvertiseClass();
                 break;
         }
 
@@ -398,5 +399,9 @@ public class MainActivity extends AppCompatActivity {
         //caches the courses when activity loads up with internet connection
         mFirestore.collection(DKUTCOURSES).document("dkut")
                 .get();
+    }
+
+    private void messageClassPicker(){
+
     }
 }

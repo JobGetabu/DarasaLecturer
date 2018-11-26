@@ -40,7 +40,7 @@
                 app:maxImageSize="56dp"
                 app:rippleColor="@color/colorPrimaryDark"
                 app:tint="@color/colorAccent"
-                tools:srcCompat="@drawable/ic_add" />
+                app:srcCompat="@drawable/ic_add" />
 
             <TextView
                 android:id="@+id/ad_unit_name"
