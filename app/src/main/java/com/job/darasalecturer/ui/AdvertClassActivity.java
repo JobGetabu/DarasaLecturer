@@ -14,6 +14,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
@@ -38,6 +41,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.adapter.ScanStudentAdapter;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.QRParser;
@@ -45,6 +49,7 @@ import com.job.darasalecturer.service.TransactionWorker;
 import com.job.darasalecturer.util.AppStatus;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.LessonMessage;
+import com.leodroidcoder.genericadapter.OnRecyclerItemClickListener;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
@@ -71,7 +76,7 @@ import static com.job.darasalecturer.ui.AddAttendanceActivity.ADDATTENDANCE_EXTR
 import static com.job.darasalecturer.util.Constants.FIRST_NAME_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.LAST_NAME_PREF_NAME;
 
-public class AdvertClassActivity extends AppCompatActivity implements OnMenuItemClickListener {
+public class AdvertClassActivity extends AppCompatActivity implements OnMenuItemClickListener, OnRecyclerItemClickListener {
 
     //region CONSTANTS
 
@@ -118,6 +123,10 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     FloatingActionButton adFab;
     @BindView(R.id.ad_students_bubbles)
     ConstraintLayout adStudentsBubbles;
+    @BindView(R.id.ad_stud_txt)
+    TextView adStudTxt;
+    @BindView(R.id.ad_stud_list)
+    RecyclerView adStudList;
 
 
     //endregion
@@ -154,6 +163,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     private SharedPreferences mSharedPreferences;
     private String venue;
     private String lecteachid;
+    private ScanStudentAdapter scanStudentAdapter;
 
 
     //firebase
@@ -194,8 +204,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
 
         // Build the message that is going to be published. This contains the device owner and a UUID.
-        String lecFirstName = mSharedPreferences.getString(FIRST_NAME_PREF_NAME,"");
-        String lecSecondName = mSharedPreferences.getString(LAST_NAME_PREF_NAME,"");
+        String lecFirstName = mSharedPreferences.getString(FIRST_NAME_PREF_NAME, "");
+        String lecSecondName = mSharedPreferences.getString(LAST_NAME_PREF_NAME, "");
         mPubMessage = LessonMessage.newNearbyMessage(DoSnack.getUUID(mSharedPreferences),
                 lecFirstName, lecSecondName, qrParser, null);
 
@@ -265,7 +275,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adStartScanBtn.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         adStartScanBtn.setEnabled(false);
 
-        DoSnack.showShortSnackbar(this,getString(R.string.network_scanning_for_students));
+        DoSnack.showShortSnackbar(this, getString(R.string.network_scanning_for_students));
 
         STATE = "SCANNING";
     }
@@ -329,7 +339,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
         } else {
 
-            DoSnack.showShortSnackbar(this,getString(R.string.youre_offline));
+            DoSnack.showShortSnackbar(this, getString(R.string.youre_offline));
         }
         //init();
     }
@@ -675,7 +685,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         // Create the Data object:
         Data myData = new Data.Builder()
                 .putString(KEY_QR_LECTEACHTIMEID_ARG, qrParser.getLecteachtimeid())
-                .putString(KEY_QR_LECTTEACHID_ARG,qrParser.getLecteachid())
+                .putString(KEY_QR_LECTTEACHID_ARG, qrParser.getLecteachid())
                 .putString(KEY_QR_UNITNAME_ARG, qrParser.getUnitname())
                 .putString(KEY_QR_UNITCODE_ARG, qrParser.getUnitcode())
                 .build();
@@ -697,11 +707,9 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     }
 
-    private void silentSavingClass(){
+    private void silentSavingClass() {
         scheduleTransactionWork();
     }
-
-    //endregion
 
     private void toAddAttendanceActivity() {
         Intent addAttendIntent = new Intent(this, AddAttendanceActivity.class);
@@ -710,4 +718,28 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         startActivity(addAttendIntent);
         finish();
     }
+
+    //endregion
+
+    //region LISTING SCAN STUDENTS
+
+    private void loadList(){
+
+        LinearLayoutManager linearLayoutManager = new
+                LinearLayoutManager(this.getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+        adStudList.setLayoutManager(linearLayoutManager);
+        adStudList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        adStudList.setHasFixedSize(true);
+
+        scanStudentAdapter = new ScanStudentAdapter(this,this);
+        adStudList.setAdapter(scanStudentAdapter);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        //no click action assigned
+    }
+
+    //endregion
+
 }
