@@ -95,6 +95,7 @@
     <string name="fin_scan_quite">Quite this class</string>
 
     <string name="start_scanning_for_students_txt">Tap Start Scan to\nStart scanning for students inside the classroom</string>
+    <string name="network_scanning_for_students">Detecting active internet</string>
     <string name="netlost_scanning_for_students_txt">Tap Retry to\nscan for students inside the classroom</string>
     <string name="scanning_for_students_txt">Scanning for students inside the classroom</string>
     <string name="checking_for_students_txt">Detecting students inside the classroom</string>
