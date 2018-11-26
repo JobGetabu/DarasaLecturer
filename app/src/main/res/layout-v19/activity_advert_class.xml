@@ -11,7 +11,6 @@
     tools:context=".ui.AdvertClassActivity"
     >
 
-
     <android.support.v7.widget.CardView
         android:id="@+id/ad_card_top"
         style="@style/Widget.MaterialComponents.CardView"
@@ -38,7 +37,6 @@
                 app:fabSize="normal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/ad_card_top"
                 app:maxImageSize="56dp"
                 app:rippleColor="@color/colorPrimaryDark"
                 app:tint="@color/colorAccent"
