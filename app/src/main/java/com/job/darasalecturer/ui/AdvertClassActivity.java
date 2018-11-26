@@ -210,6 +210,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 lecFirstName, lecSecondName, qrParser, null);
 
         initMessageListener();
+
+        loadList();
     }
 
     //region UI SETUP
@@ -537,6 +539,15 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 //mNearbyDevicesArrayAdapter.add(DeviceMessage.fromNearbyMessage(message).getMessageBody());
 
                 Toast.makeText(AdvertClassActivity.this, "new device " + message.toString(), Toast.LENGTH_SHORT).show();
+
+                //make sure is student message
+                LessonMessage lessonMessage = LessonMessage.fromNearbyMessage(message);
+                if (lessonMessage.getQrParser() == null && lessonMessage.getStudentMessage() != null){
+
+                    scanStudentAdapter.add(lessonMessage.getStudentMessage());
+                    adStudTxt.setText(scanStudentAdapter.getItemCount()+" Students Found");
+                    scanStudentAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
