@@ -70,7 +70,7 @@ public class AppStatus {
                         public void run() {
                             try {
                                 HttpURLConnection urlc = (HttpURLConnection)
-                                        (new URL("http://clients3.google.com/generate_204")
+                                        (new URL("https://www.google.com/")
                                                 .openConnection());
 
                                 urlc.setRequestProperty("User-Agent", "Android");

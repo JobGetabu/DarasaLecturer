@@ -130,7 +130,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
      * {@<code>FRESH </code>}     app is not scanned
      * {@<code>STOPPED </code>}   app is stopped scanning
      */
-    private String STATE = "FRESH"; //SCANNING | FRESH | STOPPED
+    private String STATE = "FRESH"; // SCANNING | FRESH | STOPPED | SUCCESS
     /**
      * The {@link Message} object used to broadcast information about the device to nearby devices.
      */
@@ -265,6 +265,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adStartScanBtn.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         adStartScanBtn.setEnabled(false);
 
+        DoSnack.showShortSnackbar(this,getString(R.string.network_scanning_for_students));
+
         STATE = "SCANNING";
     }
 
@@ -275,14 +277,19 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         initScanningUI();
 
         if (AppStatus.getInstance(this).isNetworkAvailable()) {
+            Log.d(TAG, "onStartScanClicked: ");
+        }
 
+        if (AppStatus.getInstance(this).isOnline()) {
             subscribe();
             publish();
 
         } else {
-            STATE = "STOPPED";
+
             initNetworkLostUI();
+            STATE = "STOPPED";
         }
+
     }
 
     private void setUpUi(QRParser qrParser) {
@@ -601,6 +608,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "Published successfully.");
                         //initScanningUI();
+                        STATE = "SUCCESS";
                         initStudentListUI();
                         adStatusTxt.setText(R.string.checking_for_students_txt);
                     }
@@ -611,7 +619,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                         Log.e(TAG, "onFailure: Publish error", e);
                         DoSnack.showShortSnackbar(AdvertClassActivity.this, e.getLocalizedMessage());
                         initNetworkLostUI();
-
+                        STATE = "STOPPED";
                     }
                 })
                 .addOnCanceledListener(new OnCanceledListener() {
