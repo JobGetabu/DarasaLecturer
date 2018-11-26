@@ -5,7 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:background="@color/scan_blue"
+    >
 
     <com.hbb20.GThumb
         android:id="@+id/ad_ls_gthumb"
@@ -32,7 +34,9 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ad_ls_gthumb"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/white"
+        />
 
     <TextView
         android:id="@+id/ad_ls_stud_name"
@@ -44,11 +48,13 @@
         android:fontFamily="@font/nunito_semibold"
         android:singleLine="true"
         android:text="Arnold Swazzniger"
-        android:textColor="@color/darkgreyish"
+        android:textColor="@color/contentDividerLine"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ad_ls_gthumb"
-        app:layout_constraintTop_toBottomOf="@+id/ad_ls_regno" />
+        app:layout_constraintTop_toBottomOf="@+id/ad_ls_regno"
+
+        />
 
     <!-- divider line -->
     <ImageView
@@ -61,7 +67,10 @@
         android:src="@color/contentDividerLine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
 
 
 </android.support.constraint.ConstraintLayout>

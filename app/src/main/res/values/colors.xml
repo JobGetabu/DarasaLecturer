@@ -33,4 +33,9 @@
     <color name="scan_blue_3">#63D3CC</color>
 
     <color name="scan_orange">#FF8A16</color>
+
+    <color name="scan_t1">#D621AC</color>
+    <color name="scan_t2">#011958</color>
+    <color name="scan_t3">#FF8A16</color>
+    <color name="scan_t4">#FFFFFF</color>
 </resources>
