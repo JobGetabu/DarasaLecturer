@@ -44,7 +44,6 @@ public class ScanStudentVH extends BaseViewHolder<StudentMessage, OnRecyclerItem
 
         //LayoutInflater.from(mContext).inflate(R.layout.ad_list_single, null);
         mFirestore = FirebaseFirestore.getInstance();
-
     }
 
     @Override
