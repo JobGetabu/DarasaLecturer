@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
@@ -45,6 +46,7 @@ import com.job.darasalecturer.adapter.ScanStudentAdapter;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.QRParser;
+import com.job.darasalecturer.model.StudentMessage;
 import com.job.darasalecturer.service.TransactionWorker;
 import com.job.darasalecturer.util.AppStatus;
 import com.job.darasalecturer.util.DoSnack;
@@ -57,6 +59,7 @@ import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import androidx.work.Constraints;
 import androidx.work.Data;
@@ -127,6 +130,10 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     TextView adStudTxt;
     @BindView(R.id.ad_stud_list)
     RecyclerView adStudList;
+    @BindView(R.id.ad_pop_txt)
+    TextView adPopText;
+    @BindView(R.id.ad_pop_bck)
+    ConstraintLayout adPopMain;
 
 
     //endregion
@@ -164,6 +171,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     private String venue;
     private String lecteachid;
     private ScanStudentAdapter scanStudentAdapter;
+    private List<StudentMessage> studentMessages;
 
 
     //firebase
@@ -222,9 +230,11 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
         adStartScanMain.setVisibility(View.VISIBLE);
         adCardTop.setVisibility(View.VISIBLE);
+
         adNetworkMain.setVisibility(View.GONE);
         adListStudentsMain.setVisibility(View.GONE);
         adStudentsBubbles.setVisibility(View.GONE);
+        adPopMain.setVisibility(View.GONE);
 
         adStartScanBtn.setBackground(DoSnack.setDrawable(this, R.drawable.round_off_btn_bg));
         adStatusTxt.setText(R.string.start_scanning_for_students_txt);
@@ -240,6 +250,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adStartScanMain.setVisibility(View.GONE);
         adNetworkMain.setVisibility(View.GONE);
         adStudentsBubbles.setVisibility(View.GONE);
+        adPopMain.setVisibility(View.GONE);
 
         adCardTop.setVisibility(View.VISIBLE);
         adListStudentsMain.setVisibility(View.VISIBLE);
@@ -250,6 +261,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adStartScanMain.setVisibility(View.GONE);
         adStudentsBubbles.setVisibility(View.GONE);
         adListStudentsMain.setVisibility(View.GONE);
+        adPopMain.setVisibility(View.GONE);
 
         adCardTop.setVisibility(View.VISIBLE);
         adCardTop.setCardBackgroundColor(DoSnack.setColor(this, R.color.contentDividerLine));
@@ -265,6 +277,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adNetworkMain.setVisibility(View.GONE);
         adStudentsBubbles.setVisibility(View.GONE);
         adListStudentsMain.setVisibility(View.GONE);
+        adPopMain.setVisibility(View.GONE);
 
         adStartScanMain.setVisibility(View.VISIBLE);
         adStartScanAnimationView.setVisibility(View.VISIBLE);
@@ -280,6 +293,56 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         DoSnack.showShortSnackbar(this, getString(R.string.network_scanning_for_students));
 
         STATE = "SCANNING";
+    }
+
+    private void initSuccessUI() {
+        adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
+        adNetworkMain.setVisibility(View.GONE);
+        adStudentsBubbles.setVisibility(View.GONE);
+        adListStudentsMain.setVisibility(View.GONE);
+        adStartScanMain.setVisibility(View.GONE);
+
+
+        adCardTop.setVisibility(View.VISIBLE);
+        adPopMain.setVisibility(View.VISIBLE);
+
+        //this where we place logic for success
+        //4 seconds
+        new CountDownTimer(3000, 100) {
+
+            public void onTick(long millisUntilFinished) {
+                //ticking
+                changeTextColor();
+            }
+
+            public void onFinish() {
+
+                initStudentListUI();
+                DoSnack.showShortSnackbar(AdvertClassActivity.this, getString(R.string.checking_for_students_txt));
+            }
+        }.start();
+    }
+
+    private void changeTextColor() {
+        Random random = new Random();
+        Integer integer = random.nextInt(4);
+        switch (integer) {
+            case 0:
+                adPopText.setTextColor(DoSnack.setColor(this, R.color.scan_t3));
+                break;
+            case 1:
+                adPopText.setTextColor(DoSnack.setColor(this, R.color.scan_t2));
+                break;
+            case 2:
+                adPopText.setTextColor(DoSnack.setColor(this, R.color.scan_t1));
+                break;
+            case 3:
+                adPopText.setTextColor(DoSnack.setColor(this, R.color.scan_t4));
+                break;
+            default:
+                adPopText.setTextColor(DoSnack.setColor(this, R.color.white));
+                break;
+        }
     }
 
     //endregion
@@ -544,7 +607,9 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 LessonMessage lessonMessage = LessonMessage.fromNearbyMessage(message);
                 if (lessonMessage.getQrParser() == null && lessonMessage.getStudentMessage() != null){
 
-                    scanStudentAdapter.add(lessonMessage.getStudentMessage());
+                    studentMessages.add(lessonMessage.getStudentMessage());
+                    scanStudentAdapter.clear();
+                    scanStudentAdapter.setItems(studentMessages);
                     adStudTxt.setText(scanStudentAdapter.getItemCount()+" Students Found");
                     scanStudentAdapter.notifyDataSetChanged();
                 }
@@ -554,7 +619,11 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             public void onLost(Message message) {
                 // Called when a message is no longer detectable nearby.
                 //mNearbyDevicesArrayAdapter.remove(DeviceMessage.fromNearbyMessage(message).getMessageBody());
-                Toast.makeText(AdvertClassActivity.this, "device lost " + message.toString(), Toast.LENGTH_SHORT).show();
+                LessonMessage lessonMessage = LessonMessage.fromNearbyMessage(message);
+                if (lessonMessage.getQrParser() == null && lessonMessage.getStudentMessage() != null){
+
+                    Log.d(TAG, "onLost: Student device lost");
+                }
             }
         };
     }
@@ -630,7 +699,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                         Log.d(TAG, "Published successfully.");
                         //initScanningUI();
                         STATE = "SUCCESS";
-                        initStudentListUI();
+                        initSuccessUI();
                         adStatusTxt.setText(R.string.checking_for_students_txt);
                     }
                 })
@@ -742,6 +811,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adStudList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         adStudList.setHasFixedSize(true);
 
+        studentMessages = new ArrayList<>();
         scanStudentAdapter = new ScanStudentAdapter(this,this);
         adStudList.setAdapter(scanStudentAdapter);
     }
