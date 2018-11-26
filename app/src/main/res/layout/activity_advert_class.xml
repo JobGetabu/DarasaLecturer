@@ -177,4 +177,16 @@
         android:visibility="gone"
         />
 
+    <include
+        layout="@layout/ad_scan_successpop"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ad_card_top"
+        tools:visibility="gone"
+        android:visibility="gone"
+        />
+
 </android.support.constraint.ConstraintLayout>
