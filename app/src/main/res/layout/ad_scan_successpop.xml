@@ -34,7 +34,7 @@
         android:layout_marginStart="16dp"
         android:fontFamily="@font/nunito_semibold"
         android:padding="16dp"
-        android:text="Success you can know detect the lecturer network"
+        android:text="Success! you can have created lecturer network for the class to scan"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="20sp"
