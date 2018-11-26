@@ -11,32 +11,15 @@
     tools:context=".ui.AdvertClassActivity"
     >
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/ad_fab"
-        style="@style/Widget.MaterialComponents.FloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="32dp"
-        app:backgroundTint="@color/white"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toBottomOf="@id/ad_card_top"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ad_card_top"
-        app:maxImageSize="56dp"
-        app:rippleColor="@color/colorPrimaryDark"
-        tools:srcCompat="@drawable/ic_add"
-        app:tint="@color/colorAccent"
-        />
 
     <android.support.v7.widget.CardView
-        style="@style/Widget.MaterialComponents.CardView"
         android:id="@+id/ad_card_top"
+        style="@style/Widget.MaterialComponents.CardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         app:cardCornerRadius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,6 +29,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/ad_fab"
+                style="@style/Widget.MaterialComponents.FloatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@color/white"
+                app:fabSize="normal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ad_card_top"
+                app:maxImageSize="56dp"
+                app:rippleColor="@color/colorPrimaryDark"
+                app:tint="@color/colorAccent"
+                tools:srcCompat="@drawable/ic_add" />
+
             <TextView
                 android:id="@+id/ad_unit_name"
                 android:layout_width="match_parent"
@@ -54,7 +52,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/nunito_bold"
-                android:padding="4dp"
+                android:padding="2dp"
                 android:text="@string/unit_name"
                 android:textAlignment="center"
                 android:textColor="@color/black"
@@ -116,15 +114,15 @@
                 android:id="@+id/ad_status_txt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/start_scanning_for_students_txt"
                 android:textAlignment="center"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ad_fab"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ad_course_chipgrp" />
 

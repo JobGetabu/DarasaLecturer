@@ -14,6 +14,7 @@ import android.support.design.chip.ChipGroup;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -185,6 +186,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advert_class);
         ButterKnife.bind(this);
+
+        adFab.setImageDrawable(AppCompatResources.getDrawable(this,R.drawable.ic_add)); //ic_add_small
 
         //region Keep the screen always on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
