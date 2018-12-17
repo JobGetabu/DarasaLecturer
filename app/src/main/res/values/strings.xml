@@ -102,6 +102,7 @@
 
     <string name="net_needed">Internet required inorder to broadcast lesson in the classroom</string>
     <string name="send_a_message">Send a Message</string>
+    <string name="type_message">Type message</string>
 
     <array name="addclass_steps">
         <item>Intro</item>

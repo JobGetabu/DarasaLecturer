@@ -64,4 +64,24 @@
         <item name="android:minWidth">50dp</item>
     </style>
 
+    <!--Chat styles for sending messages-->
+    <style name="Chat" />
+
+    <style name="Chat.NewMessage" />
+
+    <style name="Chat.NewMessage.Layout">
+        <item name="android:background">@drawable/oval_shape_white</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+    </style>
+
+    <style name="Chat.NewMessage.Text">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textSize">@dimen/chat_new_message_text_size</item>
+    </style>
+
 </resources>
