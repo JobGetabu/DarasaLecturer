@@ -3,11 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/hmenu_logout"
-        android:title="@string/logout" />
+        android:id="@+id/hmenu_sendmessage"
+        android:title="@string/send_a_message" />
 
     <item
-        android:id="@+id/hmenu_sendmessage"
-        android:title="Message Class" />
+        android:id="@+id/hmenu_logout"
+        android:title="@string/logout" />
 
 </menu>

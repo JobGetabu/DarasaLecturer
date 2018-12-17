@@ -101,6 +101,7 @@
     <string name="checking_for_students_txt">Detecting students inside the classroom</string>
 
     <string name="net_needed">Internet required inorder to broadcast lesson in the classroom</string>
+    <string name="send_a_message">Send a Message</string>
 
     <array name="addclass_steps">
         <item>Intro</item>
