@@ -82,6 +82,8 @@
     <style name="Chat.NewMessage.Text">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textSize">@dimen/chat_new_message_text_size</item>
+        <item name="android:textColor">@color/black</item>
+
     </style>
 
 </resources>
