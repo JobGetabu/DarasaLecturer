@@ -1,5 +1,7 @@
 package com.job.darasalecturer.model;
 
+import com.google.firebase.Timestamp;
+
 /**
  * Created by Job on Monday : 12/17/2018.
  * model class notification
@@ -8,12 +10,12 @@ public class Notif {
     private String topic;
     private String title;
     private String message;
-    private Timetable time;
+    private Timestamp time;
 
     public Notif() {
     }
 
-    public Notif(String topic, String title, String message, Timetable time) {
+    public Notif(String topic, String title, String message, Timestamp time) {
         this.topic = topic;
         this.title = title;
         this.message = message;
@@ -44,11 +46,11 @@ public class Notif {
         this.message = message;
     }
 
-    public Timetable getTime() {
+    public Timestamp getTime() {
         return time;
     }
 
-    public void setTime(Timetable time) {
+    public void setTime(Timestamp time) {
         this.time = time;
     }
 

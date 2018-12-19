@@ -1,5 +1,7 @@
 package com.job.darasalecturer.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,10 +25,14 @@ import android.widget.Toast;
 import com.abdeveloper.library.MultiSelectDialog;
 import com.abdeveloper.library.MultiSelectModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Source;
+import com.google.firebase.firestore.WriteBatch;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.adapter.CourseYearAdapter;
 import com.job.darasalecturer.model.CourseYear;
@@ -34,6 +40,7 @@ import com.job.darasalecturer.util.CourseYearViewHolder;
 import com.leodroidcoder.genericadapter.OnRecyclerItemClickListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +51,9 @@ import butterknife.Unbinder;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.job.darasalecturer.util.Constants.DKUTCOURSES;
+import static com.job.darasalecturer.util.Constants.FIRST_NAME_PREF_NAME;
+import static com.job.darasalecturer.util.Constants.LAST_NAME_PREF_NAME;
+import static com.job.darasalecturer.util.Constants.NOTIFICATIONCOL;
 
 /**
  * Created by Job on Monday : 12/17/2018.
@@ -69,6 +79,7 @@ public class SendMessageBottomSheet extends BottomSheetDialogFragment implements
 
     private CourseYearAdapter mAdapter;
     private List<CourseYear> courseYearList;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,6 +94,7 @@ public class SendMessageBottomSheet extends BottomSheetDialogFragment implements
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mSharedPreferences = getActivity().getSharedPreferences(getActivity().getApplicationContext().getPackageName(), Context.MODE_PRIVATE);
         initRecycler();
 
         // instantiate the adapter and set it onto a RecyclerView
@@ -218,9 +230,49 @@ public class SendMessageBottomSheet extends BottomSheetDialogFragment implements
     }
 
     private void sendNotification() {
-        //TODO: write to db
-        /*FirebaseFirestore.getInstance().collection(NOTIFICATIONCOL).document()
-                .set()*/
+
+        final SweetAlertDialog pDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
+        pDialog.setTitleText("Sending notification...");
+        pDialog.setCancelable(true);
+        pDialog.show();
+
+        // Get a new write batch
+        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+
+        for (CourseYear cs : courseYearList){
+            //create a TopicName
+            String topicname = cs.getCourse().replace(" ","")+ cs.getYearofstudy();
+            String title = mSharedPreferences.getString(FIRST_NAME_PREF_NAME,"") +" "
+                    + mSharedPreferences.getString(LAST_NAME_PREF_NAME,"");
+
+            Map<String,Object> map = new HashMap<>();
+            map.put("topic",topicname);
+            map.put("title",title);
+            map.put("message",messageEdit.getText().toString());
+            map.put("time",FieldValue.serverTimestamp());
+
+            DocumentReference ref = FirebaseFirestore.getInstance().collection(NOTIFICATIONCOL).document();
+            batch.set(ref,map);
+        }
+
+        batch.commit()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                        pDialog.setTitleText("Sent Successfully");
+                        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+
+                            }
+                        });
+                    }
+                });
+
+        dismiss();
     }
 
     @Override
@@ -239,6 +291,7 @@ public class SendMessageBottomSheet extends BottomSheetDialogFragment implements
             public boolean onMenuItemClick(MenuItem item) {
 
                 courseYearList.get(position).setYearofstudy(Integer.parseInt(item.getTitle().toString()));
+                mAdapter.notifyDataSetChanged();
                 return true;
             }
         });
