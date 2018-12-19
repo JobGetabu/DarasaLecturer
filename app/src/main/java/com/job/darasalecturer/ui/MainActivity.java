@@ -38,7 +38,6 @@ import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.LecTeachTime;
 import com.job.darasalecturer.ui.auth.WelcomeActivity;
 import com.job.darasalecturer.util.Constants;
-import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.LessonViewHolder;
 
 import java.text.DateFormat;
@@ -82,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private FirestoreRecyclerAdapter adapter;
     private Query mQuery = null;
 
-    private DoSnack doSnack;
+    private SendMessageBottomSheet messageBottomSheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
+        messageBottomSheet = new SendMessageBottomSheet();
 
         mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
@@ -134,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        doSnack = new DoSnack(this, MainActivity.this);
     }
 
     @Override
@@ -403,5 +401,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void messageClassPicker(){
 
+        messageBottomSheet.show(getSupportFragmentManager(),SendMessageBottomSheet.TAG);
     }
 }
