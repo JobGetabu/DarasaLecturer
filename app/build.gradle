@@ -135,9 +135,6 @@ dependencies {
     //context menu
     implementation 'com.github.Yalantis:Context-Menu.Android:1.0.8'
 
-    //merlin network check
-    implementation 'com.novoda:merlin:1.2.0'
-
     //bubble-picker
     implementation 'com.github.hantrungkien:Bubble-Picker:v1.0.5.2'
 
