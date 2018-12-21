@@ -219,6 +219,8 @@ public class CurrentSetupActivity extends AppCompatActivity {
                     currentSemester.getEditText().setText(lecUser.getCurrentsemester());
                     currentYear.getEditText().setText(lecUser.getCurrentyear());
                     currentAcadyear.getEditText().setText(lecUser.getCurrentacademicyear());
+
+                    setSemYearPref(lecUser.getCurrentsemester(), lecUser.getCurrentyear());
                 }
             }
         });

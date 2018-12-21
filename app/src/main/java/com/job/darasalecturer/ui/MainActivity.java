@@ -1,11 +1,15 @@
 package com.job.darasalecturer.ui;
 
 import android.app.DatePickerDialog;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -36,9 +40,12 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.LecTeachTime;
+import com.job.darasalecturer.model.LecUser;
 import com.job.darasalecturer.ui.auth.WelcomeActivity;
 import com.job.darasalecturer.util.Constants;
+import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.LessonViewHolder;
+import com.job.darasalecturer.viewmodel.AccountSetupViewModel;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -49,6 +56,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.job.darasalecturer.util.Constants.CURRENT_SEM_PREF_NAME;
+import static com.job.darasalecturer.util.Constants.CURRENT_YEAR_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.DKUTCOURSES;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasalecturer.util.Constants.LECUSERCOL;
@@ -80,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirestoreRecyclerAdapter adapter;
     private Query mQuery = null;
+    private AccountSetupViewModel model;
+    private SharedPreferences mSharedPreferences;
 
     private SendMessageBottomSheet messageBottomSheet;
 
@@ -114,6 +125,15 @@ public class MainActivity extends AppCompatActivity {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         messageBottomSheet = new SendMessageBottomSheet();
 
+        mSharedPreferences = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE);
+
+        // View model
+        AccountSetupViewModel.Factory factory = new AccountSetupViewModel.Factory(
+                MainActivity.this.getApplication(), mAuth, mFirestore);
+
+        model = ViewModelProviders.of(MainActivity.this, factory)
+                .get(AccountSetupViewModel.class);
+
         mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -125,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
 
                     userId = mAuth.getCurrentUser().getUid();
+                    uiObserver();
 
                     classListQuery(Calendar.getInstance());
 
@@ -160,6 +181,50 @@ public class MainActivity extends AppCompatActivity {
         if (adapter != null) {
             adapter.startListening();
         }
+    }
+
+    private void uiObserver() {
+
+        model.getLecUserMediatorLiveData().observe(this, new Observer<LecUser>() {
+            @Override
+            public void onChanged(@Nullable LecUser lecUser) {
+                if (lecUser != null) {
+                    if (mSharedPreferences.getString(CURRENT_SEM_PREF_NAME,"").isEmpty()){
+                        DoSnack.showSnackbar(MainActivity.this,getString(R.string.add_ur_sem), getString(R.string.add), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                sendToCurrentManage();
+                            }
+                        });
+                    }
+
+                    if (mSharedPreferences.getString(CURRENT_YEAR_PREF_NAME,"").isEmpty()){
+                        DoSnack.showSnackbar(MainActivity.this,getString(R.string.add_ur_sem), getString(R.string.add), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                sendToCurrentManage();
+                            }
+                        });
+                    }
+
+                }else {
+                    //lec account is null
+                    DoSnack.showSnackbar(MainActivity.this,getString(R.string.add_ur_info), getString(R.string.add), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mAuth.signOut();
+                            sendToLogin();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void sendToCurrentManage() {
+        Intent cIntent = new Intent(this, CurrentSetupActivity.class);
+        startActivity(cIntent);
+        finish();
     }
 
     @Override

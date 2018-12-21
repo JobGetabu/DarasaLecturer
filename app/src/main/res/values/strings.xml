@@ -107,6 +107,11 @@
     <string name="channel_name">my_channel_darasa</string>
     <string name="channel_description">Darasa app notifications channel</string>
 
+    <string name="add_ur_info">Add Lecturer Profile</string>
+    <string name="add">Add</string>
+    <string name="add_ur_sem">Add current Semester</string>
+    <string name="add_ur_yr">Add current Study Year</string>
+
     <array name="addclass_steps">
         <item>Intro</item>
         <item>Unit</item>
