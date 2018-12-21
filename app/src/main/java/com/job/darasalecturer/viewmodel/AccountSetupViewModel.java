@@ -24,9 +24,6 @@ import static com.job.darasalecturer.util.Constants.LECUSERCOL;
  */
 public class AccountSetupViewModel extends AndroidViewModel {
 
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore mFirestore;
-
     public static final String TAG = "AccountSetupVM";
 
     //few db references
@@ -40,8 +37,6 @@ public class AccountSetupViewModel extends AndroidViewModel {
 
     public AccountSetupViewModel(@NonNull Application application, FirebaseAuth mAuth, FirebaseFirestore mFirestore) {
         super(application);
-        this.mAuth = mAuth;
-        this.mFirestore = mFirestore;
 
         //init db refs 
         userRef = mFirestore.collection(LECUSERCOL).document(mAuth.getCurrentUser().getUid());
