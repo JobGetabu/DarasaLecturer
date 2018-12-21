@@ -45,6 +45,12 @@
             android:name="io.fabric.ApiKey"
             android:value="bd67bf129c485e4f45930b61a67e4b8b08359675" />
 
+        <service android:name=".service.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".ui.ScannerActivity"
             android:screenOrientation="portrait" />
