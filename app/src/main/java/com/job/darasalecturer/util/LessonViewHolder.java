@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
@@ -141,18 +140,19 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         qrParser.setUnitname(lecTeachTime.getUnitname());
         qrParser.setSemester(lecTeachTime.getSemester());
         qrParser.setYear(lecTeachTime.getStudyyear());
-        getSemYearPref(qrParser);
+        setSemYearPref(qrParser);
 
         sendToAdvert(qrParser);
     }
 
-    private void getSemYearPref(QRParser qrParser) {
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(mContext);
+    private void setSemYearPref(QRParser qrParser) {
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(mContext.getApplicationContext().getPackageName(),
+                Context.MODE_PRIVATE).edit();
         // Check prefs and pass to qrparser
-        qrParser.setSemester(sharedPreferences.getString(CURRENT_SEM_PREF_NAME, "0"));
-        qrParser.setYear(sharedPreferences.getString(CURRENT_YEAR_PREF_NAME, "2000"));
 
+        editor.putString(CURRENT_SEM_PREF_NAME,qrParser.getSemester());
+        editor.putString(CURRENT_YEAR_PREF_NAME,qrParser.getYear());
+        editor.apply();
     }
 
     @OnClick(R.id.ls_loc_img)
@@ -276,7 +276,7 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         qrParser.setUnitname(lecTeachTime.getUnitname());
         qrParser.setSemester(lecTeachTime.getSemester());
         qrParser.setYear(lecTeachTime.getStudyyear());
-        getSemYearPref(qrParser);
+        setSemYearPref(qrParser);
 
         Intent qrintent = new Intent(mContext, ScannerActivity.class);
         qrintent.putExtra(QRPARSEREXTRA, qrParser);
