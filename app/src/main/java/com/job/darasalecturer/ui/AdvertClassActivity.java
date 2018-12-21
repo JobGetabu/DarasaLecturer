@@ -330,6 +330,17 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         }.start();
     }
 
+    private void initBubblesUI() {
+        adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
+        adStartScanMain.setVisibility(View.GONE);
+        adNetworkMain.setVisibility(View.GONE);
+        adPopMain.setVisibility(View.GONE);
+        adListStudentsMain.setVisibility(View.GONE);
+
+        adCardTop.setVisibility(View.VISIBLE);
+        adStudentsBubbles.setVisibility(View.VISIBLE);
+    }
+
     private void changeTextColor() {
         Random random = new Random();
         Integer integer = random.nextInt(4);
@@ -534,6 +545,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 initNetworkLostUI();
                 break;
             case 7: //test Show bubbles
+                initBubblesUI();
                 break;
         }
     }
@@ -607,7 +619,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 // Called when a new message is found.
                 //mNearbyDevicesArrayAdapter.add(DeviceMessage.fromNearbyMessage(message).getMessageBody());
 
-                Toast.makeText(AdvertClassActivity.this, "new device " + message.toString(), Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onFound: Fresh " + message.toString());
 
                 //make sure is student message
@@ -739,7 +750,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 });
     }
 
-
     //endregion
 
     private void sendToQr() {
@@ -836,6 +846,9 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     @Override
     public void onItemClick(int position) {
         //no click action assigned
+        StudentMessage stdMeso = studentMessages.get(position);
+        String message = stdMeso.getStudFirstName() +" : "+stdMeso.getRegNo();
+        DoSnack.showShortSnackbar(this,message);
     }
 
     //endregion
