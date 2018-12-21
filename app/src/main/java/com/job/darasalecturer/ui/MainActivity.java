@@ -127,12 +127,8 @@ public class MainActivity extends AppCompatActivity {
 
         mSharedPreferences = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE);
 
-        // View model
-        AccountSetupViewModel.Factory factory = new AccountSetupViewModel.Factory(
-                MainActivity.this.getApplication(), mAuth, mFirestore);
 
-        model = ViewModelProviders.of(MainActivity.this, factory)
-                .get(AccountSetupViewModel.class);
+        //DO-NOT PLACE AUTH ACCESSING CODE OUTSIDE AUTH-LISTENER
 
         mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
@@ -143,6 +139,13 @@ public class MainActivity extends AppCompatActivity {
                     sendToLogin();
                     finish();
                 } else {
+
+                    // View model
+                    AccountSetupViewModel.Factory factory = new AccountSetupViewModel.Factory(
+                            MainActivity.this.getApplication(), mAuth, mFirestore);
+
+                    model = ViewModelProviders.of(MainActivity.this, factory)
+                            .get(AccountSetupViewModel.class);
 
                     userId = mAuth.getCurrentUser().getUid();
                     uiObserver();
