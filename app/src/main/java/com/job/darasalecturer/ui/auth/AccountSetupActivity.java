@@ -215,6 +215,8 @@ public class AccountSetupActivity extends AppCompatActivity {
                     setupLastname.getEditText().setText(lecUser.getLastname());
                     setupSchool.getEditText().setText(lecUser.getSchool());
                     setupDepartment.getEditText().setText(lecUser.getDepartment());
+
+                    setPrefs(lecUser.getFirstname(), lecUser.getLastname());
                 }
             }
         });
