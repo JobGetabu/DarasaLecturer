@@ -139,6 +139,8 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         qrParser.setLecteachtimeid(lecTeachTime.getLecteachtimeid());
         qrParser.setUnitcode(lecTeachTime.getUnitcode());
         qrParser.setUnitname(lecTeachTime.getUnitname());
+        qrParser.setSemester(lecTeachTime.getSemester());
+        qrParser.setYear(lecTeachTime.getStudyyear());
         getSemYearPref(qrParser);
 
         sendToAdvert(qrParser);
@@ -272,6 +274,8 @@ public class LessonViewHolder extends RecyclerView.ViewHolder {
         qrParser.setLecteachtimeid(lecTeachTime.getLecteachtimeid());
         qrParser.setUnitcode(lecTeachTime.getUnitcode());
         qrParser.setUnitname(lecTeachTime.getUnitname());
+        qrParser.setSemester(lecTeachTime.getSemester());
+        qrParser.setYear(lecTeachTime.getStudyyear());
         getSemYearPref(qrParser);
 
         Intent qrintent = new Intent(mContext, ScannerActivity.class);

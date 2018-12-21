@@ -89,7 +89,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     public static final String QRPARSEREXTRA = "QRPARSEREXTRA";
     public static final String VENUEEXTRA = "VENUEEXTRA";
     public static final String LECTEACHIDEXTRA = "LECTEACHIDEXTRA";
-    private static final int TTL_IN_SECONDS = 30 * 60; // Three minutes.
+    private static final int TTL_IN_SECONDS = 30 * 60; // thirty minutes.
 
     /**
      * Sets the time in seconds for a published message or a subscription to live. Set to 30 min
@@ -369,7 +369,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         } else {
 
             initNetworkLostUI();
-            STATE = "STOPPED";
         }
 
     }
@@ -609,16 +608,25 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 //mNearbyDevicesArrayAdapter.add(DeviceMessage.fromNearbyMessage(message).getMessageBody());
 
                 Toast.makeText(AdvertClassActivity.this, "new device " + message.toString(), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFound: Fresh " + message.toString());
 
                 //make sure is student message
                 LessonMessage lessonMessage = LessonMessage.fromNearbyMessage(message);
                 if (lessonMessage.getQrParser() == null && lessonMessage.getStudentMessage() != null) {
 
+                    Log.d(TAG, "onFound: Student object " + message.toString());
                     studentMessages.add(lessonMessage.getStudentMessage());
-                    scanStudentAdapter.clear();
-                    scanStudentAdapter.setItems(studentMessages);
+
+                    if (studentMessages.size() == 1) {
+                        //first student
+                        scanStudentAdapter.setItems(studentMessages);
+                    }
+                    if (studentMessages.size() > 1) {
+                        //the rest of students
+                        scanStudentAdapter.notifyDataSetChanged();
+                    }
                     adStudTxt.setText(scanStudentAdapter.getItemCount() + " Students Found");
-                    scanStudentAdapter.notifyDataSetChanged();
+
                 }
             }
 
@@ -651,7 +659,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     @Override
                     public void onExpired() {
                         super.onExpired();
-                        Log.i(TAG, "No longer subscribing");
+                        Log.d(TAG, "No longer subscribing");
 
                     }
                 }).build();
@@ -661,7 +669,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     @Override
                     public void onSuccess(Void aVoid) {
 
-                        Log.i(TAG, "Subscribed successfully.");
+                        Log.d(TAG, "Subscribed successfully.");
 
                     }
                 })
@@ -669,7 +677,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     @Override
                     public void onCanceled() {
 
-                        Log.w(TAG, "onCanceled: cancelled");
+                        Log.d(TAG, "onCanceled: cancelled");
                         Toast.makeText(AdvertClassActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
                     }
                 })
@@ -677,7 +685,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     @Override
                     public void onFailure(@NonNull Exception e) {
 
-                        Log.e(TAG, "onFailure: Could not subscribe, status =", e);
+                        Log.d(TAG, "onFailure: Could not subscribe, status =", e);
                     }
                 });
     }
@@ -694,7 +702,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     @Override
                     public void onExpired() {
                         super.onExpired();
-                        Log.i(TAG, "No longer publishing");
+                        Log.d(TAG, "No longer publishing");
+                        STATE = "STOPPED";
                         initUI();
                     }
                 }).build();
@@ -724,6 +733,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     public void onCanceled() {
 
                         Log.w(TAG, "onCanceled: cancelled");
+                        STATE = "STOPPED";
                         DoSnack.showShortSnackbar(AdvertClassActivity.this, "Publish Cancelled");
                     }
                 });

@@ -4,6 +4,8 @@
 
     <item
         android:id="@+id/hmenu_sendmessage"
+        android:icon="@drawable/ic_plane"
+        app:showAsAction="ifRoom"
         android:title="@string/send_a_message" />
 
     <item
