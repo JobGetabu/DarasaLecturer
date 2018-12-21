@@ -91,6 +91,7 @@ public class ShowPasscodeFragment extends DialogFragment {
                                 public void onClick(View view) {
                                     Intent intent = new Intent(getContext(), PasscodeActivity.class);
                                     startActivity(intent);
+                                    dismiss();
                                 }
                             });
                         } else {
@@ -146,6 +147,7 @@ public class ShowPasscodeFragment extends DialogFragment {
                 public void onClick(View view) {
                     Intent intent = new Intent(getContext(), PasscodeActivity.class);
                     startActivity(intent);
+                    dismiss();
                 }
             });
         }
