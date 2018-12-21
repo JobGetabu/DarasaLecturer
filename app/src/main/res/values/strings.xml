@@ -104,6 +104,8 @@
     <string name="net_needed">Internet required inorder to broadcast lesson in the classroom</string>
     <string name="send_a_message">Send a Message</string>
     <string name="type_message">Type a message</string>
+    <string name="channel_name">my_channel_darasa</string>
+    <string name="channel_description">Darasa app notifications channel</string>
 
     <array name="addclass_steps">
         <item>Intro</item>

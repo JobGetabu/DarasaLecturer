@@ -1,6 +1,7 @@
 package com.job.darasalecturer.service;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -23,6 +25,7 @@ import java.util.Map;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
+    private static final String CHANNEL_ID = "default_channel_id";
     private static int count = 0;
 
     @Override
@@ -51,9 +54,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP){
-            currentapiVersion = R.mipmap.ic_launcher;
+            currentapiVersion = R.drawable.ic_launcher;
         } else{
-            currentapiVersion = R.mipmap.ic_launcher;
+            currentapiVersion = R.drawable.ic_launcher;
         }
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -70,7 +73,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        createNotificationChannel(notificationManager);
         notificationManager.notify(count, notificationBuilder.build());
         count++;
+    }
+
+    private void createNotificationChannel( NotificationManager notificationManager) {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
