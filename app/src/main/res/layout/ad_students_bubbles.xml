@@ -26,6 +26,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/ad_grid_list"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ad_bubble_txt"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ad_bubble_txt"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:scaleType="centerCrop"
+        app:lottie_rawRes="@raw/grid_list"
+        />
+
         <com.kienht.bubblepicker.rendering.BubblePicker
             android:id="@+id/picker"
             android:layout_width="0dp"

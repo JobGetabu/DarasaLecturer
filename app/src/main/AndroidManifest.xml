@@ -98,7 +98,7 @@
             android:parentActivityName=".ui.SettingsActivity" />
         <activity android:name=".ui.AdvertiseActivity"/>
         <activity android:name=".ui.AdvertClassActivity"
-
+            android:screenOrientation="portrait"
             />
     </application>
 

@@ -151,6 +151,10 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     ConstraintLayout adPopMain;
     @BindView(R.id.picker)
     BubblePicker picker;
+    @BindView(R.id.ad_list_grid)
+    LottieAnimationView list_to_grid;
+    @BindView(R.id.ad_grid_list)
+    LottieAnimationView grid_to_list;
 
 
     //endregion
@@ -614,7 +618,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 alert.show();
             }
 
-            if (STATE.equals("STOPPED")) {
+            if (STATE.equals("STOPPED") || STATE.equals("SUCCESS")) {
 
                 //assuming some students scanned the classes
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -661,6 +665,9 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     if (studentMessages.size() == 1) {
                         //first student
                         scanStudentAdapter.setItems(studentMessages);
+                        list_to_grid.setVisibility(View.VISIBLE);
+                        grid_to_list.setVisibility(View.VISIBLE);
+
                     }
                     if (studentMessages.size() > 1) {
                         //the rest of students
@@ -968,6 +975,16 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         });
     }
 
+    @OnClick(R.id.ad_grid_list)
+    public void bubbleToList(){
+        initStudentListUI();
+    }
+
+    @OnClick(R.id.ad_list_grid)
+    public void ListTobubble(){
+
+        initBubblesUI();
+    }
     //endregion
 
 }
