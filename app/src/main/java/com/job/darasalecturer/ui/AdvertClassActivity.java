@@ -89,6 +89,8 @@ import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_LECTTEACHI
 import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITCODE_ARG;
 import static com.job.darasalecturer.service.TransactionWorker.KEY_QR_UNITNAME_ARG;
 import static com.job.darasalecturer.ui.AddAttendanceActivity.ADDATTENDANCE_EXTRA;
+import static com.job.darasalecturer.util.Constants.DEFAULT_BUBBLE;
+import static com.job.darasalecturer.util.Constants.DEFAULT_LIST;
 import static com.job.darasalecturer.util.Constants.FIRST_NAME_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.LAST_NAME_PREF_NAME;
 
@@ -189,6 +191,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     private QRParser qrParser;
     private Gson gson;
     private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor editor;
     private String venue;
     private String lecteachid;
     private ScanStudentAdapter scanStudentAdapter;
@@ -232,6 +235,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         setUpUi(qrParser);
 
         mSharedPreferences = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE);
+        editor = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit();
+
 
 
         //endregion
@@ -505,13 +510,14 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
         //temporary test for soe layouts
         MenuObject aa = new MenuObject("Show list of students");
-        aa.setResource(R.drawable.ic_menu);
+        if (mSharedPreferences.getBoolean(DEFAULT_LIST,true)){
+             aa = new MenuObject("Show bubbles of students");
+        }
+        if (mSharedPreferences.getBoolean(DEFAULT_BUBBLE,false)){
+             aa = new MenuObject("Show list of students");
+        }
 
-        MenuObject bb = new MenuObject("Show offline");
-        bb.setResource(R.drawable.ic_menu);
-
-        MenuObject cc = new MenuObject("Show bubbles");
-        cc.setResource(R.drawable.ic_menu);
+        aa.setResource(R.drawable.ic_checklist);
 
 
         menuObjects.add(close);
@@ -521,9 +527,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         menuObjects.add(stopscan);
 
 
-        menuObjects.add(aa);
-        menuObjects.add(bb);
-        menuObjects.add(cc);
         return menuObjects;
     }
 
@@ -570,16 +573,20 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 adStartScanBtn.setEnabled(true);
                 initUI();
 
-
                 break;
             case 5: //test Show list of students
-                initStudentListUI();
-                break;
-            case 6: //test Show offline
-                initNetworkLostUI();
-                break;
-            case 7: //test Show bubbles
-                initBubblesUI();
+
+                //default is list
+                if (mSharedPreferences.getBoolean(DEFAULT_LIST,true)){
+                    setPrefsForList(false);
+                    initBubblesUI();
+                }
+                if (mSharedPreferences.getBoolean(DEFAULT_BUBBLE,false)) {
+                    //default is bubble
+                    setPrefsForList(true);
+                    initStudentListUI();
+                }
+
                 break;
         }
     }
@@ -591,6 +598,16 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         }
     }
 
+    private void setPrefsForList(boolean isList) {
+        if (isList){
+            editor.putBoolean(DEFAULT_LIST, true);
+            editor.putBoolean(DEFAULT_BUBBLE, false);
+        }else {
+            editor.putBoolean(DEFAULT_LIST, false);
+            editor.putBoolean(DEFAULT_BUBBLE, true);
+        }
+        editor.apply();
+    }
     //endregion
 
     @Override

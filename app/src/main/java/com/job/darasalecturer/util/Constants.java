@@ -35,6 +35,8 @@ public class Constants {
     public static final String FIRST_NAME_PREF_NAME = "FIRST_NAME_PREF_NAME";
     public static final String LAST_NAME_PREF_NAME = "LAST_NAME_PREF_NAME";
     public static final String KEY_UUID = "key_uuid";
+    public static final String DEFAULT_LIST = "DEFAULT_LIST";
+    public static final String DEFAULT_BUBBLE = "DEFAULT_BUBBLE";
 
     //app permissions
     public static final String[] REQUIRED_PERMISSIONS =

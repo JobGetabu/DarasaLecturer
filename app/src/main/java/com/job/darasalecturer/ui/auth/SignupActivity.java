@@ -1,6 +1,7 @@
 package com.job.darasalecturer.ui.auth;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,6 +31,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.job.darasalecturer.util.Constants.DEFAULT_BUBBLE;
+import static com.job.darasalecturer.util.Constants.DEFAULT_LIST;
 import static com.job.darasalecturer.util.Constants.LECUSERCOL;
 
 
@@ -48,6 +51,7 @@ public class SignupActivity extends AppCompatActivity {
     private FirebaseFirestore mFirestore;
 
     private DoSnack doSnack;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +69,15 @@ public class SignupActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
 
+        editor = getSharedPreferences(getApplicationContext().getPackageName(),MODE_PRIVATE).edit();
+        setPrefsForList();
         doSnack = new DoSnack(this, SignupActivity.this);
+    }
+
+    private void setPrefsForList() {
+        editor.putBoolean(DEFAULT_LIST,true);
+        editor.putBoolean(DEFAULT_BUBBLE,false);
+        editor.apply();
     }
 
     @OnClick(R.id.signup_btn)
