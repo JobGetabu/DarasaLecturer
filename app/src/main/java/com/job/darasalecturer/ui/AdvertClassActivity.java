@@ -139,6 +139,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     FloatingActionButton adFab;
     @BindView(R.id.ad_students_bubbles)
     ConstraintLayout adStudentsBubbles;
+    @BindView(R.id.ad_bubble_txt)
+    TextView adBubbleTxt;
     @BindView(R.id.ad_stud_txt)
     TextView adStudTxt;
     @BindView(R.id.ad_stud_list)
@@ -365,9 +367,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adListStudentsMain.setVisibility(View.GONE);
 
         adCardTop.setVisibility(View.VISIBLE);
-        adStudentsBubbles.setVisibility(View.VISIBLE);
         setBubblesInvisible(false);
-        setUpBubbles();
+        setUpBubbles(studentMessages);
     }
 
     private void changeTextColor() {
@@ -664,8 +665,10 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                     if (studentMessages.size() > 1) {
                         //the rest of students
                         scanStudentAdapter.notifyDataSetChanged();
+                        setUpBubbles(studentMessages);
                     }
                     adStudTxt.setText(scanStudentAdapter.getItemCount() + " Students Found");
+                    adBubbleTxt.setText(scanStudentAdapter.getItemCount() + " Students Found");
 
                 }
             }
@@ -874,10 +877,11 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     @Override
     public void onItemClick(int position) {
-        //no click action assigned
+
         StudentMessage stdMeso = studentMessages.get(position);
         String message = stdMeso.getStudFirstName() + " : " + stdMeso.getRegNo();
         DoSnack.showShortSnackbar(this, message);
+
     }
 
     @Override
@@ -892,11 +896,26 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         picker.onPause();
     }
 
-    private void setUpBubbles(){
+    private void setUpBubbles(final List<StudentMessage> studList){
+
+        if (studList.isEmpty()){
+            DoSnack.showShortSnackbar(this, "No students detected yet");
+        }
 
         Typeface boldTypeface = ResourcesCompat.getFont(this, R.font.roboto_bold);
         final Typeface mediumTypeface = ResourcesCompat.getFont(this, R.font.roboto_medium);
         Typeface regularTypeface = ResourcesCompat.getFont(this, R.font.roboto);
+
+        //load up the list
+        List<String> nameList = new ArrayList<>();
+        TypedArray imageurls;
+        List imageList;
+
+        for (StudentMessage st : studList){
+            nameList.add(st.getStudFirstName());
+        }
+
+        final String[] names = nameList.toArray(new String[nameList.size()]);
 
         final String[] titles = getResources().getStringArray(R.array.countries);
         final TypedArray colors = getResources().obtainTypedArray(R.array.colors);
@@ -913,21 +932,21 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         picker.setAdapter(new BubblePickerAdapter() {
             @Override
             public int getTotalCount() {
-                return titles.length;
+                return names.length;
             }
 
             @NotNull
             @Override
             public PickerItem getItem(int position) {
                 PickerItem item = new PickerItem();
-                item.setTitle(titles[position]);
+                item.setTitle(names[position]);
                 item.setGradient(new BubbleGradient(colors.getColor((position * 2) % 8, 0),
                         colors.getColor((position * 2) % 8 + 1, 0), BubbleGradient.VERTICAL));
                 item.setTypeface(mediumTypeface);
                 item.setTextColor(ContextCompat.getColor(AdvertClassActivity.this, R.color.white));
-                //item.setBackgroundImage(ContextCompat.getDrawable(AdvertClassActivity.this, images.getResourceId(position, 0)));
+                item.setCustomData(studList.get(position));
                 item.setUseImgUrl(false);
-                item.setImgDrawable(ContextCompat.getDrawable(AdvertClassActivity.this, images.getResourceId(position, 0)));
+                item.setImgDrawable(ContextCompat.getDrawable(AdvertClassActivity.this, R.drawable.avatar_placeholder));
                 return item;
             }
         });
@@ -936,6 +955,10 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             @Override
             public void onBubbleSelected(@NotNull PickerItem item) {
 
+                StudentMessage stdMeso = (StudentMessage) item.getCustomData();
+                String message = stdMeso.getStudFirstName() + " : " + stdMeso.getRegNo();
+                //DoSnack.showShortSnackbar(AdvertClassActivity.this, message);
+                Toast.makeText(AdvertClassActivity.this, message, Toast.LENGTH_SHORT).show();
             }
 
             @Override
