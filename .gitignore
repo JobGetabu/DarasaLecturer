@@ -16,3 +16,4 @@ src/androidTest/
 src/main/res/layout-v26/
 src/main/res/xml/
 src/test/
+/keystore.properties
