@@ -6,6 +6,13 @@ def keystorePropertiesFile = rootProject.file("keystore.properties");
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
+ext.versionMajor = 2
+ext.versionMinor = 5
+ext.versionPatch = 0
+ext.versionClassifier = null
+ext.isSnapshot = true  //only true while in development
+ext.minimumSdkVersion = 19
+
 android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
@@ -14,8 +21,8 @@ android {
         applicationId "com.job.darasalecturer"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 2
-        versionName "2.0"
+        versionCode generateVersionCode() // 190020500
+        versionName generateVersionName() // 2.5.0-SNAPSHOT
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         //Enabling multidex support.
@@ -41,7 +48,7 @@ android {
 
     buildTypes {
         buildTypes {
-            debug{
+            debug {
 
             }
             release {
@@ -56,6 +63,23 @@ android {
     packagingOptions {
         exclude 'META-INF/proguard/androidx-annotations.pro'
     }
+
+}
+
+private Integer generateVersionCode() {
+    return ext.minimumSdkVersion * 10000000 + ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
+}
+
+private String generateVersionName() {
+    String versionName = "${ext.versionMajor}.${ext.versionMinor}.${ext.versionPatch}"
+    if (ext.versionClassifier == null && ext.isSnapshot) {
+        ext.versionClassifier = "SNAPSHOT"
+    }
+
+    if (ext.versionClassifier != null) {
+        versionName += "-" + ext.versionClassifier
+    }
+    return versionName;
 }
 
 dependencies {
