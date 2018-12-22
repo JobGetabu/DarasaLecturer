@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -12,6 +14,8 @@ import android.support.design.button.MaterialButton;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
@@ -53,11 +57,18 @@ import com.job.darasalecturer.service.TransactionWorker;
 import com.job.darasalecturer.util.AppStatus;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.LessonMessage;
+import com.kienht.bubblepicker.BubblePickerListener;
+import com.kienht.bubblepicker.adapter.BubblePickerAdapter;
+import com.kienht.bubblepicker.model.BubbleGradient;
+import com.kienht.bubblepicker.model.PickerItem;
+import com.kienht.bubblepicker.rendering.BubblePicker;
 import com.leodroidcoder.genericadapter.OnRecyclerItemClickListener;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
 import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,6 +147,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     TextView adPopText;
     @BindView(R.id.ad_pop_bck)
     ConstraintLayout adPopMain;
+    @BindView(R.id.picker)
+    BubblePicker picker;
 
 
     //endregion
@@ -231,16 +244,26 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     //region UI SETUP
 
+    private void setBubblesInvisible(boolean invisible){
+        if (invisible){
+            adStudentsBubbles.setVisibility(View.GONE);
+            picker.setVisibility(View.GONE);
+        }else {
+            adStudentsBubbles.setVisibility(View.VISIBLE);
+            picker.setVisibility(View.VISIBLE);
+        }
+    }
 
     private void initUI() {
         adStartScanAnimationView.setVisibility(View.GONE);
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
+        adCardTop.setCardBackgroundColor(DoSnack.setColor(this, R.color.white));
         adStartScanMain.setVisibility(View.VISIBLE);
         adCardTop.setVisibility(View.VISIBLE);
 
         adNetworkMain.setVisibility(View.GONE);
         adListStudentsMain.setVisibility(View.GONE);
-        adStudentsBubbles.setVisibility(View.GONE);
+        setBubblesInvisible(true);
         adPopMain.setVisibility(View.GONE);
 
         adStartScanBtn.setBackground(DoSnack.setDrawable(this, R.drawable.round_off_btn_bg));
@@ -254,9 +277,10 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     private void initStudentListUI() {
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
+        adCardTop.setCardBackgroundColor(DoSnack.setColor(this, R.color.white));
         adStartScanMain.setVisibility(View.GONE);
         adNetworkMain.setVisibility(View.GONE);
-        adStudentsBubbles.setVisibility(View.GONE);
+        setBubblesInvisible(true);
         adPopMain.setVisibility(View.GONE);
 
         adCardTop.setVisibility(View.VISIBLE);
@@ -266,7 +290,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     private void initNetworkLostUI() {
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.white));
         adStartScanMain.setVisibility(View.GONE);
-        adStudentsBubbles.setVisibility(View.GONE);
+        setBubblesInvisible(true);
         adListStudentsMain.setVisibility(View.GONE);
         adPopMain.setVisibility(View.GONE);
 
@@ -280,9 +304,10 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     private void initScanningUI() {
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
+        adCardTop.setCardBackgroundColor(DoSnack.setColor(this, R.color.white));
 
         adNetworkMain.setVisibility(View.GONE);
-        adStudentsBubbles.setVisibility(View.GONE);
+        setBubblesInvisible(true);
         adListStudentsMain.setVisibility(View.GONE);
         adPopMain.setVisibility(View.GONE);
 
@@ -304,8 +329,9 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     private void initSuccessUI() {
         adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
+        adCardTop.setCardBackgroundColor(DoSnack.setColor(this, R.color.white));
         adNetworkMain.setVisibility(View.GONE);
-        adStudentsBubbles.setVisibility(View.GONE);
+        setBubblesInvisible(true);
         adListStudentsMain.setVisibility(View.GONE);
         adStartScanMain.setVisibility(View.GONE);
 
@@ -331,7 +357,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     }
 
     private void initBubblesUI() {
-        adMain.setBackgroundColor(DoSnack.setColor(this, R.color.scan_blue));
+        adMain.setBackgroundColor(DoSnack.setColor(this, R.color.white));
+        adCardTop.setCardBackgroundColor(DoSnack.setColor(this, R.color.contentDividerLine));
         adStartScanMain.setVisibility(View.GONE);
         adNetworkMain.setVisibility(View.GONE);
         adPopMain.setVisibility(View.GONE);
@@ -339,6 +366,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
         adCardTop.setVisibility(View.VISIBLE);
         adStudentsBubbles.setVisibility(View.VISIBLE);
+        setBubblesInvisible(false);
+        setUpBubbles();
     }
 
     private void changeTextColor() {
@@ -847,8 +876,73 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     public void onItemClick(int position) {
         //no click action assigned
         StudentMessage stdMeso = studentMessages.get(position);
-        String message = stdMeso.getStudFirstName() +" : "+stdMeso.getRegNo();
-        DoSnack.showShortSnackbar(this,message);
+        String message = stdMeso.getStudFirstName() + " : " + stdMeso.getRegNo();
+        DoSnack.showShortSnackbar(this, message);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        picker.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        picker.onPause();
+    }
+
+    private void setUpBubbles(){
+
+        Typeface boldTypeface = ResourcesCompat.getFont(this, R.font.roboto_bold);
+        final Typeface mediumTypeface = ResourcesCompat.getFont(this, R.font.roboto_medium);
+        Typeface regularTypeface = ResourcesCompat.getFont(this, R.font.roboto);
+
+        final String[] titles = getResources().getStringArray(R.array.countries);
+        final TypedArray colors = getResources().obtainTypedArray(R.array.colors);
+        final TypedArray images = getResources().obtainTypedArray(R.array.images);
+
+        //customise
+        picker.setBubbleSize(60);
+
+        picker.setAlwaysSelected(false);
+
+        //picker.setSwipeMoveSpeed(2f); //too fast
+        picker.setCenterImmediately(true);
+
+        picker.setAdapter(new BubblePickerAdapter() {
+            @Override
+            public int getTotalCount() {
+                return titles.length;
+            }
+
+            @NotNull
+            @Override
+            public PickerItem getItem(int position) {
+                PickerItem item = new PickerItem();
+                item.setTitle(titles[position]);
+                item.setGradient(new BubbleGradient(colors.getColor((position * 2) % 8, 0),
+                        colors.getColor((position * 2) % 8 + 1, 0), BubbleGradient.VERTICAL));
+                item.setTypeface(mediumTypeface);
+                item.setTextColor(ContextCompat.getColor(AdvertClassActivity.this, R.color.white));
+                //item.setBackgroundImage(ContextCompat.getDrawable(AdvertClassActivity.this, images.getResourceId(position, 0)));
+                item.setUseImgUrl(false);
+                item.setImgDrawable(ContextCompat.getDrawable(AdvertClassActivity.this, images.getResourceId(position, 0)));
+                return item;
+            }
+        });
+
+        picker.setListener(new BubblePickerListener() {
+            @Override
+            public void onBubbleSelected(@NotNull PickerItem item) {
+
+            }
+
+            @Override
+            public void onBubbleDeselected(@NotNull PickerItem item) {
+
+            }
+        });
     }
 
     //endregion
