@@ -67,6 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
     private FirebaseFirestore mFirestore;
     private List<LecTeach> mLecTeachList;
     private ClassListFragment classListFragment;
+    private StatsMenuBottomSheet statsMenuBottomSheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +86,7 @@ public class SettingsActivity extends AppCompatActivity {
         mFirestore = FirebaseFirestore.getInstance();
 
         classListFragment = new ClassListFragment();
+        statsMenuBottomSheet = new StatsMenuBottomSheet();
     }
 
     @OnClick(R.id.settings_manage_account)
@@ -145,6 +147,12 @@ public class SettingsActivity extends AppCompatActivity {
         //loadClasses();
 
         classListFragment.show(getSupportFragmentManager(),ClassListFragment.TAG);
+    }
+
+    @OnClick(R.id.settings_stats)
+    public void onViewStatsViewClicked() {
+
+        statsMenuBottomSheet.show(getSupportFragmentManager(),StatsMenuBottomSheet.TAG);
     }
 
     private void loadClasses() {
