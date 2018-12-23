@@ -58,7 +58,8 @@ import static com.job.darasalecturer.util.Constants.NOTIFICATIONCOL;
 /**
  * Created by Job on Monday : 12/17/2018.
  */
-public class SendMessageBottomSheet extends BottomSheetDialogFragment implements CourseYearViewHolder.ImageClickListener, OnRecyclerItemClickListener {
+public class SendMessageBottomSheet extends BottomSheetDialogFragment
+        implements CourseYearViewHolder.ImageClickListener, OnRecyclerItemClickListener {
 
     public static final String TAG = "messageSheet";
 
