@@ -138,7 +138,10 @@ public class ClassListBottomSheet extends BottomSheetDialogFragment
     @OnClick(R.id.frg_stats_gen_classlist)
     public void onFrgStatsGenClasslistClicked() {
 
-        Toast.makeText(getContext(), courseYearList.get(0).toString(), Toast.LENGTH_SHORT).show();
+        if (validate()) {
+
+            Toast.makeText(getContext(), courseYearList.get(0).toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean validate() {
