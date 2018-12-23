@@ -81,6 +81,7 @@
     <string name="dismiss">DISMISS</string>
     <string name="select_studyyear_text">Click the year of study for the\n course(s) that you teach to change</string>
     <string name="message_studyyear_text">Click the year of study for the course(s) that you want to notify</string>
+    <string name="classlist_text">Click the year of study for the course that you want to generate list</string>
     <string name="course">Course</string>
     <string name="start_scan">Start\nScan</string>
     <string name="scan_class">scanning\nClass</string>
