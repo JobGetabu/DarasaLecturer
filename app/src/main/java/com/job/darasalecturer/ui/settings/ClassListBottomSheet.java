@@ -137,6 +137,8 @@ public class ClassListBottomSheet extends BottomSheetDialogFragment
 
     @OnClick(R.id.frg_stats_gen_classlist)
     public void onFrgStatsGenClasslistClicked() {
+
+        Toast.makeText(getContext(), courseYearList.get(0).toString(), Toast.LENGTH_SHORT).show();
     }
 
     private boolean validate() {
@@ -196,7 +198,7 @@ public class ClassListBottomSheet extends BottomSheetDialogFragment
                 .titleSize(20)
                 .positiveText("Done")
                 .negativeText("Cancel")
-                .setMaxSelectionLimit(2)
+                .setMaxSelectionLimit(1)
                 .setMinSelectionLimit(1) //you can set minimum checkbox selection limit (Optional)
                 //.preSelectIDsList() //List of ids that you need to be selected
                 .multiSelectList(listOfCourses) // the multi select model list with ids and name

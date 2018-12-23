@@ -23,6 +23,8 @@ public class StatsMenuBottomSheet extends BottomSheetDialogFragment {
     @BindView(R.id.frg_stats_studstarts) MaterialButton frgStatsStudstarts;
     Unbinder unbinder;
 
+    private ClassListBottomSheet classListBottomSheet;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -31,8 +33,18 @@ public class StatsMenuBottomSheet extends BottomSheetDialogFragment {
         return view;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        classListBottomSheet = new ClassListBottomSheet();
+    }
+
     @OnClick(R.id.frg_stats_classlist)
-    public void classOnClick(){}
+    public void classOnClick(){
+        classListBottomSheet.show(getActivity().getSupportFragmentManager(),ClassListBottomSheet.TAG);
+        dismiss();
+    }
     @OnClick(R.id.frg_stats_attendancelist)
     public void attendOnClick(){}
     @OnClick(R.id.frg_stats_studstarts)

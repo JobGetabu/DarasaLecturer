@@ -51,7 +51,7 @@
             </intent-filter>
         </service>
 
-        <!-- Set custom default icon.   -->
+        <!-- Set custom default icon. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_launcher" />
@@ -62,7 +62,7 @@
         <!-- Set default channel by FCM -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="default_channel_id"/>
+            android:value="default_channel_id" />
 
         <activity
             android:name=".ui.ScannerActivity"
@@ -96,10 +96,11 @@
         <activity
             android:name=".ui.FaqActivity"
             android:parentActivityName=".ui.settings.SettingsActivity" />
-        <activity android:name=".ui.AdvertiseActivity"/>
-        <activity android:name=".ui.AdvertClassActivity"
-            android:screenOrientation="portrait"
-            />
+        <activity android:name=".ui.AdvertiseActivity" />
+        <activity
+            android:name=".ui.AdvertClassActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.settings.ClassListActivity"></activity>
     </application>
 
 </manifest>
