@@ -1,4 +1,4 @@
-package com.job.darasalecturer.ui;
+package com.job.darasalecturer.ui.settings;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -21,6 +21,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.LecTeach;
+import com.job.darasalecturer.ui.ClassListFragment;
+import com.job.darasalecturer.ui.CurrentSetupActivity;
+import com.job.darasalecturer.ui.FaqActivity;
 import com.job.darasalecturer.ui.auth.AccountSetupActivity;
 import com.job.darasalecturer.ui.auth.PasscodeActivity;
 import com.job.darasalecturer.ui.auth.WelcomeActivity;
