@@ -24,6 +24,7 @@ public class StatsMenuBottomSheet extends BottomSheetDialogFragment {
     Unbinder unbinder;
 
     private ClassListBottomSheet classListBottomSheet;
+    private ClassAttendanceListFragment classAttendanceListFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,6 +39,7 @@ public class StatsMenuBottomSheet extends BottomSheetDialogFragment {
         super.onActivityCreated(savedInstanceState);
 
         classListBottomSheet = new ClassListBottomSheet();
+        classAttendanceListFragment = new ClassAttendanceListFragment();
     }
 
     @OnClick(R.id.frg_stats_classlist)
@@ -46,7 +48,11 @@ public class StatsMenuBottomSheet extends BottomSheetDialogFragment {
         dismiss();
     }
     @OnClick(R.id.frg_stats_attendancelist)
-    public void attendOnClick(){}
+    public void attendOnClick(){
+
+        classAttendanceListFragment.show(getActivity().getSupportFragmentManager(),ClassAttendanceListFragment.TAG);
+        dismiss();
+    }
     @OnClick(R.id.frg_stats_studstarts)
     public void studOnClick(){}
 
