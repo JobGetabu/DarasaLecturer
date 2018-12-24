@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout android:id="@+id/root"
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:background="@color/cell_background_color"
-                android:layout_width="@dimen/row_header_width"
-                android:layout_height="@dimen/cell_height">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/table_view_row_header_width"
+    android:layout_height="@dimen/table_view_cell_height"
+    android:background="@color/unselected_header_background_color">
 
     <LinearLayout
         android:id="@+id/row_header_container"
@@ -21,8 +20,8 @@
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:textColor="@color/table_view_default_text_color"
-            android:textSize="@dimen/text_size"
+            android:textColor="@color/unselected_text_color"
+            android:textSize="@dimen/table_view_default_text_size"
             tools:text="Row Data"/>
 
     </LinearLayout>
@@ -31,5 +30,5 @@
         android:layout_width="1px"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:background="@color/header_line_color"/>
+        android:background="@color/separator_color"/>
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.job.darasalecturer.ui.settings;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -44,6 +45,8 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.job.darasalecturer.ui.settings.ClassListActivity.COURSE_EXTRA;
+import static com.job.darasalecturer.ui.settings.ClassListActivity.YEAROFSTUDY_EXTRA;
 import static com.job.darasalecturer.util.Constants.DKUTCOURSES;
 
 /**
@@ -141,6 +144,10 @@ public class ClassListBottomSheet extends BottomSheetDialogFragment
         if (validate()) {
 
             Toast.makeText(getContext(), courseYearList.get(0).toString(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getContext(),ClassListActivity.class);
+            intent.putExtra(COURSE_EXTRA,courseYearList.get(0).getCourse());
+            intent.putExtra(YEAROFSTUDY_EXTRA,courseYearList.get(0).getYearofstudy());
+            getContext().startActivity(intent);
         }
     }
 
