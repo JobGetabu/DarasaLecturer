@@ -162,6 +162,9 @@ dependencies {
     //bubble-picker
     implementation 'com.github.hantrungkien:Bubble-Picker:v1.0.5.2'
 
+    //tableview
+    implementation 'com.evrencoskun.library:tableview:0.8.8'
+
     //work manager
     //implementation "android.arch.work:work-runtime:1.0.0-alpha10"
     implementation("android.arch.work:work-runtime:1.0.0-alpha10") {
