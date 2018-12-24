@@ -8,6 +8,7 @@ public class ClassListModel {
     private String name;
     private String regno;
     private String email;
+    private StudentDetails studentDetails;
 
     public ClassListModel() {
     }
