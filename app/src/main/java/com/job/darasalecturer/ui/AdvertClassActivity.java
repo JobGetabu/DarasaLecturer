@@ -1,5 +1,7 @@
 package com.job.darasalecturer.ui;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +11,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
 import android.support.design.chip.Chip;
@@ -57,6 +60,7 @@ import com.job.darasalecturer.service.TransactionWorker;
 import com.job.darasalecturer.util.AppStatus;
 import com.job.darasalecturer.util.DoSnack;
 import com.job.darasalecturer.util.LessonMessage;
+import com.job.darasalecturer.viewmodel.ScannerViewModel;
 import com.kienht.bubblepicker.BubblePickerListener;
 import com.kienht.bubblepicker.adapter.BubblePickerAdapter;
 import com.kienht.bubblepicker.model.BubbleGradient;
@@ -203,6 +207,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     private FirebaseAuth mAuth;
 
     private ContextMenuDialogFragment mMenuDialogFragment;
+    private ScannerViewModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,6 +231,9 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         //firebase
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
+
+        //init model
+        model = ViewModelProviders.of(this).get(ScannerViewModel.class);
 
         //get qrparser
         qrParser = getIntent().getParcelableExtra(QRPARSEREXTRA);
@@ -251,6 +259,8 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         initMessageListener();
 
         loadList();
+
+        studentListObserver();
     }
 
     //region UI SETUP
@@ -677,22 +687,26 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 if (lessonMessage.getQrParser() == null && lessonMessage.getStudentMessage() != null) {
 
                     Log.d(TAG, "onFound: Student object " + message.toString());
-                    studentMessages.add(lessonMessage.getStudentMessage());
 
-                    if (studentMessages.size() == 1) {
+                    model.getStudentMessagesLiveData().getValue().add(lessonMessage.getStudentMessage());
+
+                    if (model.getStudentMessagesLiveData().getValue().size() == 1) {
                         //first student
                         scanStudentAdapter.setItems(studentMessages);
                         list_to_grid.setVisibility(View.VISIBLE);
                         grid_to_list.setVisibility(View.VISIBLE);
 
                     }
-                    if (studentMessages.size() > 1) {
+                    if (model.getStudentMessagesLiveData().getValue().size() > 1) {
                         //the rest of students
+                        Log.d(TAG, "studentList greater than 1: size = :"+model.getStudentMessagesLiveData().getValue().size());
                         scanStudentAdapter.notifyDataSetChanged();
                         setUpBubbles(studentMessages);
                     }
+
                     adStudTxt.setText(scanStudentAdapter.getItemCount() + " Students Found");
                     adBubbleTxt.setText(scanStudentAdapter.getItemCount() + " Students Found");
+
 
                 }
             }
@@ -700,7 +714,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             @Override
             public void onLost(Message message) {
                 // Called when a message is no longer detectable nearby.
-                //mNearbyDevicesArrayAdapter.remove(DeviceMessage.fromNearbyMessage(message).getMessageBody());
                 LessonMessage lessonMessage = LessonMessage.fromNearbyMessage(message);
                 if (lessonMessage.getQrParser() == null && lessonMessage.getStudentMessage() != null) {
 
@@ -894,9 +907,42 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adStudList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         adStudList.setHasFixedSize(true);
 
+        //init list
         studentMessages = new ArrayList<>();
+        model.setStudentMessagesLiveData(new ArrayList<StudentMessage>());
         scanStudentAdapter = new ScanStudentAdapter(this, this);
         adStudList.setAdapter(scanStudentAdapter);
+
+    }
+
+    private void studentListObserver(){
+        //init our list
+        Log.d(TAG, "studentListObserver: init :");
+        model.setStudentMessagesLiveData(new ArrayList<StudentMessage>());
+        scanStudentAdapter.setItems(model.getStudentMessagesLiveData().getValue(),true);
+        Log.d(TAG, "studentListObserver: init :" +model.getStudentMessagesLiveData().getValue());
+
+        //observe for changes
+        model.getStudentMessagesLiveData().observe(this, new Observer<List<StudentMessage>>() {
+            @Override
+            public void onChanged(@Nullable List<StudentMessage> studentMessages) {
+                if (studentMessages != null){
+
+                    //set up list UI
+                    list_to_grid.setVisibility(View.VISIBLE);
+                    grid_to_list.setVisibility(View.VISIBLE);
+
+
+                    scanStudentAdapter.notifyDataSetChanged();
+                    setUpBubbles(studentMessages);
+                    adStudTxt.setText(scanStudentAdapter.getItemCount() + " Students Found");
+                    adBubbleTxt.setText(scanStudentAdapter.getItemCount() + " Students Found");
+
+                    Log.d(TAG, "studentListObserver: init : "+studentMessages.size() + " Students Found");
+                    Toast.makeText(AdvertClassActivity.this, studentMessages.size() + " Students Found", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
