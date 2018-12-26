@@ -6,6 +6,9 @@ import android.os.CountDownTimer;
 
 import com.job.darasalecturer.model.StudentMessage;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,10 +20,15 @@ public class ScannerViewModel extends ViewModel {
 
     private MediatorLiveData<String> passcodeLiveData = new MediatorLiveData<>();
 
+    private List<StudentMessage> studentMessages;
+
+    private int count;
+
     private MediatorLiveData<List<StudentMessage>> studentMessagesLiveData = new MediatorLiveData<>();
 
     public ScannerViewModel() {
         timer();
+        studentMessages = new ArrayList<>();
     }
 
     public MediatorLiveData<String> getTimeLiveData() {
@@ -80,7 +88,23 @@ public class ScannerViewModel extends ViewModel {
         return studentMessagesLiveData;
     }
 
-    public void setStudentMessagesLiveData(List<StudentMessage> studentMessages) {
+    public void setStudentMessagesLiveData(@NotNull List<StudentMessage> studentMessages) {
         this.studentMessagesLiveData.setValue(studentMessages);
+    }
+
+    public List<StudentMessage> getStudentMessages() {
+        return studentMessages;
+    }
+
+    public void setStudentMessages(List<StudentMessage> studentMessages) {
+        this.studentMessages = studentMessages;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }

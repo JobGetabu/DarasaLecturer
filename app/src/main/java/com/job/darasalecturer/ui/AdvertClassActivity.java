@@ -199,7 +199,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     private String venue;
     private String lecteachid;
     private ScanStudentAdapter scanStudentAdapter;
-    private List<StudentMessage> studentMessages;
 
 
     //firebase
@@ -246,7 +245,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         editor = getSharedPreferences(getApplicationContext().getPackageName(), Context.MODE_PRIVATE).edit();
 
 
-
         //endregion
 
 
@@ -261,15 +259,17 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         loadList();
 
         studentListObserver();
+
+        setUpBubbles(model.getStudentMessages());
     }
 
     //region UI SETUP
 
-    private void setBubblesInvisible(boolean invisible){
-        if (invisible){
+    private void setBubblesInvisible(boolean invisible) {
+        if (invisible) {
             adStudentsBubbles.setVisibility(View.GONE);
             picker.setVisibility(View.GONE);
-        }else {
+        } else {
             adStudentsBubbles.setVisibility(View.VISIBLE);
             picker.setVisibility(View.VISIBLE);
         }
@@ -387,7 +387,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
         adCardTop.setVisibility(View.VISIBLE);
         setBubblesInvisible(false);
-        setUpBubbles(studentMessages);
+
     }
 
     private void changeTextColor() {
@@ -520,11 +520,11 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
         //temporary test for soe layouts
         MenuObject aa = new MenuObject("Show list of students");
-        if (mSharedPreferences.getBoolean(DEFAULT_LIST,true)){
-             aa = new MenuObject("Show bubbles of students");
+        if (mSharedPreferences.getBoolean(DEFAULT_LIST, true)) {
+            aa = new MenuObject("Show bubbles of students");
         }
-        if (mSharedPreferences.getBoolean(DEFAULT_BUBBLE,false)){
-             aa = new MenuObject("Show list of students");
+        if (mSharedPreferences.getBoolean(DEFAULT_BUBBLE, false)) {
+            aa = new MenuObject("Show list of students");
         }
 
         aa.setResource(R.drawable.ic_checklist);
@@ -587,11 +587,11 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             case 5: //test Show list of students
 
                 //default is list
-                if (mSharedPreferences.getBoolean(DEFAULT_LIST,true)){
+                if (mSharedPreferences.getBoolean(DEFAULT_LIST, true)) {
                     setPrefsForList(false);
                     initBubblesUI();
                 }
-                if (mSharedPreferences.getBoolean(DEFAULT_BUBBLE,false)) {
+                if (mSharedPreferences.getBoolean(DEFAULT_BUBBLE, false)) {
                     //default is bubble
                     setPrefsForList(true);
                     initStudentListUI();
@@ -609,10 +609,10 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     }
 
     private void setPrefsForList(boolean isList) {
-        if (isList){
+        if (isList) {
             editor.putBoolean(DEFAULT_LIST, true);
             editor.putBoolean(DEFAULT_BUBBLE, false);
-        }else {
+        } else {
             editor.putBoolean(DEFAULT_LIST, false);
             editor.putBoolean(DEFAULT_BUBBLE, true);
         }
@@ -678,9 +678,6 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
             @Override
             public void onFound(Message message) {
                 // Called when a new message is found.
-                //mNearbyDevicesArrayAdapter.add(DeviceMessage.fromNearbyMessage(message).getMessageBody());
-
-                Log.d(TAG, "onFound: Fresh " + message.toString());
 
                 //make sure is student message
                 LessonMessage lessonMessage = LessonMessage.fromNearbyMessage(message);
@@ -688,26 +685,12 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
                     Log.d(TAG, "onFound: Student object " + message.toString());
 
-                    model.getStudentMessagesLiveData().getValue().add(lessonMessage.getStudentMessage());
-
-                    if (model.getStudentMessagesLiveData().getValue().size() == 1) {
-                        //first student
-                        scanStudentAdapter.setItems(studentMessages);
-                        list_to_grid.setVisibility(View.VISIBLE);
-                        grid_to_list.setVisibility(View.VISIBLE);
-
-                    }
-                    if (model.getStudentMessagesLiveData().getValue().size() > 1) {
-                        //the rest of students
-                        Log.d(TAG, "studentList greater than 1: size = :"+model.getStudentMessagesLiveData().getValue().size());
-                        scanStudentAdapter.notifyDataSetChanged();
-                        setUpBubbles(studentMessages);
+                    if (! areContentsTheSame(model.getStudentMessages(), lessonMessage.getStudentMessage())) {
+                        Log.d(TAG, "onFound: Student object == same ?  false");
+                        model.getStudentMessages().add(lessonMessage.getStudentMessage());
                     }
 
-                    adStudTxt.setText(scanStudentAdapter.getItemCount() + " Students Found");
-                    adBubbleTxt.setText(scanStudentAdapter.getItemCount() + " Students Found");
-
-
+                    model.setStudentMessagesLiveData(model.getStudentMessages());
                 }
             }
 
@@ -908,37 +891,33 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         adStudList.setHasFixedSize(true);
 
         //init list
-        studentMessages = new ArrayList<>();
-        model.setStudentMessagesLiveData(new ArrayList<StudentMessage>());
+        model.setStudentMessagesLiveData(model.getStudentMessages());
         scanStudentAdapter = new ScanStudentAdapter(this, this);
         adStudList.setAdapter(scanStudentAdapter);
 
     }
 
-    private void studentListObserver(){
+    private void studentListObserver() {
         //init our list
-        Log.d(TAG, "studentListObserver: init :");
-        model.setStudentMessagesLiveData(new ArrayList<StudentMessage>());
-        scanStudentAdapter.setItems(model.getStudentMessagesLiveData().getValue(),true);
-        Log.d(TAG, "studentListObserver: init :" +model.getStudentMessagesLiveData().getValue());
 
+        scanStudentAdapter.setItems(model.getStudentMessages());
         //observe for changes
         model.getStudentMessagesLiveData().observe(this, new Observer<List<StudentMessage>>() {
             @Override
             public void onChanged(@Nullable List<StudentMessage> studentMessages) {
-                if (studentMessages != null){
+                if (!studentMessages.isEmpty()) {
 
                     //set up list UI
                     list_to_grid.setVisibility(View.VISIBLE);
                     grid_to_list.setVisibility(View.VISIBLE);
 
+                    scanStudentAdapter.updateItems(studentMessages);
 
-                    scanStudentAdapter.notifyDataSetChanged();
                     setUpBubbles(studentMessages);
                     adStudTxt.setText(scanStudentAdapter.getItemCount() + " Students Found");
                     adBubbleTxt.setText(scanStudentAdapter.getItemCount() + " Students Found");
 
-                    Log.d(TAG, "studentListObserver: init : "+studentMessages.size() + " Students Found");
+                    Log.d(TAG, "studentListObserver: init : " + studentMessages.size() + " Students Found");
                     Toast.makeText(AdvertClassActivity.this, studentMessages.size() + " Students Found", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -947,11 +926,9 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
     @Override
     public void onItemClick(int position) {
-
-        StudentMessage stdMeso = studentMessages.get(position);
+        StudentMessage stdMeso = model.getStudentMessages().get(position);
         String message = stdMeso.getStudFirstName() + " : " + stdMeso.getRegNo();
         DoSnack.showShortSnackbar(this, message);
-
     }
 
     @Override
@@ -966,10 +943,10 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
         picker.onPause();
     }
 
-    private void setUpBubbles(final List<StudentMessage> studList){
-
-        if (studList.isEmpty()){
+    private void setUpBubbles(final List<StudentMessage> studList) {
+        if (studList.isEmpty()) {
             DoSnack.showShortSnackbar(this, "No students detected yet");
+            return;
         }
 
         Typeface boldTypeface = ResourcesCompat.getFont(this, R.font.roboto_bold);
@@ -978,18 +955,13 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
 
         //load up the list
         List<String> nameList = new ArrayList<>();
-        TypedArray imageurls;
-        List imageList;
 
-        for (StudentMessage st : studList){
+        for (StudentMessage st : studList) {
             nameList.add(st.getStudFirstName());
         }
 
         final String[] names = nameList.toArray(new String[nameList.size()]);
-
-        final String[] titles = getResources().getStringArray(R.array.countries);
         final TypedArray colors = getResources().obtainTypedArray(R.array.colors);
-        final TypedArray images = getResources().obtainTypedArray(R.array.images);
 
         //customise
         picker.setBubbleSize(60);
@@ -1012,7 +984,7 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
                 item.setTitle(names[position]);
                 item.setGradient(new BubbleGradient(colors.getColor((position * 2) % 8, 0),
                         colors.getColor((position * 2) % 8 + 1, 0), BubbleGradient.VERTICAL));
-                item.setTypeface(mediumTypeface);
+                //item.setTypeface(mediumTypeface);
                 item.setTextColor(ContextCompat.getColor(AdvertClassActivity.this, R.color.white));
                 item.setCustomData(studList.get(position));
                 item.setUseImgUrl(false);
@@ -1039,15 +1011,28 @@ public class AdvertClassActivity extends AppCompatActivity implements OnMenuItem
     }
 
     @OnClick(R.id.ad_grid_list)
-    public void bubbleToList(){
+    public void bubbleToList() {
         initStudentListUI();
     }
 
     @OnClick(R.id.ad_list_grid)
-    public void ListTobubble(){
+    public void ListTobubble() {
 
-        initBubblesUI();
+        if (model.getCount() == 0) {
+            initBubblesUI();
+            int c = 1;
+            c += model.getCount();
+            model.setCount(c);
+        }
     }
     //endregion
 
+    public boolean areContentsTheSame(List<StudentMessage> oldList, StudentMessage newItem) {
+
+        for (StudentMessage ss : oldList) {
+            return ss.getStudentid().equals(newItem.getStudentid())
+                    && ss.getRegNo().equals(newItem.getRegNo());
+        }
+        return false;
+    }
 }
