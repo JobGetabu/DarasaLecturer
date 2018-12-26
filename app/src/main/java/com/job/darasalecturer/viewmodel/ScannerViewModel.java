@@ -4,6 +4,10 @@ import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.os.CountDownTimer;
 
+import com.job.darasalecturer.model.StudentMessage;
+
+import java.util.List;
+
 /**
  * Created by Job on Tuesday : 8/7/2018.
  */
@@ -12,6 +16,8 @@ public class ScannerViewModel extends ViewModel {
     private MediatorLiveData<String> timeLiveData = new MediatorLiveData<>();
 
     private MediatorLiveData<String> passcodeLiveData = new MediatorLiveData<>();
+
+    private MediatorLiveData<List<StudentMessage>> studentMessagesLiveData = new MediatorLiveData<>();
 
     public ScannerViewModel() {
         timer();
@@ -68,5 +74,13 @@ public class ScannerViewModel extends ViewModel {
     private String toSec(long millisUntilFinished){
         long remainedSecs = millisUntilFinished / 1000;
         return String.valueOf((remainedSecs % 60));
+    }
+
+    public MediatorLiveData<List<StudentMessage>> getStudentMessagesLiveData() {
+        return studentMessagesLiveData;
+    }
+
+    public void setStudentMessagesLiveData(List<StudentMessage> studentMessages) {
+        this.studentMessagesLiveData.setValue(studentMessages);
     }
 }

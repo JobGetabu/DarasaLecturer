@@ -28,4 +28,5 @@ public class ScanStudentAdapter extends GenericRecyclerViewAdapter<StudentMessag
         return new ScanStudentVH(view);
     }
 
+
 }
