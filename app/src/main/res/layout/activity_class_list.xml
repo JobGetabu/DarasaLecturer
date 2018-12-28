@@ -1,105 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/fragment_container"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_line"
     android:focusableInTouchMode="true">
 
 
-    <LinearLayout
-        android:id="@+id/table_test_container"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/stud_list_list_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@color/colorPrimary"
+        app:subtitle="Bs Food Science Year 2"
+        app:subtitleTextColor="#fff"
+        app:title="Class List"
+        app:titleTextColor="@android:color/white" />
 
-        <LinearLayout
-            android:id="@+id/search_field"
+    <include
+        layout="@layout/nostudents_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stud_list_list_toolbar" />
+
+    <LinearLayout
+        android:id="@+id/stud_list_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stud_list_list_toolbar"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/stud_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:weightSum="100">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/num_students"
+            android:fontFamily="@font/nunito_semibold"
+            android:textSize="16sp"
+            />
 
-            <EditText
-                android:id="@+id/query_string"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="40"
-                android:inputType="textNoSuggestions"/>
-
-            <Spinner
-                android:id="@+id/mood_spinner"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="30"
-                android:background="@android:color/transparent"
-                android:entries="@array/moods"/>
-
-            <Spinner
-                android:id="@+id/gender_spinner"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="30"
-                android:background="@android:color/transparent"
-                android:entries="@array/gender"/>
-        </LinearLayout>
-
-        <LinearLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/stud_list_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:weightSum="100">
-
-            <ImageButton
-                android:id="@+id/previous_button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                app:srcCompat="@drawable/ic_previous"/>
-
-            <EditText
-                android:id="@+id/page_number_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="20"
-                android:inputType="number"/>
-
-            <ImageButton
-                android:id="@+id/next_button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                app:srcCompat="@drawable/ic_next"/>
-
-            <TextView
-                android:id="@+id/table_details"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="50"/>
-
-            <Spinner
-                android:id="@+id/items_per_page_spinner"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="30"
-                android:background="@android:color/transparent"
-                android:entries="@array/items_per_page"/>
-        </LinearLayout>
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/stud_list_list_toolbar"
+            tools:listitem="@layout/single_class_list"
+            tools:visibility="visible" />
     </LinearLayout>
 
-    <com.evrencoskun.tableview.TableView
-        android:id="@+id/tableview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
 
-        app:column_header_height="@dimen/table_view_cell_height"
-        app:row_header_width="@dimen/table_view_row_header_width"
-        app:selected_color="@color/selected_background_color"
-        app:shadow_color="@color/shadow_background_color"
-        app:unselected_color="@color/unselected_background_color"
-        app:separator_color="@color/separator_color"/>
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

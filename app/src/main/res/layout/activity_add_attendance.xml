@@ -50,7 +50,6 @@
     </HorizontalScrollView>
 
     <include
-        android:id="@+id/stud_no_student"
         layout="@layout/nostudents_layout"
         android:visibility="gone"
         android:layout_width="0dp"

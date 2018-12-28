@@ -57,6 +57,7 @@
 
     <string name="no_class_text">You\'ve no classes today. Take \na second to recharge</string>
     <string name="no_students_text">You\'ve no students showing. Update \nthe current semester in <u>settings</u> \n and hit save</string>
+    <string name="no_students_text_error">You\'ve no students showing up. \n students need to install Darasa Student app </string>
     <string name="email_us">Email us</string>
     <string name="huh_no_classes">Huh! No Classes</string>
     <string name="huh_no_students">Huh! No Students</string>
@@ -184,4 +185,6 @@
     <string name="scroll_to_row_position">Scroll to 5. row position</string>
     <string name="show_hide_the_column">Showing / Hiding 1. column</string>
     <string name="table_pagination_details">Page %s, showing items %s - %s.</string>
+
+    <string name="num_students">%d students</string>
 </resources>
