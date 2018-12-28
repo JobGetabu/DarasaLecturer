@@ -101,6 +101,7 @@
             android:name=".ui.AdvertClassActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".ui.settings.ClassListActivity"></activity>
+        <activity android:name=".ui.settings.AttendanceListActivity" />
     </application>
 
 </manifest>

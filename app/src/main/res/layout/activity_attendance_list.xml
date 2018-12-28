@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_line"
+    android:focusableInTouchMode="true">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/attn_list_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:subtitle="Bs Food Science Year 2"
+        app:subtitleTextColor="#fff"
+        app:title="Attendance List"
+        app:titleTextColor="@android:color/white" />
+
+    <include
+        layout="@layout/nostudents_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/attn_list_toolbar" />
+
+    <LinearLayout
+        android:id="@+id/attn_list_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/attn_list_toolbar"
+        tools:visibility="visible">
+
+       <include
+           layout="@layout/attendance_list_upperview"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/atn_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/attn_list_toolbar"
+            tools:listitem="@layout/single_class_list"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

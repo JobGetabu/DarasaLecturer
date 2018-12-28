@@ -187,4 +187,5 @@
     <string name="table_pagination_details">Page %s, showing items %s - %s.</string>
 
     <string name="num_students">%d students</string>
+    <string name="num_students_vs">%d students / %d</string>
 </resources>
