@@ -1,5 +1,7 @@
 package com.job.darasalecturer.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Keep;
 
 /**
@@ -7,7 +9,7 @@ import android.support.annotation.Keep;
  */
 
 @Keep
-public class LecTeach {
+public class LecTeach implements Parcelable {
     private String lecid;
     private String lecteachid;
     private String unitcode;
@@ -134,4 +136,49 @@ public class LecTeach {
                 ", department='" + department + '\'' +
                 '}';
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.lecid);
+        dest.writeString(this.lecteachid);
+        dest.writeString(this.unitcode);
+        dest.writeString(this.unitname);
+        dest.writeString(this.semester);
+        dest.writeString(this.studyyear);
+        dest.writeString(this.academicyear);
+        dest.writeValue(this.combiner);
+        dest.writeString(this.school);
+        dest.writeString(this.department);
+    }
+
+    protected LecTeach(Parcel in) {
+        this.lecid = in.readString();
+        this.lecteachid = in.readString();
+        this.unitcode = in.readString();
+        this.unitname = in.readString();
+        this.semester = in.readString();
+        this.studyyear = in.readString();
+        this.academicyear = in.readString();
+        this.combiner = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.school = in.readString();
+        this.department = in.readString();
+    }
+
+    public static final Parcelable.Creator<LecTeach> CREATOR = new Parcelable.Creator<LecTeach>() {
+        @Override
+        public LecTeach createFromParcel(Parcel source) {
+            return new LecTeach(source);
+        }
+
+        @Override
+        public LecTeach[] newArray(int size) {
+            return new LecTeach[size];
+        }
+    };
 }
