@@ -119,6 +119,14 @@ public class AddAttendanceActivity extends AppCompatActivity implements OnRecycl
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(AppCompatResources.getDrawable(this, R.drawable.ic_back));
 
+        studToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AddAttendanceActivity.this,MainActivity.class));
+                finish();
+            }
+        });
+
         //firebase
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();

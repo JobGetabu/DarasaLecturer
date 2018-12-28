@@ -143,7 +143,6 @@ public class ClassListBottomSheet extends BottomSheetDialogFragment
 
         if (validate()) {
 
-            Toast.makeText(getContext(), courseYearList.get(0).toString(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getContext(),ClassListActivity.class);
             intent.putExtra(COURSE_EXTRA,courseYearList.get(0).getCourse());
             intent.putExtra(YEAROFSTUDY_EXTRA,courseYearList.get(0).getYearofstudy());
