@@ -26,6 +26,7 @@ import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.DoneClasses;
 import com.job.darasalecturer.model.LecTeachTime;
+import com.job.darasalecturer.model.SavedClasses;
 import com.job.darasalecturer.model.Timetable;
 import com.job.darasalecturer.ui.MainActivity;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
@@ -44,6 +45,7 @@ import static com.job.darasalecturer.util.Constants.DONECLASSES;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOURSESUBCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
+import static com.job.darasalecturer.util.Constants.SAVEDCLASSESCOL;
 import static com.job.darasalecturer.util.Constants.TIMETTCOL;
 
 /**
@@ -181,16 +183,25 @@ public class StepXinfoFragment extends Fragment {
             //set up DoneClasses db
             DoneClasses doneClasses = new DoneClasses();
 
+            //set up SavedClasses db
+            SavedClasses savedClasses = new SavedClasses();
+            DocumentReference savedRef = mFirestore.collection(SAVEDCLASSESCOL).document("classes");
+
             // Get a new write batch
             WriteBatch batch = mFirestore.batch();
+
 
             // Set the value of lecteach
             DocumentReference lecteachRef =  mFirestore.collection(LECTEACHCOL).document(lecteachid);
             batch.set(lecteachRef, model.getLecTeachMediatorLiveData().getValue());
+            //set the value for lecteachtime
             DocumentReference lecteachtimeRef =  mFirestore.collection(LECTEACHTIMECOL).document(lecteachtimeid);
             batch.set(lecteachtimeRef, model.getLecTeachTimeMediatorLiveData().getValue());
+            //set the value for doneclasses
             DocumentReference doneClassRef =  mFirestore.collection(DONECLASSES).document(lecteachid);
             batch.set(doneClassRef, doneClasses);
+            //set the value for savedclasses
+            batch.set(savedRef,savedClasses);
 
 
             DocumentReference courseRef =  mFirestore.collection(LECTEACHCOL).document(lecteachid)
