@@ -51,11 +51,11 @@ public class ClassListActivity extends AppCompatActivity {
     LinearLayout containerView;
     @BindView(R.id.stud_count)
     TextView studCount;
-
-
-    FirestoreRecyclerAdapter adapter;
     @BindView(R.id.textView_to_current_settings)
     TextView textViewToCurrentSettings;
+
+
+    private FirestoreRecyclerAdapter adapter;
 
     @Override
     protected void onStart() {
