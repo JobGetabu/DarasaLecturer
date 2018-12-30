@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Transaction;
+import com.google.firebase.firestore.WriteBatch;
 import com.job.darasalecturer.util.NotificationUtil;
 
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import static com.job.darasalecturer.util.Constants.DONECLASSES;
+import static com.job.darasalecturer.util.Constants.SAVEDCLASSESCOL;
 
 /**
  * Created by Job on Friday : 10/19/2018.
@@ -76,14 +78,24 @@ public class TransactionWorker extends Worker {
 
     private void doTheTransaction(final MyResultCallback resultCallback, final String lecteachid, final String lecteachtimeid, final String unitname, String unitcode) {
 
+        WriteBatch batch = mFirestore.batch();
+
+        DocumentReference savedRef = mFirestore.collection(SAVEDCLASSESCOL).document(lecteachid);
+        DocumentReference doneRef = mFirestore.collection(DONECLASSES).document(lecteachid);
+
+        // Atomically add a new timestamp to the "classes" array field.
+        //savedRef.update("classes", FieldValue.arrayUnion(FieldValue.serverTimestamp()));
+
         Map<String, Object> doneClassMAp = new HashMap<>();
         doneClassMAp.put("lecteachtimeid",lecteachtimeid);
         doneClassMAp.put("lecteachid", lecteachid);
         doneClassMAp.put("unitname", unitname);
         doneClassMAp.put("unitcode", unitcode);
 
-        mFirestore.collection(DONECLASSES).document(lecteachid)
-                .update(doneClassMAp)
+        batch.update(doneRef,doneClassMAp);
+
+        batch
+                .commit()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
