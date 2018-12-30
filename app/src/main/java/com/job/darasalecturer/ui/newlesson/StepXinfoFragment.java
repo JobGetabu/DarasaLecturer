@@ -26,7 +26,6 @@ import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.CourseYear;
 import com.job.darasalecturer.model.DoneClasses;
 import com.job.darasalecturer.model.LecTeachTime;
-import com.job.darasalecturer.model.SavedClasses;
 import com.job.darasalecturer.model.Timetable;
 import com.job.darasalecturer.ui.MainActivity;
 import com.job.darasalecturer.viewmodel.AddClassViewModel;
@@ -184,8 +183,10 @@ public class StepXinfoFragment extends Fragment {
             DoneClasses doneClasses = new DoneClasses();
 
             //set up SavedClasses db
-            SavedClasses savedClasses = new SavedClasses();
-            DocumentReference savedRef = mFirestore.collection(SAVEDCLASSESCOL).document("classes");
+            Map<String, Object> savedClasses = new HashMap<>();
+            savedClasses.put("1","");
+
+            DocumentReference savedRef = mFirestore.collection(SAVEDCLASSESCOL).document(lecteachid);
 
             // Get a new write batch
             WriteBatch batch = mFirestore.batch();
