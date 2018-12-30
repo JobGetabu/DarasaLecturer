@@ -21,7 +21,6 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import static com.job.darasalecturer.util.Constants.DONECLASSES;
-import static com.job.darasalecturer.util.Constants.SAVEDCLASSESCOL;
 
 /**
  * Created by Job on Friday : 10/19/2018.
@@ -80,11 +79,7 @@ public class TransactionWorker extends Worker {
 
         WriteBatch batch = mFirestore.batch();
 
-        DocumentReference savedRef = mFirestore.collection(SAVEDCLASSESCOL).document(lecteachid);
         DocumentReference doneRef = mFirestore.collection(DONECLASSES).document(lecteachid);
-
-        // Atomically add a new timestamp to the "classes" array field.
-        //savedRef.update("classes", FieldValue.arrayUnion(FieldValue.serverTimestamp()));
 
         Map<String, Object> doneClassMAp = new HashMap<>();
         doneClassMAp.put("lecteachtimeid",lecteachtimeid);
