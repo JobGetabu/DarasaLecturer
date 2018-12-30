@@ -184,7 +184,7 @@ public class StepXinfoFragment extends Fragment {
 
             //set up SavedClasses db
             Map<String, Object> savedClasses = new HashMap<>();
-            savedClasses.put("1","");
+            savedClasses.put("1","No class yet");
 
             DocumentReference savedRef = mFirestore.collection(SAVEDCLASSESCOL).document(lecteachid);
 
