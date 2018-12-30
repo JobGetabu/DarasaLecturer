@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.hbb20.GThumb;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.StudentDetails;
+import com.job.darasalecturer.model.StudentScanClass;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +43,13 @@ public class StudentListVH extends RecyclerView.ViewHolder {
         attnStudName.setText(model.getFirstname() + " " + model.getLastname());
         attnRegNo.setText(model.getRegnumber());
         attnGthumb.loadThumbForName(model.getPhotourl(), model.getFirstname(), model.getLastname());
+
+    }
+
+    public void setUpUi(StudentScanClass model) {
+        attnStudName.setText(model.getStudname());
+        attnRegNo.setText(model.getRegno());
+        attnGthumb.loadThumbForName("",model.getStudname());
 
     }
 }
