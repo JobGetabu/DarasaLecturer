@@ -46,6 +46,7 @@ import butterknife.Unbinder;
 import static com.job.darasalecturer.util.Constants.DONECLASSES;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
+import static com.job.darasalecturer.util.Constants.SAVEDCLASSESCOL;
 import static com.job.darasalecturer.util.Constants.TIMETTCOL;
 
 /**
@@ -249,6 +250,7 @@ public class ClassListFragment extends AppCompatDialogFragment {
                                     deleteLecTeachTime(teach.getLecteachid());
                                     deleteTimetables(teach.getLecteachid());
                                     deleteDoneClasses(teach.getLecteachid());
+                                    deleteSavedClasses(teach.getLecteachid());
 
                                     dismiss();
 
@@ -307,6 +309,16 @@ public class ClassListFragment extends AppCompatDialogFragment {
                         });
     }
 
+    private void deleteSavedClasses(final String lecteachid) {
+        mFirestore.collection(SAVEDCLASSESCOL).document(lecteachid).get()
+                .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forBackgroundTasks(),
+                        new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                mFirestore.collection(SAVEDCLASSESCOL).document(documentSnapshot.getId()).delete();
+                            }
+                        });
+    }
     @OnClick(R.id.frg_class_dismiss)
     public void onFrgClassDismissClicked() {
         dismiss();
