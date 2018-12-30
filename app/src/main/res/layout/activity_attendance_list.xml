@@ -19,43 +19,98 @@
         app:titleTextColor="@android:color/white" />
 
     <include
-        layout="@layout/nostudents_layout"
+        layout="@layout/nostudents_small_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="visible"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/attn_list_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/atn_course"
+        />
 
-    <LinearLayout
-        android:id="@+id/attn_list_container"
+    <TextView
+        android:id="@+id/atn_stud_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/nunito_semibold"
+        tools:text="@string/num_students_vs"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/attn_list_toolbar"/>
+
+    <TextView
+        android:id="@+id/atn_date"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/nunito_semibold"
+        tools:text="Mon, 29, Dec, 18"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/atn_btn_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/atn_stud_count" />
+
+    <TextView
+        android:id="@+id/atn_course"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/nunito_semibold"
+        tools:text="Bs Food Science"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/atn_btn_date"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/atn_date" />
+
+    <ImageButton
+        android:id="@+id/atn_btn_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/content_desc_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/atn_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/atn_date"
+        app:srcCompat="@drawable/ic_down" />
+
+    <ImageButton
+        android:id="@+id/atn_btn_course"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/content_desc_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/atn_course"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/atn_course"
+        app:srcCompat="@drawable/ic_down" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/atn_list"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:orientation="vertical"
+        android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/attn_list_toolbar"
-        tools:visibility="visible">
-
-       <include
-           layout="@layout/attendance_list_upperview"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/atn_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/attn_list_toolbar"
-            tools:listitem="@layout/single_class_list"
-            tools:visibility="visible" />
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/atn_course"
+        tools:listitem="@layout/single_class_list"
+        tools:visibility="gone"
+        />
 
 
 </android.support.constraint.ConstraintLayout>
