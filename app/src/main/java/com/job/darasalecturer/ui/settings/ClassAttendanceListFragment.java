@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -38,6 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.job.darasalecturer.ui.settings.AttendanceListActivity.LECTEACH_EXTRA;
 import static com.job.darasalecturer.util.Constants.LECTEACHCOL;
 
 /**
@@ -224,6 +226,16 @@ public class ClassAttendanceListFragment extends AppCompatDialogFragment {
             Toast.makeText(getContext(), "Select only one unit", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        if ( unitsViewModel.getLecTeachList().getValue().get(0) == null){
+            Toast.makeText(getContext(), "Empty unit", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(getContext(), AttendanceListActivity.class);
+        intent.putExtra(LECTEACH_EXTRA,unitsViewModel.getLecTeachList().getValue().get(0));
+        startActivity(intent);
+        dismiss();
     }
 
     @OnClick(R.id.frg_class_dismiss)
