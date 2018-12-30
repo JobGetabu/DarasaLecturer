@@ -23,6 +23,7 @@ public class Constants {
     public static final String STUDENTDETAILSCOL = "StudentDetails";
     public static final String STUDENTSCANCLASSCOL = "StudentScanClass";
     public static final String TIMETTCOL = "Timetable";
+    public static final String SAVEDCLASSESCOL = "SavedClasses";
     public static final String DKUTCOURSES = "DkutCourses";
     public static final String NOTIFICATIONCOL = "Notification";
     public static final String DATE_SCAN_FORMAT = "yyyy-MM-dd";
