@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/attn_upperview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/attn_upperview"
     >
 
     <TextView
@@ -16,8 +14,6 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/nunito_semibold"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
         android:text="@string/num_students_vs"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
