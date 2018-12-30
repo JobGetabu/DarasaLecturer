@@ -1,28 +1,64 @@
 package com.job.darasalecturer.model;
 
-import com.google.firebase.Timestamp;
-
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Job on Sunday : 12/30/2018.
  * holds the dates of saved classes atomically added or removed
  */
 public class SavedClasses {
-    private List<Timestamp> classes;
+  private int number;
+  private Date date;
+  private String formatedDate;
 
     public SavedClasses() {
     }
 
-    public SavedClasses(List<Timestamp> classes) {
-        this.classes = classes;
+    public SavedClasses(int number, Date date, String formatedDate) {
+        this.number = number;
+        this.date = date;
+        this.formatedDate = formatedDate;
     }
 
-    public List<Timestamp> getClasses() {
-        return classes;
+    public int getNumber() {
+        return number;
     }
 
-    public void setClasses(List<Timestamp> classes) {
-        this.classes = classes;
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getFormatedDate() {
+        return formatedDate;
+    }
+
+    public void setFormatedDate(String formatedDate) {
+        this.formatedDate = formatedDate;
+    }
+
+    public static String formatDate(Date date){
+
+        //"EEE, MMM d, ''yy"     =>  Wed, Jul 4, '01
+        DateFormat dateFormat2 = new SimpleDateFormat("EEE, MMM d, ''yy");
+        return  (dateFormat2.format(date));
+    }
+
+    @Override
+    public String toString() {
+        return "SavedClasses{" +
+                "number=" + number +
+                ", date=" + date +
+                ", formatedDate='" + formatedDate + '\'' +
+                '}';
     }
 }
