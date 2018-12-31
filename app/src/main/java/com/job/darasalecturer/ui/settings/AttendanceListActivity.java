@@ -60,6 +60,7 @@ import static com.job.darasalecturer.util.Constants.CURRENT_SEM_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.CURRENT_YEAR_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasalecturer.util.Constants.SAVEDCLASSESCOL;
+import static com.job.darasalecturer.util.Constants.STUDENTDETAILSCOL;
 import static com.job.darasalecturer.util.Constants.STUDENTSCANCLASSCOL;
 
 public class AttendanceListActivity extends AppCompatActivity {
@@ -94,6 +95,7 @@ public class AttendanceListActivity extends AppCompatActivity {
     private String querydate;
     private String mCourse;
     private int mYos;
+    private int mStudCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,12 +223,12 @@ public class AttendanceListActivity extends AppCompatActivity {
                                                 if (lecTeachTime != null) {
 
                                                     mCourse = lecTeachTime.getCourses().get(0).getCourse();
-                                                    mYos =  lecTeachTime.getCourses().get(0).getYearofstudy();
+                                                    mYos = lecTeachTime.getCourses().get(0).getYearofstudy();
 
                                                     loadDates(lecteachid);
                                                     loadUpUI(AttendanceListUIModel.loadCourses(lecTeachTime.getCourses()).get(0));
                                                     setUpList(lecTeachTime.getCourses().get(0).getCourse(),
-                                                            lecTeachTime.getCourses().get(0).getYearofstudy(),querydate);
+                                                            lecTeachTime.getCourses().get(0).getYearofstudy(), querydate);
                                                 }
                                             }
                                         })
@@ -242,12 +244,12 @@ public class AttendanceListActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         pDialog.dismiss();
-                        DoSnack.errorPrompt(AttendanceListActivity.this,"Loading failed",e.getMessage());
+                        DoSnack.errorPrompt(AttendanceListActivity.this, "Loading failed", e.getMessage());
                     }
                 });
     }
 
-    private void setUpList(String course, int yearofstudy, String querydate) {
+    private void setUpList(final String course, final int yearofstudy, String querydate) {
 
         SharedPreferences preferences = getSharedPreferences(getApplicationContext().getPackageName(), MODE_PRIVATE);
         final String currentsemester = preferences.getString(CURRENT_SEM_PREF_NAME, "0");
@@ -258,12 +260,12 @@ public class AttendanceListActivity extends AppCompatActivity {
                 .whereEqualTo("semester", currentsemester)
                 .whereEqualTo("course", course)
                 .whereEqualTo("yearofstudy", String.valueOf(yearofstudy))
-                .whereEqualTo("querydate",querydate)
+                .whereEqualTo("querydate", querydate)
                 .orderBy("regno", Query.Direction.ASCENDING);
 
-        Log.d(TAG, "setUpList: "+" currentyear ="+ currentyear+" querydate ="+querydate +
-                "course = " +course + " yearofstudy = "+ String.valueOf(yearofstudy)
-        +"currentsemester = "+ currentsemester
+        Log.d(TAG, "setUpList: " + " currentyear =" + currentyear + " querydate =" + querydate +
+                "course = " + course + " yearofstudy = " + String.valueOf(yearofstudy)
+                + "currentsemester = " + currentsemester
         );
 
         FirestoreRecyclerOptions<StudentScanClass> options = new FirestoreRecyclerOptions.Builder<StudentScanClass>()
@@ -302,12 +304,24 @@ public class AttendanceListActivity extends AppCompatActivity {
                 if (getItemCount() == 0) {
                     atnList.setVisibility(View.GONE);
                     noStudView.setVisibility(View.VISIBLE);
-                    atnStudCount.setText(getString(R.string.num_students_vs, getItemCount(), 0));
+                    atnStudCount.setText(getString(R.string.num_students_vs, getItemCount(), mStudCount)); calculateCount(course, yearofstudy, new StudentCountCallback() {
+                        @Override
+                        public void onSuccess(int value) {
+                            atnStudCount.setText(getString(R.string.num_students_vs, getItemCount(), value));
+                        }
+                    });
+
                 } else {
 
                     atnList.setVisibility(View.VISIBLE);
                     noStudView.setVisibility(View.GONE);
-                    atnStudCount.setText(getString(R.string.num_students_vs, getItemCount(), 0));
+                    calculateCount(course, yearofstudy, new StudentCountCallback() {
+                        @Override
+                        public void onSuccess(int value) {
+                            atnStudCount.setText(getString(R.string.num_students_vs, getItemCount(), value));
+                        }
+                    });
+
                 }
 
             }
@@ -316,6 +330,7 @@ public class AttendanceListActivity extends AppCompatActivity {
 
         adapter.startListening();
         adapter.notifyDataSetChanged();
+        atnList.setAdapter(adapter);
 
     }
 
@@ -377,7 +392,7 @@ public class AttendanceListActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 pDialog.dismiss();
-                DoSnack.errorPrompt(AttendanceListActivity.this,"Loading failed",e.getMessage());
+                DoSnack.errorPrompt(AttendanceListActivity.this, "Loading failed", e.getMessage());
             }
         });
     }
@@ -427,7 +442,7 @@ public class AttendanceListActivity extends AppCompatActivity {
 
             atnDate.setText(item.getTitle());
             querydate = item.getKey();
-            setUpList(mCourse, mYos ,querydate);
+            setUpList(mCourse, mYos, querydate);
 
             if (customPowerMenuDates.isShowing()) {
                 customPowerMenuDates.dismiss();
@@ -439,11 +454,40 @@ public class AttendanceListActivity extends AppCompatActivity {
         @Override
         public void onItemClick(int position, IconPowerMenuCourse item) {
 
-            loadUpUI(item.getTitle());
-            setUpList(item.getTitle(), Integer.parseInt(item.getKey()),querydate);
+            mCourse = item.getTitle();
+            mYos = Integer.parseInt(item.getKey());
+
+            loadUpUI(item.getTitle() + " - " + item.getKey());
+            setUpList(item.getTitle(), Integer.parseInt(item.getKey()), querydate);
             if (customPowerMenuCourse.isShowing()) {
                 customPowerMenuCourse.dismiss();
             }
         }
     };
+
+    private void calculateCount(String course, int yos, final StudentCountCallback callback) {
+        SharedPreferences preferences = getSharedPreferences(getApplicationContext().getPackageName(), MODE_PRIVATE);
+        final String currentsemester = preferences.getString(CURRENT_SEM_PREF_NAME, "0");
+        final String currentyear = preferences.getString(CURRENT_YEAR_PREF_NAME, "2000");
+
+        Query query = FirebaseFirestore.getInstance().collection(STUDENTDETAILSCOL)
+                .whereEqualTo("currentyear", currentyear)
+                .whereEqualTo("currentsemester", currentsemester)
+                .whereEqualTo("course", course)
+                .whereEqualTo("yearofstudy", String.valueOf(yos))
+                .orderBy("regnumber", Query.Direction.ASCENDING);
+
+        query.get().addOnSuccessListener(DefaultExecutorSupplier.getInstance().forBackgroundTasks(),
+                new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        mStudCount = queryDocumentSnapshots.size();
+                        callback.onSuccess(mStudCount);
+                    }
+                });
+    }
+
+    interface StudentCountCallback {
+        void onSuccess(int value);
+    }
 }
