@@ -1,8 +1,14 @@
 package com.job.darasalecturer.util;
 
-import com.job.darasalecturer.model.CourseYear;
+import android.util.Log;
 
+import com.job.darasalecturer.model.CourseYear;
+import com.job.darasalecturer.model.SavedClasses;
+
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,5 +29,33 @@ public class CoursesProvider {
         }
 
         return courseYears;
+    }
+
+    public static List<SavedClasses> jsonWorkerSavedClasses(Map<String, Object> savedObject) {
+
+        ArrayList<SavedClasses> dateKindObj = new ArrayList<>();
+
+        for (int i = 1; i < savedObject.size(); i++) {
+            Map<String, Object> zero = (Map<String, Object>) savedObject.get(String.valueOf(i));
+
+            SavedClasses savedClasses = new SavedClasses();
+            Log.d("TTT", "jsonWorkerSavedClasses: "+i);
+            Log.d("TTT", "jsonWorkerSavedClasses: "+(Date)zero.get(i));
+
+            /*savedClasses.setDate((Date) zero.get(i));
+            savedClasses.setNumber(i);
+            savedClasses.setFormatedDate(SavedClasses.formatDate(savedClasses.getDate()));*/
+
+            dateKindObj.add(savedClasses);
+        }
+
+        return dateKindObj;
+    }
+
+    public static List<Timestamp> jsonWorkerSavedClasses(List<Timestamp> ts) {
+
+        ArrayList<Timestamp> dateKindObj = new ArrayList<>(ts);
+
+        return dateKindObj;
     }
 }
