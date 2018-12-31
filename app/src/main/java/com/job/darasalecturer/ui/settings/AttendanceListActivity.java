@@ -96,6 +96,7 @@ public class AttendanceListActivity extends AppCompatActivity {
     private String mCourse;
     private int mYos;
     private int mStudCount;
+    private String lecteachtimeid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,11 +225,12 @@ public class AttendanceListActivity extends AppCompatActivity {
 
                                                     mCourse = lecTeachTime.getCourses().get(0).getCourse();
                                                     mYos = lecTeachTime.getCourses().get(0).getYearofstudy();
+                                                    lecteachtimeid = lecTeachTime.getLecteachtimeid();
 
                                                     loadDates(lecteachid);
                                                     loadUpUI(AttendanceListUIModel.loadCourses(lecTeachTime.getCourses()).get(0));
                                                     setUpList(lecTeachTime.getCourses().get(0).getCourse(),
-                                                            lecTeachTime.getCourses().get(0).getYearofstudy(), querydate);
+                                                            lecTeachTime.getCourses().get(0).getYearofstudy(), querydate,lecteachtimeid);
                                                 }
                                             }
                                         })
@@ -249,7 +251,7 @@ public class AttendanceListActivity extends AppCompatActivity {
                 });
     }
 
-    private void setUpList(final String course, final int yearofstudy, String querydate) {
+    private void setUpList(final String course, final int yearofstudy, String querydate,String lecteachtimeid) {
 
         SharedPreferences preferences = getSharedPreferences(getApplicationContext().getPackageName(), MODE_PRIVATE);
         final String currentsemester = preferences.getString(CURRENT_SEM_PREF_NAME, "0");
@@ -259,6 +261,7 @@ public class AttendanceListActivity extends AppCompatActivity {
                 .whereEqualTo("year", currentyear)
                 .whereEqualTo("semester", currentsemester)
                 .whereEqualTo("course", course)
+                .whereEqualTo("lecteachtimeid", lecteachtimeid)
                 .whereEqualTo("yearofstudy", String.valueOf(yearofstudy))
                 .whereEqualTo("querydate", querydate)
                 .orderBy("regno", Query.Direction.ASCENDING);
@@ -442,7 +445,7 @@ public class AttendanceListActivity extends AppCompatActivity {
 
             atnDate.setText(item.getTitle());
             querydate = item.getKey();
-            setUpList(mCourse, mYos, querydate);
+            setUpList(mCourse, mYos, querydate,lecteachtimeid);
 
             if (customPowerMenuDates.isShowing()) {
                 customPowerMenuDates.dismiss();
@@ -458,7 +461,7 @@ public class AttendanceListActivity extends AppCompatActivity {
             mYos = Integer.parseInt(item.getKey());
 
             loadUpUI(item.getTitle() + " - " + item.getKey());
-            setUpList(item.getTitle(), Integer.parseInt(item.getKey()), querydate);
+            setUpList(item.getTitle(), Integer.parseInt(item.getKey()), querydate,lecteachtimeid);
             if (customPowerMenuCourse.isShowing()) {
                 customPowerMenuCourse.dismiss();
             }
