@@ -6,6 +6,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.job.darasalecturer.util.Constants.DATE_SCAN_FORMAT;
+
 /**
  * Created by Job on Sunday : 12/30/2018.
  * holds the dates of saved classes atomically added or removed
@@ -53,6 +55,13 @@ public class SavedClasses {
 
         //"EEE, MMM d, ''yy"     =>  Wed, Jul 4, '01
         DateFormat dateFormat2 = new SimpleDateFormat("EEE, MMM d, ''yy");
+        return  (dateFormat2.format(date));
+    }
+
+    public static String formatDateKey(Date date){
+
+        //"EEE, MMM d, ''yy"     =>  Wed, Jul 4, '01
+        DateFormat dateFormat2 = new SimpleDateFormat(DATE_SCAN_FORMAT);
         return  (dateFormat2.format(date));
     }
 
