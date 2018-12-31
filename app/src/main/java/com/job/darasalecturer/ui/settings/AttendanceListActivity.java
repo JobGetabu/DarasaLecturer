@@ -27,6 +27,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -35,12 +36,16 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.AttendanceListUIModel;
-import com.job.darasalecturer.model.DoneClasses;
 import com.job.darasalecturer.model.LecTeach;
 import com.job.darasalecturer.model.LecTeachTime;
+import com.job.darasalecturer.model.SavedClasses;
 import com.job.darasalecturer.model.StudentScanClass;
 import com.job.darasalecturer.ui.MainActivity;
 import com.job.darasalecturer.util.StudentListVH;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +56,7 @@ import static com.job.darasalecturer.util.Constants.CURRENT_SEM_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.CURRENT_YEAR_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.DONECLASSES;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
+import static com.job.darasalecturer.util.Constants.SAVEDCLASSESCOL;
 import static com.job.darasalecturer.util.Constants.STUDENTSCANCLASSCOL;
 
 public class AttendanceListActivity extends AppCompatActivity {
@@ -127,12 +133,41 @@ public class AttendanceListActivity extends AppCompatActivity {
         atnCourse.setText(courseyos);
     }
 
+    private void loadUpUI(Date date) {
+        String datef = SavedClasses.formatDate(date);
+        atnDate.setText(datef);
+    }
+
     private void preCourseUI(boolean comb) {
         if (comb) {
             atnBtnCourse.setVisibility(View.VISIBLE);
         } else {
             atnBtnCourse.setVisibility(View.GONE);
         }
+    }
+
+    private void loadDates(final String lecteachid){
+        FirebaseFirestore.getInstance().collection(SAVEDCLASSESCOL).document(lecteachid)
+                .get()
+                .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forMainThreadTasks(),
+                        new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(final DocumentSnapshot docSnapshot) {
+
+                                List<Timestamp> timestamps = new ArrayList<>();
+                                for (int i = 1; ; i++) {
+                                    Timestamp timestamp = docSnapshot.getTimestamp(String.valueOf(i));
+                                    if (timestamp != null){
+                                        timestamps.add(timestamp);
+
+                                    }else {
+                                        break;
+                                    }
+                                }
+
+                                loadUpUI(timestamps.get(0).toDate());
+                            }
+                        });
     }
 
     private void loadData(final String lecteachid) {
@@ -163,6 +198,7 @@ public class AttendanceListActivity extends AppCompatActivity {
 
                                                 if (lecTeachTime != null) {
 
+                                                    loadDates(lecteachid);
                                                     loadUpUI(AttendanceListUIModel.loadCourses(lecTeachTime.getCourses()).get(0));
                                                     setUpList(lecTeachTime.getCourses().get(0).getCourse(),
                                                             lecTeachTime.getCourses().get(0).getYearofstudy());
@@ -279,39 +315,61 @@ public class AttendanceListActivity extends AppCompatActivity {
         pDialog.setCancelable(false);
         pDialog.show();
 
-        FirebaseFirestore.getInstance().collection(DONECLASSES).document(lecteachid)
+        FirebaseFirestore.getInstance().collection(SAVEDCLASSESCOL).document(lecteachid)
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        pDialog.dismiss();
-                        DoneClasses doneClasses = documentSnapshot.toObject(DoneClasses.class);
+                .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forMainThreadTasks(),
+                        new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(final DocumentSnapshot docSnapshot) {
 
-                        //Creating the instance of PopupMenu
-                        final PopupMenu popup = new PopupMenu(AttendanceListActivity.this, atnBtnDate);
-                        //Inflating the Popup using xml file
-                        for (String s : AttendanceListUIModel.loadDates(AttendanceListActivity.this, doneClasses)) {
-                            popup.getMenu().add(s);
-                        }
-                        popup.setGravity(Gravity.BOTTOM);
+                                pDialog.dismiss();
 
-                        //registering popup with OnMenuItemClickListener
-                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            public boolean onMenuItemClick(MenuItem item) {
+                                List<Timestamp> timestamps = new ArrayList<>();
+                                for (int i = 1; ; i++) {
+                                    Timestamp timestamp = docSnapshot.getTimestamp(String.valueOf(i));
+                                    if (timestamp != null){
+                                        timestamps.add(timestamp);
 
-                                //courseYearList.get(position).setYearofstudy(Integer.parseInt(item.getTitle().toString()));
-                                adapter.notifyDataSetChanged();
-                                return true;
+                                    }else {
+                                        break;
+                                    }
+                                }
+
+                                loadUpUI(timestamps.get(0).toDate());
+
+                                //Creating the instance of PopupMenu
+                                final PopupMenu popup = new PopupMenu(AttendanceListActivity.this, atnBtnDate);
+                                //Inflating the Popup using xml file
+                                for (Timestamp ts : timestamps) {
+                                    String s = SavedClasses.formatDate(ts.toDate());
+                                    popup.getMenu().add(s);
+                                }
+                                popup.setGravity(Gravity.BOTTOM);
+
+                                //registering popup with OnMenuItemClickListener
+                                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                    public boolean onMenuItemClick(MenuItem item) {
+
+                                        //courseYearList.get(position).setYearofstudy(Integer.parseInt(item.getTitle().toString()));
+                                        adapter.notifyDataSetChanged();
+                                        return true;
+                                    }
+                                });
+
+                                popup.show(); //showing popup menu
+
                             }
-                        });
-
-                        popup.show(); //showing popup menu
-                    }
-                });
+                        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                pDialog.dismiss();
+            }
+        });
     }
 
     @OnClick(R.id.atn_btn_course)
-    public void dateOnCourse() {
+    public void courseOnClick() {
         final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
         pDialog.setTitleText("Loading attendance courses...");
