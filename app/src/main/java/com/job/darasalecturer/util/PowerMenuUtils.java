@@ -43,7 +43,7 @@ public class PowerMenuUtils {
     }
 
     public static CustomPowerMenu getDatesCustomDialogPowerMenu(Context context, LifecycleOwner lifecycleOwner,List<Timestamp> timestamps,
-                                                                  OnMenuItemClickListener<IconPowerMenuCourse> onIconCourseMenuItemClickListener) {
+                                                                  OnMenuItemClickListener<IconPowerMenuDate> onIconCourseMenuItemClickListener) {
 
         List<IconPowerMenuDate> iconPowerMenudates = new ArrayList<>();
 
