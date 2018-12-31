@@ -10,13 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -36,12 +33,19 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.appexecutor.DefaultExecutorSupplier;
 import com.job.darasalecturer.model.AttendanceListUIModel;
+import com.job.darasalecturer.model.CourseYear;
+import com.job.darasalecturer.model.IconPowerMenuCourse;
+import com.job.darasalecturer.model.IconPowerMenuDate;
 import com.job.darasalecturer.model.LecTeach;
 import com.job.darasalecturer.model.LecTeachTime;
 import com.job.darasalecturer.model.SavedClasses;
 import com.job.darasalecturer.model.StudentScanClass;
 import com.job.darasalecturer.ui.MainActivity;
+import com.job.darasalecturer.util.DoSnack;
+import com.job.darasalecturer.util.PowerMenuUtils;
 import com.job.darasalecturer.util.StudentListVH;
+import com.skydoves.powermenu.CustomPowerMenu;
+import com.skydoves.powermenu.OnMenuItemClickListener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,7 +58,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.job.darasalecturer.util.Constants.CURRENT_SEM_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.CURRENT_YEAR_PREF_NAME;
-import static com.job.darasalecturer.util.Constants.DONECLASSES;
 import static com.job.darasalecturer.util.Constants.LECTEACHTIMECOL;
 import static com.job.darasalecturer.util.Constants.SAVEDCLASSESCOL;
 import static com.job.darasalecturer.util.Constants.STUDENTSCANCLASSCOL;
@@ -86,6 +89,11 @@ public class AttendanceListActivity extends AppCompatActivity {
     private FirestoreRecyclerAdapter adapter;
     private LecTeach lecTeach;
     private String lecteachid;
+    private CustomPowerMenu customPowerMenuDates;
+    private CustomPowerMenu customPowerMenuCourse;
+    private String querydate;
+    private String mCourse;
+    private int mYos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +154,7 @@ public class AttendanceListActivity extends AppCompatActivity {
         }
     }
 
-    private void loadDates(final String lecteachid){
+    private void loadDates(final String lecteachid) {
         FirebaseFirestore.getInstance().collection(SAVEDCLASSESCOL).document(lecteachid)
                 .get()
                 .addOnSuccessListener(DefaultExecutorSupplier.getInstance().forMainThreadTasks(),
@@ -157,10 +165,10 @@ public class AttendanceListActivity extends AppCompatActivity {
                                 List<Timestamp> timestamps = new ArrayList<>();
                                 for (int i = 1; ; i++) {
                                     Timestamp timestamp = docSnapshot.getTimestamp(String.valueOf(i));
-                                    if (timestamp != null){
+                                    if (timestamp != null) {
                                         timestamps.add(timestamp);
 
-                                    }else {
+                                    } else {
                                         break;
                                     }
                                 }
@@ -177,14 +185,28 @@ public class AttendanceListActivity extends AppCompatActivity {
         pDialog.setCancelable(false);
         pDialog.show();
 
-        FirebaseFirestore.getInstance().collection(DONECLASSES).document(lecteachid)
+        FirebaseFirestore.getInstance().collection(SAVEDCLASSESCOL).document(lecteachid)
                 .get()
                 .addOnSuccessListener(
-                        DefaultExecutorSupplier.getInstance().forBackgroundTasks(),
+                        DefaultExecutorSupplier.getInstance().forMainThreadTasks(),
                         new OnSuccessListener<DocumentSnapshot>() {
                             @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                //done classes have loaded
+                            public void onSuccess(DocumentSnapshot docSnapshot) {
+                                //dates classes have loaded
+
+                                List<Timestamp> timestamps = new ArrayList<>();
+
+                                for (int i = 1; ; i++) {
+                                    Timestamp timestamp = docSnapshot.getTimestamp(String.valueOf(i));
+                                    if (timestamp != null) {
+                                        timestamps.add(timestamp);
+
+                                    } else {
+                                        break;
+                                    }
+                                }
+
+                                querydate = SavedClasses.formatDateKey(timestamps.get(0).toDate());
 
                                 FirebaseFirestore.getInstance().collection(LECTEACHTIMECOL)
                                         .whereEqualTo("lecteachid", lecteachid)
@@ -198,44 +220,51 @@ public class AttendanceListActivity extends AppCompatActivity {
 
                                                 if (lecTeachTime != null) {
 
+                                                    mCourse = lecTeachTime.getCourses().get(0).getCourse();
+                                                    mYos =  lecTeachTime.getCourses().get(0).getYearofstudy();
+
                                                     loadDates(lecteachid);
                                                     loadUpUI(AttendanceListUIModel.loadCourses(lecTeachTime.getCourses()).get(0));
                                                     setUpList(lecTeachTime.getCourses().get(0).getCourse(),
-                                                            lecTeachTime.getCourses().get(0).getYearofstudy());
+                                                            lecTeachTime.getCourses().get(0).getYearofstudy(),querydate);
                                                 }
                                             }
                                         })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.e(TAG, "onFailure: ",e );
-                                    }
-                                });
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.e(TAG, "onFailure: ", e);
+                                            }
+                                        });
                             }
                         })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
-                        pDialog.setTitleText("Loading attendance list...");
-                        pDialog.setCancelable(false);
-                        pDialog.show();
+                        pDialog.dismiss();
+                        DoSnack.errorPrompt(AttendanceListActivity.this,"Loading failed",e.getMessage());
                     }
                 });
     }
 
-    private void setUpList(String course, int yearofstudy) {
+    private void setUpList(String course, int yearofstudy, String querydate) {
 
         SharedPreferences preferences = getSharedPreferences(getApplicationContext().getPackageName(), MODE_PRIVATE);
         final String currentsemester = preferences.getString(CURRENT_SEM_PREF_NAME, "0");
         final String currentyear = preferences.getString(CURRENT_YEAR_PREF_NAME, "2000");
 
         Query query = FirebaseFirestore.getInstance().collection(STUDENTSCANCLASSCOL)
-                .whereEqualTo("currentyear", currentyear)
-                .whereEqualTo("currentsemester", currentsemester)
+                .whereEqualTo("year", currentyear)
+                .whereEqualTo("semester", currentsemester)
                 .whereEqualTo("course", course)
                 .whereEqualTo("yearofstudy", String.valueOf(yearofstudy))
-                .orderBy("regnumber", Query.Direction.ASCENDING);
+                .whereEqualTo("querydate",querydate)
+                .orderBy("regno", Query.Direction.ASCENDING);
+
+        Log.d(TAG, "setUpList: "+" currentyear ="+ currentyear+" querydate ="+querydate +
+                "course = " +course + " yearofstudy = "+ String.valueOf(yearofstudy)
+        +"currentsemester = "+ currentsemester
+        );
 
         FirestoreRecyclerOptions<StudentScanClass> options = new FirestoreRecyclerOptions.Builder<StudentScanClass>()
                 .setQuery(query, StudentScanClass.class)
@@ -273,12 +302,12 @@ public class AttendanceListActivity extends AppCompatActivity {
                 if (getItemCount() == 0) {
                     atnList.setVisibility(View.GONE);
                     noStudView.setVisibility(View.VISIBLE);
-                    atnStudCount.setText(getString(R.string.num_students_vs, getItemCount(),0));
+                    atnStudCount.setText(getString(R.string.num_students_vs, getItemCount(), 0));
                 } else {
 
                     atnList.setVisibility(View.VISIBLE);
                     noStudView.setVisibility(View.GONE);
-                    atnStudCount.setText(getString(R.string.num_students_vs, getItemCount(),0));
+                    atnStudCount.setText(getString(R.string.num_students_vs, getItemCount(), 0));
                 }
 
             }
@@ -287,7 +316,7 @@ public class AttendanceListActivity extends AppCompatActivity {
 
         adapter.startListening();
         adapter.notifyDataSetChanged();
-        atnList.setAdapter(adapter);
+
     }
 
     @Override
@@ -306,7 +335,7 @@ public class AttendanceListActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    @OnClick(R.id.atn_btn_date)
+    @OnClick({R.id.atn_btn_date, R.id.atn_date})
     public void dateOnClick() {
 
         final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
@@ -327,48 +356,33 @@ public class AttendanceListActivity extends AppCompatActivity {
                                 List<Timestamp> timestamps = new ArrayList<>();
                                 for (int i = 1; ; i++) {
                                     Timestamp timestamp = docSnapshot.getTimestamp(String.valueOf(i));
-                                    if (timestamp != null){
+                                    if (timestamp != null) {
                                         timestamps.add(timestamp);
 
-                                    }else {
+                                    } else {
                                         break;
                                     }
                                 }
 
-                                loadUpUI(timestamps.get(0).toDate());
-
                                 //Creating the instance of PopupMenu
-                                final PopupMenu popup = new PopupMenu(AttendanceListActivity.this, atnBtnDate);
-                                //Inflating the Popup using xml file
-                                for (Timestamp ts : timestamps) {
-                                    String s = SavedClasses.formatDate(ts.toDate());
-                                    popup.getMenu().add(s);
-                                }
-                                popup.setGravity(Gravity.BOTTOM);
+                                customPowerMenuDates = PowerMenuUtils.getDatesCustomDialogPowerMenu(AttendanceListActivity.this,
+                                        AttendanceListActivity.this, timestamps,
+                                        onIconDateMenuItemClickListener);
 
-                                //registering popup with OnMenuItemClickListener
-                                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                                    public boolean onMenuItemClick(MenuItem item) {
-
-                                        //courseYearList.get(position).setYearofstudy(Integer.parseInt(item.getTitle().toString()));
-                                        adapter.notifyDataSetChanged();
-                                        return true;
-                                    }
-                                });
-
-                                popup.show(); //showing popup menu
+                                customPowerMenuDates.setShowBackground(false);
+                                customPowerMenuDates.showAsAnchorRightBottom(atnDate);
 
                             }
                         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                pDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
                 pDialog.dismiss();
+                DoSnack.errorPrompt(AttendanceListActivity.this,"Loading failed",e.getMessage());
             }
         });
     }
 
-    @OnClick(R.id.atn_btn_course)
+    @OnClick({R.id.atn_btn_course, R.id.atn_course})
     public void courseOnClick() {
         final SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#FF5521"));
@@ -388,33 +402,48 @@ public class AttendanceListActivity extends AppCompatActivity {
 
                             pDialog.dismiss();
 
-                            //Creating the instance of PopupMenu
-                            final PopupMenu popup = new PopupMenu(AttendanceListActivity.this, atnBtnDate);
-                            //Inflating the Popup using xml file
-                            for (String s : AttendanceListUIModel.loadCourses(lecTeachTime.getCourses())) {
-                                popup.getMenu().add(s);
+                            List<IconPowerMenuCourse> iconPowerMenuCoures = new ArrayList<>();
+                            for (CourseYear s : lecTeachTime.getCourses()) {
+                                IconPowerMenuCourse ipmd = new IconPowerMenuCourse(String.valueOf(s.getYearofstudy()), s.getCourse());
+                                iconPowerMenuCoures.add(ipmd);
                             }
-                            popup.setGravity(Gravity.BOTTOM);
 
-                            //registering popup with OnMenuItemClickListener
-                            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                                public boolean onMenuItemClick(MenuItem item) {
 
-                                    int z = AttendanceListUIModel.coursePos(lecTeachTime.getCourses(),item.getTitle().toString());
-                                    //loadUpUI(AttendanceListUIModel.loadCourses(lecTeachTime.getCourses()).get(z));
+                            //Creating the instance of PopupMenu
+                            customPowerMenuCourse = PowerMenuUtils.getCoursesCustomDialogPowerMenu(AttendanceListActivity.this,
+                                    AttendanceListActivity.this, lecTeachTime.getCourses(),
+                                    onIconCourseMenuItemClickListener);
 
-                                    atnCourse.setText(item.getTitle().toString());
-
-                                    setUpList(lecTeachTime.getCourses().get(z).getCourse(), lecTeachTime.getCourses().get(z).getYearofstudy());
-
-                                    adapter.notifyDataSetChanged();
-                                    return true;
-                                }
-                            });
-
-                            popup.show(); //showing popup menu
+                            customPowerMenuCourse.setShowBackground(false);
+                            customPowerMenuCourse.showAsAnchorRightBottom(atnDate);
                         }
                     }
                 });
     }
+
+    private OnMenuItemClickListener<IconPowerMenuDate> onIconDateMenuItemClickListener = new OnMenuItemClickListener<IconPowerMenuDate>() {
+        @Override
+        public void onItemClick(int position, IconPowerMenuDate item) {
+
+            atnDate.setText(item.getTitle());
+            querydate = item.getKey();
+            setUpList(mCourse, mYos ,querydate);
+
+            if (customPowerMenuDates.isShowing()) {
+                customPowerMenuDates.dismiss();
+            }
+        }
+    };
+
+    private OnMenuItemClickListener<IconPowerMenuCourse> onIconCourseMenuItemClickListener = new OnMenuItemClickListener<IconPowerMenuCourse>() {
+        @Override
+        public void onItemClick(int position, IconPowerMenuCourse item) {
+
+            loadUpUI(item.getTitle());
+            setUpList(item.getTitle(), Integer.parseInt(item.getKey()),querydate);
+            if (customPowerMenuCourse.isShowing()) {
+                customPowerMenuCourse.dismiss();
+            }
+        }
+    };
 }
