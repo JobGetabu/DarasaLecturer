@@ -477,7 +477,7 @@ public class AttendanceListActivity extends AppCompatActivity {
                 .whereEqualTo("yearofstudy", String.valueOf(yos))
                 .orderBy("regnumber", Query.Direction.ASCENDING);
 
-        query.get().addOnSuccessListener(DefaultExecutorSupplier.getInstance().forBackgroundTasks(),
+        query.get().addOnSuccessListener(DefaultExecutorSupplier.getInstance().forMainThreadTasks(),
                 new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
