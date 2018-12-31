@@ -162,7 +162,8 @@ dependencies {
     //bubble-picker
     implementation 'com.github.hantrungkien:Bubble-Picker:v1.0.5.2'
 
-
+    //powermenu
+    implementation "com.github.skydoves:powermenu:2.0.5"
 
     //work manager
     //implementation "android.arch.work:work-runtime:1.0.0-alpha10"
