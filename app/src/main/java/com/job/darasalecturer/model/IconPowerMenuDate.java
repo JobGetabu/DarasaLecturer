@@ -1,13 +1,13 @@
-package com.job.darasalecturer.util;
+package com.job.darasalecturer.model;
 
 /**
  * Created by Job on Monday : 12/31/2018.
  */
-public class IconPowerMenuCourse {
+public class IconPowerMenuDate {
     private String key;
     private String title;
 
-    public IconPowerMenuCourse(String key, String title) {
+    public IconPowerMenuDate(String key, String title) {
         this.key = key;
         this.title = title;
     }
