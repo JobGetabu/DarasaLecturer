@@ -264,11 +264,6 @@ public class MainActivity extends AppCompatActivity {
         super.onOptionsItemSelected(item);
         int id = item.getItemId();
         switch (id) {
-            case R.id.hmenu_logout:
-                mAuth.signOut();
-
-                sendToLogin();
-                break;
 
             case R.id.hmenu_sendmessage:
                     messageClassPicker();
