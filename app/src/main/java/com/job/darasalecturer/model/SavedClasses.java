@@ -1,5 +1,7 @@
 package com.job.darasalecturer.model;
 
+import com.google.firebase.firestore.ServerTimestamp;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.Date;
  */
 public class SavedClasses {
   private int number;
+  @ServerTimestamp
   private Date date;
   private String formatedDate;
 
