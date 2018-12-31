@@ -3,11 +3,15 @@ package com.job.darasalecturer.ui.settings;
 import android.os.Bundle;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.job.darasalecturer.R;
+import com.job.darasalecturer.util.PowerMenuUtils;
+import com.skydoves.powermenu.CustomPowerMenu;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +29,7 @@ public class StatsMenuBottomSheet extends BottomSheetDialogFragment {
 
     private ClassListBottomSheet classListBottomSheet;
     private ClassAttendanceListFragment classAttendanceListFragment;
+    private  CustomPowerMenu powerMenu;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,6 +45,7 @@ public class StatsMenuBottomSheet extends BottomSheetDialogFragment {
 
         classListBottomSheet = new ClassListBottomSheet();
         classAttendanceListFragment = new ClassAttendanceListFragment();
+        initializeCustomDialogMenu();
     }
 
     @OnClick(R.id.frg_stats_classlist)
@@ -54,7 +60,17 @@ public class StatsMenuBottomSheet extends BottomSheetDialogFragment {
         dismiss();
     }
     @OnClick(R.id.frg_stats_studstarts)
-    public void studOnClick(){}
+    public void studOnClick(){
+
+        dismiss();
+        View layout = getActivity().findViewById(R.id.settings_main);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int widthLcl = (int) (displayMetrics.widthPixels*0.9f);
+        powerMenu.setWidth(widthLcl);
+        powerMenu.showAtCenter(layout);
+
+    }
 
     @Override
     public void onDestroyView() {
@@ -62,4 +78,22 @@ public class StatsMenuBottomSheet extends BottomSheetDialogFragment {
         unbinder.unbind();
     }
 
+    private void initializeCustomDialogMenu() {
+        powerMenu = PowerMenuUtils.getCustomDialogPowerMenu(getContext(), getActivity());
+        View footerView = powerMenu.getFooterView();
+        TextView textView_yes = footerView.findViewById(R.id.footer_yes);
+        textView_yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                powerMenu.dismiss();
+            }
+        });
+        TextView textView_no = footerView.findViewById(R.id.footer_dismiss);
+        textView_no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                powerMenu.dismiss();
+            }
+        });
+    }
 }

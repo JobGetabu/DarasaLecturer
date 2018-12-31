@@ -8,8 +8,4 @@
         app:showAsAction="ifRoom"
         android:title="@string/send_a_message" />
 
-    <item
-        android:id="@+id/hmenu_logout"
-        android:title="@string/logout" />
-
 </menu>
