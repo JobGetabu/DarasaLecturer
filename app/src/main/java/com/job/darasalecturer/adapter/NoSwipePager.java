@@ -1,9 +1,10 @@
 package com.job.darasalecturer.adapter;
 
 import android.content.Context;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * Created by Job on Thursday : 4/12/2018.

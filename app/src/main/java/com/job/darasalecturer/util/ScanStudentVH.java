@@ -1,7 +1,7 @@
 package com.job.darasalecturer.util;
 
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import android.view.View;
 import android.widget.TextView;
 

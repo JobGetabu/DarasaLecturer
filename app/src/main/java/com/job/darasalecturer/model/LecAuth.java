@@ -1,6 +1,6 @@
 package com.job.darasalecturer.model;
 
-import android.support.annotation.Keep;
+import androidx.annotation.Keep;
 
 /**
  * Created by Job on Wednesday : 8/8/2018.

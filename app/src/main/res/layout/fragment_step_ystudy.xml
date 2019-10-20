@@ -23,7 +23,7 @@
                 android:text="@string/select_studyyear_text"
                 android:textSize="18sp" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/step_ys_course_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

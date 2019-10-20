@@ -1,8 +1,11 @@
 package com.job.darasalecturer.service;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,9 +24,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
 
 import static com.job.darasalecturer.util.Constants.DATE_SCAN_FORMAT;
 import static com.job.darasalecturer.util.Constants.STUDENTSCANCLASSCOL;
@@ -77,7 +77,7 @@ public class AddAttendanceWorker extends Worker {
             doTheTransaction(new MyResultCallback() {
                 @Override
                 public Result onResultCallback(Result result) {
-                    Log.d(TAG, "onResultCallback: => Worker.Result " + result.name());
+                    Log.d(TAG, "onResultCallback: => Worker.Result " + result.toString());
 
                     return result;
                 }
@@ -87,7 +87,7 @@ public class AddAttendanceWorker extends Worker {
         }
 
 
-        return Result.FAILURE;
+        return Result.failure();
     }
 
     private void doTheTransaction(final MyResultCallback resultCallback, final List<StudentDetails> studentDetailsList ) {
@@ -140,7 +140,7 @@ public class AddAttendanceWorker extends Worker {
                         String message = studentDetailsList.size() +" students added";
                         new NotificationUtil().showStandardHeadsUpNotification(getApplicationContext(), title, message);
                         // Indicate success or failure with your return value:
-                        resultCallback.onResultCallback(Result.SUCCESS);
+                        resultCallback.onResultCallback(Result.success());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -148,15 +148,15 @@ public class AddAttendanceWorker extends Worker {
                 Log.w(TAG, "Transaction failure.  => Worker", e);
 
                 //do a reschedule of the transaction
-                resultCallback.onResultCallback(Result.RETRY);
+                resultCallback.onResultCallback(Result.retry());
             }
         });
 
 
-        resultCallback.onResultCallback(Result.SUCCESS);
+        resultCallback.onResultCallback(Result.success());
 
         if (studentDetailsList.isEmpty()){
-            resultCallback.onResultCallback(Result.FAILURE);
+            resultCallback.onResultCallback(Result.failure());
             Log.d(TAG, "doTheTransaction: empty list");
         }
     }

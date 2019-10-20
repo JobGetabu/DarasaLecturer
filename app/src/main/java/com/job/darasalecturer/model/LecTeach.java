@@ -2,7 +2,7 @@ package com.job.darasalecturer.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Keep;
+import androidx.annotation.Keep;
 
 /**
  * Created by Job on Tuesday : 7/24/2018.

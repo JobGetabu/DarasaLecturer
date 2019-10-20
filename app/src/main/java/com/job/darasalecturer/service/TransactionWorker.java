@@ -1,8 +1,11 @@
 package com.job.darasalecturer.service;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -16,9 +19,6 @@ import com.job.darasalecturer.util.NotificationUtil;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
 
 import static com.job.darasalecturer.util.Constants.DONECLASSES;
 
@@ -64,7 +64,7 @@ public class TransactionWorker extends Worker {
         doTheTransaction(new MyResultCallback() {
             @Override
             public Result onResultCallback(Result result) {
-                Log.d(TAG, "onResultCallback: => Worker.Result " + result.name());
+                Log.d(TAG, "onResultCallback: => Worker.Result " + result.toString());
 
                 return result;
             }
@@ -72,7 +72,7 @@ public class TransactionWorker extends Worker {
 
 
         //using failure cause it doesn't wait for our callback
-        return Result.FAILURE;
+        return Result.failure();
     }
 
     private void doTheTransaction(final MyResultCallback resultCallback, final String lecteachid, final String lecteachtimeid, final String unitname, String unitcode) {
@@ -114,7 +114,7 @@ public class TransactionWorker extends Worker {
                                 //show notification
 
                                 // Indicate success or failure with your return value:
-                                resultCallback.onResultCallback(Result.SUCCESS);
+                                resultCallback.onResultCallback(Result.success());
 
                                 String title = unitname;
                                 String message = "Class has been successfully saved in the background";
@@ -128,7 +128,7 @@ public class TransactionWorker extends Worker {
                                 Log.w(TAG, "Transaction failure.  => Worker", e);
 
                                 //do a reschedule of the transaction
-                                resultCallback.onResultCallback(Result.RETRY);
+                                resultCallback.onResultCallback(Result.retry());
                             }
                         });
 
@@ -137,7 +137,7 @@ public class TransactionWorker extends Worker {
             @Override
             public void onFailure(@NonNull Exception e) {
                 // Indicate success or failure with your return value:
-                resultCallback.onResultCallback(Result.RETRY);
+                resultCallback.onResultCallback(Result.retry());
             }
         });
     }

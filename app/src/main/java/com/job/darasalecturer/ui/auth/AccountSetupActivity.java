@@ -1,26 +1,25 @@
 package com.job.darasalecturer.ui.auth;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.LecUser;
+import com.job.darasalecturer.model.Staff;
 import com.job.darasalecturer.ui.newlesson.AddClassActivity;
 import com.job.darasalecturer.util.AppStatus;
 import com.job.darasalecturer.util.DoSnack;
@@ -37,6 +36,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import static com.job.darasalecturer.util.Constants.FIRST_NAME_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.LAST_NAME_PREF_NAME;
 import static com.job.darasalecturer.util.Constants.LECUSERCOL;
+import static com.job.darasalecturer.util.Constants.STAFFCOL;
 
 public class AccountSetupActivity extends AppCompatActivity {
 
@@ -133,32 +133,36 @@ public class AccountSetupActivity extends AppCompatActivity {
             DocumentReference usersRef = mFirestore.collection(LECUSERCOL).document(mAuth.getCurrentUser().getUid());
 
             usersRef.update(lecMap)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
+                    .addOnSuccessListener(aVoid -> {
 
-                            pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                            pDialog.setCancelable(true);
-                            pDialog.setTitleText("Saved Successfully");
-                            pDialog.setContentText("You're now set");
-                            pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sDialog) {
-                                    sDialog.dismissWithAnimation();
+                        pDialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                        pDialog.setCancelable(true);
+                        pDialog.setTitleText("Saved Successfully");
+                        pDialog.setContentText("You're now set");
+                        pDialog.setConfirmClickListener(sDialog -> {
+                            sDialog.dismissWithAnimation();
 
-                                    sendToSetClass();
+                            sendToSetClass();
+                            addStaffToDb(fname,lname);
 
-                                }
-                            });
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    pDialog.dismiss();
-                    doSnack.errorPrompt("Oops...", e.getMessage());
-                }
-            });
+                        });
+                    }).addOnFailureListener(e -> {
+                        pDialog.dismiss();
+                        doSnack.errorPrompt("Oops...", e.getMessage());
+                    });
         }
+    }
+
+    private void addStaffToDb(String fname, String lname) {
+
+        String em = mAuth.getCurrentUser().getEmail();
+        String uid = mAuth.getCurrentUser().getUid();
+        String init = fname.toUpperCase().charAt(0)+""+lname.toUpperCase().charAt(0);
+        Staff staff = new Staff(uid,fname,lname,em,init,"Lecturer");
+
+        DocumentReference documentReference = mFirestore.collection(STAFFCOL).document();
+        documentReference.set(staff);
+
     }
 
     private void sendToSetClass() {

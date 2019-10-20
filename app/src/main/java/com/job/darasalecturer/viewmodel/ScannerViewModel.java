@@ -1,13 +1,11 @@
 package com.job.darasalecturer.viewmodel;
 
-import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.ViewModel;
 import android.os.CountDownTimer;
+import androidx.annotation.NonNull;
 
 import com.job.darasalecturer.model.StudentMessage;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +86,7 @@ public class ScannerViewModel extends ViewModel {
         return studentMessagesLiveData;
     }
 
-    public void setStudentMessagesLiveData(@NotNull List<StudentMessage> studentMessages) {
+    public void setStudentMessagesLiveData(@NonNull List<StudentMessage> studentMessages) {
         this.studentMessagesLiveData.setValue(studentMessages);
     }
 

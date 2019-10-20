@@ -1,11 +1,11 @@
 package com.job.darasalecturer.util;
 
-import android.support.design.card.MaterialCardView;
-import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.textfield.TextInputLayout;
 import com.job.darasalecturer.R;
 import com.job.darasalecturer.model.CourseYear;
 import com.leodroidcoder.genericadapter.BaseViewHolder;

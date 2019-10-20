@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.annotation.StringRes;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
 
 import com.job.darasalecturer.R;
 
@@ -15,6 +15,7 @@ import com.job.darasalecturer.R;
  */
 public class Constants {
     public static final String LECUSERCOL = "LecUser";
+    public static final String STAFFCOL = "Staff";
     public static final String LECTEACHCOL = "LecTeach";
     public static final String LECTEACHTIMECOL = "LecTeachTime";
     public static final String LECTEACHCOURSESUBCOL = "Courses";

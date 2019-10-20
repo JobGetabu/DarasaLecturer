@@ -1,8 +1,8 @@
 package com.job.darasalecturer.ui.settings;
 
 import android.os.Bundle;
-import android.support.design.button.MaterialButton;
-import android.support.design.widget.BottomSheetDialogFragment;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;

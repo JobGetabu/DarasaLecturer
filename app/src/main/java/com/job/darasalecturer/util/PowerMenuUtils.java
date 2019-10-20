@@ -1,6 +1,6 @@
 package com.job.darasalecturer.util;
 
-import android.arch.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleOwner;
 import android.content.Context;
 
 import com.google.firebase.Timestamp;

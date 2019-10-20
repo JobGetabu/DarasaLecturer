@@ -1,7 +1,7 @@
 package com.job.darasalecturer.adapter;
 
 import android.content.Context;
-import android.support.v7.util.DiffUtil;
+import androidx.recyclerview.widget.DiffUtil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

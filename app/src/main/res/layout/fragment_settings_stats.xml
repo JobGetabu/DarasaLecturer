@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.button.MaterialButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/frg_stats_classlist"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
         app:iconTint="@color/darkgreyish"
         android:drawablePadding="16dp" />
 
-    <android.support.design.button.MaterialButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/frg_stats_attendancelist"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="match_parent"
@@ -41,7 +41,7 @@
         app:iconTint="@color/darkgreyish"
         android:drawablePadding="16dp" />
 
-    <android.support.design.button.MaterialButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/frg_stats_studstarts"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="match_parent"
