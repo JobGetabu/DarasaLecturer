@@ -8,6 +8,7 @@ import android.support.annotation.Keep;
 
 @Keep
 public class LecUser {
+    private String uid;
     private String firstname;
     private String lastname;
     private String devicetoken;
@@ -20,9 +21,9 @@ public class LecUser {
     public LecUser() {
     }
 
-    public LecUser(String firstname, String lastname,
-                   String devicetoken, String school, String department,
+    public LecUser(String uid, String firstname, String lastname, String devicetoken, String school, String department,
                    String currentsemester, String currentyear, String currentacademicyear) {
+        this.uid = uid;
         this.firstname = firstname;
         this.lastname = lastname;
         this.devicetoken = devicetoken;
@@ -97,10 +98,19 @@ public class LecUser {
         this.devicetoken = devicetoken;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
     @Override
     public String toString() {
         return "LecUser{" +
-                "firstname='" + firstname + '\'' +
+                "uid='" + uid + '\'' +
+                ", firstname='" + firstname + '\'' +
                 ", lastname='" + lastname + '\'' +
                 ", devicetoken='" + devicetoken + '\'' +
                 ", school='" + school + '\'' +

@@ -120,6 +120,7 @@ public class SignupActivity extends AppCompatActivity {
                                 LecUser lecUser = new LecUser();
 
                                 lecUser.setDevicetoken(devicetoken);
+                                lecUser.setUid(authtask.getResult().getUser().getUid());
 
                                 // Set the value of 'Users'
                                 DocumentReference usersRef = mFirestore.collection(LECUSERCOL).document(mCurrentUserid);

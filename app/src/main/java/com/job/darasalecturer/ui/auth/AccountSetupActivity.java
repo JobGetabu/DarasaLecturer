@@ -121,6 +121,7 @@ public class AccountSetupActivity extends AppCompatActivity {
             String dept = setupDepartment.getEditText().getText().toString();
 
             Map<String, Object> lecMap = new HashMap<>();
+            lecMap.put("uid", mAuth.getCurrentUser().getUid());
             lecMap.put("firstname", fname);
             lecMap.put("lastname", lname);
             lecMap.put("school", school);
