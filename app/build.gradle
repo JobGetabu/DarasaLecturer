@@ -8,9 +8,9 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 ext.versionMajor = 2
 ext.versionMinor = 5
-ext.versionPatch = 0
+ext.versionPatch = 1
 ext.versionClassifier = null
-ext.isSnapshot = true  //only true while in development
+ext.isSnapshot = false  //only true while in development
 ext.minimumSdkVersion = 19
 
 android {
@@ -21,8 +21,8 @@ android {
         applicationId "com.job.darasalecturer"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode generateVersionCode() // 190020500
-        versionName generateVersionName() // 2.5.0-SNAPSHOT
+        versionCode generateVersionCode() // 190020501
+        versionName generateVersionName() // 2.5.1
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         //Enabling multidex support.

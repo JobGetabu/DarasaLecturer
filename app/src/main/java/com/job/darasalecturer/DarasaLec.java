@@ -6,10 +6,13 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.support.v7.app.AppCompatDelegate;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Job on Tuesday : 7/24/2018.
@@ -54,7 +57,9 @@ public class DarasaLec extends MultiDexApplication {
         mAuth.addAuthStateListener(mAuthListener);
 
         //crashlytics
-        //Fabric.with(this, new Crashlytics());
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, new Crashlytics());
+        }
     }
 
     @Override
