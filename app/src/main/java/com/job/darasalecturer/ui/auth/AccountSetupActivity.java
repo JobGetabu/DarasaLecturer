@@ -143,7 +143,9 @@ public class AccountSetupActivity extends AppCompatActivity {
                             sDialog.dismissWithAnimation();
 
                             sendToSetClass();
-                            addStaffToDb(fname,lname);
+                            String f_name = setupFirstname.getEditText().getText().toString();
+                            String l_name = setupLastname.getEditText().getText().toString();
+                            addStaffToDb(f_name,l_name);
 
                         });
                     }).addOnFailureListener(e -> {
@@ -160,7 +162,7 @@ public class AccountSetupActivity extends AppCompatActivity {
         String init = fname.toUpperCase().charAt(0)+""+lname.toUpperCase().charAt(0);
         Staff staff = new Staff(uid,fname,lname,em,init,"Lecturer");
 
-        DocumentReference documentReference = mFirestore.collection(STAFFCOL).document();
+        DocumentReference documentReference = mFirestore.collection(STAFFCOL).document(uid);
         documentReference.set(staff);
 
     }
